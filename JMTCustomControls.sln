@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMTControls", "..\JMTControls\JMTControls.csproj", "{F2127F73-480E-4841-944C-D1E9DB1EBC25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMTControls", "JMTControls\JMTControls.csproj", "{F2127F73-480E-4841-944C-D1E9DB1EBC25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6EDAE67E-93FA-4397-BAE1-1026DA1509F4}
+		SolutionGuid = {545CEDD6-E66F-4050-B92B-17D475AFE1F5}
 	EndGlobalSection
 EndGlobal
