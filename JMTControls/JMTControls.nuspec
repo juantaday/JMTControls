@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>JMTSystem.JMContrtols</id>
+    <version>1.0.2</version>
+    <title>JMControls</title>
+    <authors>JMT System Software</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- <icon>https://github.com/juantaday/JMTControls/blob/main/faviconPNG.png</icon> -->
+    <projectUrl>https://github.com/juantaday/JMTControls</projectUrl>
+    <description>It is a project to customize controls similar to DEVEXPRESS</description>
+    <releaseNotes>Set location the button in accordion control</releaseNotes>
+    <copyright>JMT System Software 2022</copyright>
+    <tags>proyecto chag the net</tags>
+  </metadata>
+</package>

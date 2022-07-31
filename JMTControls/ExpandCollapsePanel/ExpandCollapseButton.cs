@@ -123,6 +123,19 @@ namespace JMControls.ExpandCollapsePanel
             }
         }
 
+        /// (true - expanded, false - collapsed)
+        /// </summary>
+        [Category("ExpandCollapseButton")]
+        [Description("Image size")]
+        [Browsable(true)]
+        public Size ImageSize
+        {
+            get { return _imagePicture.Size; }
+            set
+            {
+                _imagePicture.Size = value;
+            }
+        }
 
         /// <summary>
         /// Set flag for expand or collapse button

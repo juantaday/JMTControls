@@ -63,7 +63,7 @@ namespace JMControls.ExpandCollapsePanel
             this.lblHeader.Name = "lblHeader";
             this.lblHeader.Size = new System.Drawing.Size(68, 15);
             this.lblHeader.TabIndex = 2;
-            this.lblHeader.Text = "Заголовок";
+            this.lblHeader.Text = "Header title";
             this.lblHeader.MouseDown += new MouseEventHandler(this.OnMouseDown);
             this.lblHeader.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             this.lblHeader.MouseLeave += new System.EventHandler(this.OnMouseLeave);
@@ -93,7 +93,7 @@ namespace JMControls.ExpandCollapsePanel
             //
             this._imagePicture = new System.Windows.Forms.PictureBox();
             this._imagePicture.Location = new System.Drawing.Point(5, 1);
-            this._imagePicture.Size = new System.Drawing.Size(32, 32);
+            this._imagePicture.Size = new System.Drawing.Size(48, 32);
             this._imagePicture.MouseDown += new MouseEventHandler(this.OnMouseDown);
             this._imagePicture.MouseEnter += new System.EventHandler(this.OnMouseEnter);
             this._imagePicture.MouseLeave += new System.EventHandler(this.OnMouseLeave);
