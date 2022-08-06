@@ -8,151 +8,184 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.ComponentModel;
+using JMControls.Enums;
+using JMControls.Helpers;
 
 namespace JMControls.Controls
 {
-    public class RJButton : Button
-    {
-        //Fields
-        private int borderSize = 0;
-        private int borderRadius = 0;
-        private Color borderColor = Color.PaleVioletRed;
+	public class RJButton : Button
+	{
+		private int borderSize = 1;
 
-        //Properties
-        [Category("RJ Code Advance")]
-        public int BorderSize
-        {
-            get { return borderSize; }
-            set
-            {
-                borderSize = value;
-                this.Invalidate();
-            }
-        }
+		private int borderRadius = 12;
 
-        [Category("RJ Code Advance")]
-        public int BorderRadius
-        {
-            get { return borderRadius; }
-            set
-            {
-                borderRadius = value;
-                this.Invalidate();
-            }
-        }
+		private Color borderColor = Color.Red;
 
-        [Category("RJ Code Advance")]
-        public Color BorderColor
-        {
-            get { return borderColor; }
-            set
-            {
-                borderColor = value;
-                this.Invalidate();
-            }
-        }
+		[Category("RJ Code Advance")]
+		public Color BackgroundColor
+		{
+			get
+			{
+				return this.BackColor;
+			}
+			set
+			{
+				this.BackColor = value;
+			}
+		}
 
-        [Category("RJ Code Advance")]
-        public Color BackgroundColor
-        {
-            get { return this.BackColor; }
-            set { this.BackColor = value; }
-        }
+		[Category("RJ Code Advance")]
+		public Color BorderColor
+		{
+			get
+			{
+				return this.borderColor;
+			}
+			set
+			{
+				this.borderColor = value;
+				base.Invalidate();
+			}
+		}
 
-        [Category("RJ Code Advance")]
-        public Color TextColor
-        {
-            get { return this.ForeColor; }
-            set { this.ForeColor = value; }
-        }
+		[Category("RJ Code Advance")]
+		public int BorderRadius
+		{
+			get
+			{
+				return this.borderRadius;
+			}
+			set
+			{
+				if (value > base.Height)
+				{
+					this.borderRadius = base.Height;
+				}
+				else
+				{
+					this.borderRadius = value;
+				}
+				base.Invalidate();
+			}
+		}
 
-        //Constructor
-        public RJButton()
-        {
-            this.FlatStyle = FlatStyle.Flat;
-            this.FlatAppearance.BorderSize = 0;
-            this.Size = new Size(150, 40);
-            this.BackColor = Color.MediumSlateBlue;
-            this.ForeColor = Color.White;
-            this.Resize += new EventHandler(Button_Resize);
-        }
+		[Category("RJ Code Advance")]
+		public int BorderSize
+		{
+			get
+			{
+				return this.borderSize;
+			}
+			set
+			{
+				this.borderSize = value;
+				base.Invalidate();
+			}
+		}
 
-        //Methods
-        private GraphicsPath GetFigurePath(Rectangle rect, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            float curveSize = radius * 2F;
+		[Category("RJ Code Advance")]
+		public Color TextColor
+		{
+			get
+			{
+				return this.ForeColor;
+			}
+			set
+			{
+				this.ForeColor = value;
+			}
+		}
 
-            path.StartFigure();
-            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);
-            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270, 90);
-            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
+		public RJButton()
+		{
+			base.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			base.FlatAppearance.BorderSize = 0;
+			base.Size = new System.Drawing.Size(150, 40);
+			this.BackColor = Color.MediumSlateBlue;
+			this.ForeColor = Color.White;
+			base.Resize += new EventHandler(this.Button_Resize);
+		}
 
-        protected override void OnPaint(PaintEventArgs pevent)
-        {
-            base.OnPaint(pevent);
+		private void Button_Resize(object sender, EventArgs e)
+		{
+			if (this.borderRadius > base.Height)
+			{
+				this.borderRadius = base.Height;
+			}
+		}
 
+		private void Container_BackColorChanged(object sender, EventArgs e)
+		{
+			if (base.DesignMode)
+			{
+				base.Invalidate();
+			}
+		}
 
-            Rectangle rectSurface = this.ClientRectangle;
-            Rectangle rectBorder = Rectangle.Inflate(rectSurface, -borderSize, -borderSize);
-            int smoothSize = 2;
-            if (borderSize > 0)
-                smoothSize = borderSize;
+		private GraphicsPath GetFigurePath(Rectangle rect, float radius)
+		{
+			GraphicsPath graphicsPath = new GraphicsPath();
+			float single = radius * 2f;
+			graphicsPath.StartFigure();
+			graphicsPath.AddArc((float)rect.X, (float)rect.Y, single, single, 180f, 90f);
+			graphicsPath.AddArc((float)rect.Right - single, (float)rect.Y, single, single, 270f, 90f);
+			graphicsPath.AddArc((float)rect.Right - single, (float)rect.Bottom - single, single, single, 0f, 90f);
+			graphicsPath.AddArc((float)rect.X, (float)rect.Bottom - single, single, single, 90f, 90f);
+			graphicsPath.CloseFigure();
+			return graphicsPath;
+		}
 
-            if (borderRadius > 2) //Rounded button
-            {
-                using (GraphicsPath pathSurface = GetFigurePath(rectSurface, borderRadius))
-                using (GraphicsPath pathBorder = GetFigurePath(rectBorder, borderRadius - borderSize))
-                using (Pen penSurface = new Pen(this.Parent.BackColor, smoothSize))
-                using (Pen penBorder = new Pen(borderColor, borderSize))
-                {
-                    pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                    //Button surface
-                    this.Region = new Region(pathSurface);
-                    //Draw surface border for HD result
-                    pevent.Graphics.DrawPath(penSurface, pathSurface);
+		protected override void OnHandleCreated(EventArgs e)
+		{
+			base.OnHandleCreated(e);
+			base.Parent.BackColorChanged += new EventHandler(this.Container_BackColorChanged);
+		}
 
-                    //Button border                    
-                    if (borderSize >= 1)
-                        //Draw control border
-                        pevent.Graphics.DrawPath(penBorder, pathBorder);
-                }
-            }
-            else //Normal button
-            {
-                pevent.Graphics.SmoothingMode = SmoothingMode.None;
-                //Button surface
-                this.Region = new Region(rectSurface);
-                //Button border
-                if (borderSize >= 1)
-                {
-                    using (Pen penBorder = new Pen(borderColor, borderSize))
-                    {
-                        penBorder.Alignment = PenAlignment.Inset;
-                        pevent.Graphics.DrawRectangle(penBorder, 0, 0, this.Width - 1, this.Height - 1);
-                    }
-                }
-            }
-        }
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            this.Parent.BackColorChanged += new EventHandler(Container_BackColorChanged);
-        }
-
-        private void Container_BackColorChanged(object sender, EventArgs e)
-        {
-            this.Invalidate();
-        }
-        private void Button_Resize(object sender, EventArgs e)
-        {
-            if (borderRadius > this.Height)
-                borderRadius = this.Height;
-        }
-        public new  bool   Enabled { get =>base.Enabled ; set=>base.Enabled  =value;  }
-    }
+		protected override void OnPaint(PaintEventArgs pevent)
+		{
+			base.OnPaint(pevent);
+			Rectangle clientRectangle = base.ClientRectangle;
+			Rectangle rectangle = Rectangle.Inflate(clientRectangle, -this.borderSize, -this.borderSize);
+			int num = 2;
+			if (this.borderSize > 0)
+			{
+				num = this.borderSize;
+			}
+			if (this.borderRadius <= 2)
+			{
+				pevent.Graphics.SmoothingMode = SmoothingMode.None;
+				base.Region = new System.Drawing.Region(clientRectangle);
+				if (this.borderSize >= 1)
+				{
+					using (Pen pen = new Pen(this.borderColor, (float)this.borderSize))
+					{
+						pen.Alignment = PenAlignment.Inset;
+						pevent.Graphics.DrawRectangle(pen, 0, 0, base.Width - 1, base.Height - 1);
+					}
+				}
+			}
+			else
+			{
+				using (GraphicsPath figurePath = this.GetFigurePath(clientRectangle, (float)this.borderRadius))
+				{
+					using (GraphicsPath graphicsPath = this.GetFigurePath(rectangle, (float)(this.borderRadius - this.borderSize)))
+					{
+						using (Pen pen1 = new Pen(base.Parent.BackColor, (float)num))
+						{
+							using (Pen pen2 = new Pen(this.borderColor, (float)this.borderSize))
+							{
+								pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+								base.Region = new System.Drawing.Region(figurePath);
+								pevent.Graphics.DrawPath(pen1, figurePath);
+								if (this.borderSize >= 1)
+								{
+									pevent.Graphics.DrawPath(pen2, graphicsPath);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

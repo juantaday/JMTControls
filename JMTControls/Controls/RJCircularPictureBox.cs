@@ -60,6 +60,10 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code Advance")]
+
+        public  new PictureBoxSizeMode SizeMode { get=>base.SizeMode; set=>base.SizeMode = value ; }
+
+        [Category("RJ Code Advance")]
         public Color BorderColor2
         {
             get

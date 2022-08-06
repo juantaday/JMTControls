@@ -181,10 +181,36 @@ namespace JMControls.ExpandCollapsePanel
         [Category("ExpandCollapsePanel")]
         [Description("This is location the image in button")]
         [Browsable(true)]
-        public Point ButtonImgLocation
+        public Point ButtonImageLocation
         {
             get { return _btnExpandCollapse.ImageLocation; }
             set { _btnExpandCollapse.ImageLocation = value; }
+        }
+
+
+        /// <summary>
+        /// Size preset of the expand-collapse button.
+        /// </summary>
+        [Category("ExpandCollapsePanel")]
+        [Description("Set or get the image in button")]
+        [Browsable(true)]
+        public Image ButtonImage
+        {
+            get { return _btnExpandCollapse.ImagePicture; }
+            set { _btnExpandCollapse.ImagePicture = value; }
+        }
+
+
+        /// <summary>
+        /// Size preset of the expand-collapse button.
+        /// </summary>
+        [Category("ExpandCollapsePanel")]
+        [Description("Set or get size image in button")]
+        [Browsable(true)]
+        public Size ButtonImageSize
+        {
+            get { return _btnExpandCollapse.ImageSize; }
+            set { _btnExpandCollapse.ImageSize = value; }
         }
 
 
@@ -204,17 +230,6 @@ namespace JMControls.ExpandCollapsePanel
         }
 
 
-        /// <summary>
-        /// Size preset of the expand-collapse button.
-        /// </summary>
-        [Category("ExpandCollapsePanel")]
-        [Description("Set or get the image in button")]
-        [Browsable(true)]
-        public Image ButtonImage
-        {
-            get { return _btnExpandCollapse.ImagePicture; }
-            set { _btnExpandCollapse.ImagePicture = value; }
-        }
 
 
         /// <summary>

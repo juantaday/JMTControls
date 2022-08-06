@@ -185,6 +185,19 @@ namespace JMControls.ExpandCollapsePanel
         }
 
 
+        /// <summary>
+        /// This is  header back color
+        /// </summary>
+        [Category("ExpandCollapsePanel")]
+        [Description("Header Back Color")]
+        [Browsable(true)]
+        public Color HeaderBackColor
+        {
+            get => this.panelHeader.BackColor;
+            set => this.panelHeader.BackColor = value;
+
+        }
+
 
         /// <summary>
         /// This is class button
@@ -198,26 +211,41 @@ namespace JMControls.ExpandCollapsePanel
             set => this.panelHeader.Height = value;
 
         }
+
         /// <summary>
-        /// This is class button
+        /// This image in header
         /// </summary>
         [Category("ExpandCollapsePanel")]
-        [Description("Header Height")]
+        [Description("Header Image")]
         [Browsable(true)]
-        public PictureBox ImageControl
+        public Image HeaderImage
         {
-            get => this._pictureBox;
-            set => this._pictureBox = value;
+            get => this._pictureBox.Image;
+            set => this._pictureBox.Image = value;
 
         }
 
         /// <summary>
+        /// This image in header
+        /// </summary>
+        [Category("ExpandCollapsePanel")]
+        [Description("Header Image Control")]
+        [Browsable(true)]
+        public PictureBox HeaderImageControl
+        {
+            get => this._pictureBox;
+            set => this._pictureBox = value;
+        }
+
+
+
+        /// <summary>
         /// This is class button
         /// </summary>
         [Category("ExpandCollapsePanel")]
-        [Description("Get or set image location")]
+        [Description("Get or set image location in header")]
         [Browsable(true)]
-        public Point ImageLocation
+        public Point HeaderImageLocation
         {
             get => this._pictureBox.Location;
             set => this._pictureBox.Location = value;

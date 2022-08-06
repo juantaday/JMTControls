@@ -92,7 +92,7 @@ namespace JMControls.ExpandCollapsePanel
             // logo image
             //
             this._imagePicture = new System.Windows.Forms.PictureBox();
-            this._imagePicture.Location = new System.Drawing.Point(5, 1);
+            this._imagePicture.Location = new System.Drawing.Point(5, 3);
             this._imagePicture.Size = new System.Drawing.Size(48, 32);
             this._imagePicture.MouseDown += new MouseEventHandler(this.OnMouseDown);
             this._imagePicture.MouseEnter += new System.EventHandler(this.OnMouseEnter);

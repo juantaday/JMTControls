@@ -1,143 +1,206 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace JMControls.Controls
 {
     [DefaultEvent("_TextChanged")]
-    public partial class RJTextBox : UserControl
+    public class RJTextBox : UserControl
     {
-        #region -> Fields
-        //Fields
         private Color borderColor = Color.MediumSlateBlue;
+
         private Color borderFocusColor = Color.HotPink;
-        private int borderSize = 1;
+
+        private int borderSize = 2;
+
         private bool underlinedStyle = false;
+
         private bool isFocused = false;
 
         private int borderRadius = 0;
+
         private Color placeholderColor = Color.DarkGray;
+
         private string placeholderText = "";
-        private string baseText = "";
+
         private bool isPlaceholder = false;
+
         private bool isPasswordChar = false;
 
-        //Events
-        public event EventHandler _TextChanged;
+        private IContainer components = null;
 
-        #endregion
+        private TextBox textBox1;
 
-        //-> Constructor
-        public RJTextBox()
-        {
-            //Created by designer
-            InitializeComponent();
-        }
-
-        #region -> Properties
         [Category("RJ Code Advance")]
-        public Color BorderColor
+        public override Color BackColor
         {
-            get { return borderColor; }
+            get
+            {
+                return base.BackColor;
+            }
             set
             {
-                borderColor = value;
-                this.Invalidate();
+                base.BackColor = value;
+                this.textBox1.BackColor = value;
             }
         }
 
+        [Category("RJ Code Advance")]
+        public Color BorderColor
+        {
+            get
+            {
+                return this.borderColor;
+            }
+            set
+            {
+                this.borderColor = value;
+                base.Invalidate();
+            }
+        }
 
-    [Category("RJ Code Advance")]
+        [Category("RJ Code Advance")]
         public Color BorderFocusColor
         {
-            get { return borderFocusColor; }
-            set { borderFocusColor = value; }
+            get
+            {
+                return this.borderFocusColor;
+            }
+            set
+            {
+                this.borderFocusColor = value;
+            }
+        }
+
+        [Category("RJ Code Advance")]
+        public int BorderRadius
+        {
+            get
+            {
+                return this.borderRadius;
+            }
+            set
+            {
+                if (value >= 0)
+                {
+                    this.borderRadius = value;
+                    base.Invalidate();
+                }
+            }
         }
 
         [Category("RJ Code Advance")]
         public int BorderSize
         {
-            get { return borderSize; }
+            get
+            {
+                return this.borderSize;
+            }
             set
             {
                 if (value >= 1)
                 {
-                    borderSize = value;
-                    this.Invalidate();
+                    this.borderSize = value;
+                    base.Invalidate();
                 }
-            }
-        }
-
-
-        [Category("RJ Code Advance")]
-        public bool UnderlinedStyle
-        {
-            get { return underlinedStyle; }
-            set
-            {
-                underlinedStyle = value;
-                this.Invalidate();
-            }
-        }
-
-        [Category("RJ Code Advance")]
-        public bool PasswordChar
-        {
-            get { return isPasswordChar; }
-            set
-            {
-                isPasswordChar = value;
-                if (!isPlaceholder)
-                    textBox1.UseSystemPasswordChar = value;
-            }
-        }
-
-        [Category("RJ Code Advance")]
-        public bool Multiline
-        {
-            get { return textBox1.Multiline; }
-            set { textBox1.Multiline = value; }
-        }
-
-        [Category("RJ Code Advance")]
-        public override Color BackColor
-        {
-            get { return base.BackColor; }
-            set
-            {
-                base.BackColor = value;
-                textBox1.BackColor = value;
-            }
-        }
-
-        [Category("RJ Code Advance")]
-        public override Color ForeColor
-        {
-            get { return base.ForeColor; }
-            set
-            {
-                base.ForeColor = value;
-                textBox1.ForeColor = value;
             }
         }
 
         [Category("RJ Code Advance")]
         public override Font Font
         {
-            get { return base.Font; }
+            get
+            {
+                return base.Font;
+            }
             set
             {
                 base.Font = value;
-                textBox1.Font = value;
-                if (this.DesignMode)
-                    UpdateControlHeight();
+                this.textBox1.Font = value;
+                if (base.DesignMode)
+                {
+                    this.UpdateControlHeight();
+                }
+            }
+        }
+
+        [Category("RJ Code Advance")]
+        public override Color ForeColor
+        {
+            get
+            {
+                return base.ForeColor;
+            }
+            set
+            {
+                base.ForeColor = value;
+                this.textBox1.ForeColor = value;
+            }
+        }
+
+        [Category("RJ Code Advance")]
+        public bool Multiline
+        {
+            get
+            {
+                return this.textBox1.Multiline;
+            }
+            set
+            {
+                this.textBox1.Multiline = value;
+            }
+        }
+
+        [Category("RJ Code Advance")]
+        public bool PasswordChar
+        {
+            get
+            {
+                return this.isPasswordChar;
+            }
+            set
+            {
+                this.isPasswordChar = value;
+                if (!this.isPlaceholder)
+                {
+                    this.textBox1.UseSystemPasswordChar = value;
+                }
+            }
+        }
+
+        [Category("RJ Code Advance")]
+        public Color PlaceholderColor
+        {
+            get
+            {
+                return this.placeholderColor;
+            }
+            set
+            {
+                this.placeholderColor = value;
+                if (this.isPlaceholder)
+                {
+                    this.textBox1.ForeColor = value;
+                }
+            }
+        }
+
+        [Category("RJ Code Advance")]
+        public string PlaceholderText
+        {
+            get
+            {
+                return this.placeholderText;
+            }
+            set
+            {
+                this.placeholderText = value;
+                this.textBox1.Text = "";
+                this.SetPlaceholder();
             }
         }
 
@@ -146,309 +209,263 @@ namespace JMControls.Controls
         {
             get
             {
-                if (isPlaceholder) return "";
-                else return textBox1.Text;
+                return (!this.isPlaceholder ? this.textBox1.Text : "");
             }
             set
             {
-                textBox1.Text = value;
-                baseText = value;
-                SetPlaceholder();
+                this.textBox1.Text = value;
+                this.SetPlaceholder();
             }
         }
 
         [Category("RJ Code Advance")]
-        public int BorderRadius
-        {
-            get { return borderRadius; }
-            set
-            {
-                if (value >= 0)
-                {
-                    borderRadius = value;
-                    if (borderRadius == 0)
-                        this.Padding = new Padding(1);
-                    else if(borderRadius < 5)
-                            this.Padding = new Padding(3,2,3,2);
-                    else if (borderRadius < 9)
-                        this.Padding = new Padding(5, 3, 5, 3);
-                    else if (borderRadius < 12)
-                        this.Padding = new Padding(6, 4, 6, 4);
-                    else
-                        this.Padding = new Padding(7, 5, 7, 5);
-
-                    UpdateControlHeight();
-                    this.Invalidate();//Redraw control
-                }
-            }
-        }
-
-        [Category("RJ Code Advance")]
-        public Color PlaceholderColor
-        {
-            get { return placeholderColor; }
-            set
-            {
-                placeholderColor = value;
-                if (isPlaceholder)
-                    textBox1.ForeColor = value;
-            }
-        }
-
-        [Category("RJ Code Advance")]
-        public string PlaceholderText
-        {
-            get { return placeholderText; }
-            set
-            {
-                placeholderText = value;
-                textBox1.Text = "";
-                SetPlaceholder();
-            }
-        }
-
-        [Category("RJ Code Advance")]
-        public CharacterCasing CharacterCasin
-        {
-            get { return textBox1.CharacterCasing; }
-            set { textBox1.CharacterCasing = value;}
-        }
-        //TextLength
-        [Category("RJ Code Advance")]
-        public int MaxLengthJR
-        {
-            get { return textBox1.MaxLength; }
-            set { textBox1.MaxLength = value; }
-        }
-
-        [Category("RJ Code Advance")]
-        public int TextLengthJR
-        {
-            get { return textBox1.TextLength; }
-         
-        }
-
-        [Category("Appearance"), Description("Alint tex")]
-        public HorizontalAlignment TextAlign
+        public bool UnderlinedStyle
         {
             get
-            { return textBox1.TextAlign; }
-
-            set { textBox1.TextAlign = value; }
-        }
-
-
-        public void SelectecText (int star ,  int length)
-        {
-            try
             {
-                this.textBox1.Select(star, length);
+                return this.underlinedStyle;
             }
-            catch (Exception)
+            set
             {
-
+                this.underlinedStyle = value;
+                base.Invalidate();
             }
         }
 
-
-
-        public int SelectionLength_
+        public RJTextBox()
         {
-            get { return textBox1.SelectionLength;}
-
+            this.InitializeComponent();
         }
 
-        public void SelectAll_()
+        protected override void Dispose(bool disposing)
         {
-            textBox1.SelectAll();
+            if ((!disposing ? false : this.components != null))
+            {
+                this.components.Dispose();
+            }
+            base.Dispose(disposing);
         }
-        public void Focus_()
+
+        private GraphicsPath GetFigurePath(Rectangle rect, int radius)
         {
-            textBox1.Focus();
+            GraphicsPath graphicsPath = new GraphicsPath();
+            float single = (float)radius * 2f;
+            graphicsPath.StartFigure();
+            graphicsPath.AddArc((float)rect.X, (float)rect.Y, single, single, 180f, 90f);
+            graphicsPath.AddArc((float)rect.Right - single, (float)rect.Y, single, single, 270f, 90f);
+            graphicsPath.AddArc((float)rect.Right - single, (float)rect.Bottom - single, single, single, 0f, 90f);
+            graphicsPath.AddArc((float)rect.X, (float)rect.Bottom - single, single, single, 90f, 90f);
+            graphicsPath.CloseFigure();
+            return graphicsPath;
         }
 
-
-
-        #endregion
-
-        #region -> Overridden methods
-        protected override void OnResize(EventArgs e)
+        private void InitializeComponent()
         {
-            base.OnResize(e);
-            if (this.DesignMode)
-                UpdateControlHeight();
+            this.textBox1 = new TextBox();
+            base.SuspendLayout();
+            this.textBox1.BorderStyle = BorderStyle.None;
+            this.textBox1.Dock = DockStyle.Fill;
+            this.textBox1.Location = new Point(10, 7);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new Size(230, 15);
+            this.textBox1.TabIndex = 0;
+            base.AutoScaleMode = AutoScaleMode.None;
+            this.BackColor = SystemColors.Window;
+            base.Controls.Add(this.textBox1);
+            this.Font = new Font("Microsoft Sans Serif", 9.5f);
+            this.ForeColor = Color.FromArgb(64, 64, 64);
+            base.Margin = new Padding(4);
+            base.Name = "RJTextBox";
+            base.Padding = new Padding(10, 7, 10, 7);
+            base.Size = new Size(250, 30);
+            base.ResumeLayout(false);
+            base.PerformLayout();
         }
+
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            UpdateControlHeight();
+            this.UpdateControlHeight();
         }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            Graphics graph = e.Graphics;
-
-            if (borderRadius > 1)//Rounded TextBox
+            Graphics graphics = e.Graphics;
+            if (this.borderRadius <= 1)
             {
-                //-Fields
-                var rectBorderSmooth = this.ClientRectangle;
-                var rectBorder = Rectangle.Inflate(rectBorderSmooth, -borderSize, -borderSize);
-                int smoothSize = borderSize > 0 ? borderSize : 1;
-
-                using (GraphicsPath pathBorderSmooth = GetFigurePath(rectBorderSmooth, borderRadius))
-                using (GraphicsPath pathBorder = GetFigurePath(rectBorder, borderRadius - borderSize))
-                using (Pen penBorderSmooth = new Pen(this.Parent.BackColor, smoothSize))
-                using (Pen penBorder = new Pen(borderColor, borderSize))
+                using (Pen pen = new Pen(this.borderColor, (float)this.borderSize))
                 {
-                    //-Drawing
-                    this.Region = new Region(pathBorderSmooth);//Set the rounded region of UserControl
-                    if (borderRadius > 15) SetTextBoxRoundedRegion();//Set the rounded region of TextBox component
-                    graph.SmoothingMode = SmoothingMode.AntiAlias;
-                    penBorder.Alignment = System.Drawing.Drawing2D.PenAlignment.Center;
-                    if (isFocused) penBorder.Color = borderFocusColor;
-
-                    if (underlinedStyle) //Line Style
+                    base.Region = new Region(base.ClientRectangle);
+                    pen.Alignment = PenAlignment.Inset;
+                    if (this.isFocused)
                     {
-                        //Draw border smoothing
-                        graph.DrawPath(penBorderSmooth, pathBorderSmooth);
-                        //Draw border
-                        graph.SmoothingMode = SmoothingMode.None;
-                        graph.DrawLine(penBorder, 0, this.Height - 1, this.Width, this.Height - 1);
+                        pen.Color = this.borderFocusColor;
                     }
-                    else //Normal Style
+                    if (!this.underlinedStyle)
                     {
-                        //Draw border smoothing
-                        graph.DrawPath(penBorderSmooth, pathBorderSmooth);
-                        //Draw border
-                        graph.DrawPath(penBorder, pathBorder);
+                        graphics.DrawRectangle(pen, 0f, 0f, (float)base.Width - 0.5f, (float)base.Height - 0.5f);
+                    }
+                    else
+                    {
+                        graphics.DrawLine(pen, 0, base.Height - 1, base.Width, base.Height - 1);
                     }
                 }
-            }
-            else //Square/Normal TextBox
-            {
-                //Draw border
-                using (Pen penBorder = new Pen(borderColor, borderSize))
-                {
-                    this.Region = new Region(this.ClientRectangle);
-                    penBorder.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
-                    if (isFocused) penBorder.Color = borderFocusColor;
-
-                    if (underlinedStyle) //Line Style
-                        graph.DrawLine(penBorder, 0, this.Height -1, this.Width, this.Height - 1);
-                    else //Normal Style
-                        graph.DrawRectangle(penBorder, 0, 0, this.Width - 0.5F, this.Height - 0.5F);
-                }
-            }
-        }
-
-        #endregion
-
-        #region -> Private methods
-        private void SetPlaceholder()
-        {
-            if (string.IsNullOrWhiteSpace(textBox1.Text) && placeholderText != "")
-            {
-                isPlaceholder = true;
-                textBox1.Text = placeholderText;
-                textBox1.ForeColor = placeholderColor;
-                if (isPasswordChar)
-                    textBox1.UseSystemPasswordChar = false;
-            }
-        }
-        private void RemovePlaceholder()
-        {
-            if (isPlaceholder && placeholderText != "")
-            {
-                isPlaceholder = false;
-                textBox1.Text = baseText;
-                textBox1.ForeColor = this.ForeColor;
-                if (isPasswordChar)
-                    textBox1.UseSystemPasswordChar = true;
-            }
-        }        
-        private GraphicsPath GetFigurePath(Rectangle rect, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            float curveSize = radius * 2F;
-
-            path.StartFigure();
-            path.AddArc(rect.X, rect.Y, curveSize, curveSize, 180, 90);
-            path.AddArc(rect.Right - curveSize, rect.Y, curveSize, curveSize, 270, 90);
-            path.AddArc(rect.Right - curveSize, rect.Bottom - curveSize, curveSize, curveSize, 0, 90);
-            path.AddArc(rect.X, rect.Bottom - curveSize, curveSize, curveSize, 90, 90);
-            path.CloseFigure();
-            return path;
-        }
-        private void SetTextBoxRoundedRegion()
-        {
-            GraphicsPath pathTxt;
-            if (Multiline)
-            {
-                pathTxt = GetFigurePath(textBox1.ClientRectangle, borderRadius - borderSize);
-                textBox1.Region = new Region(pathTxt);
             }
             else
             {
-                pathTxt = GetFigurePath(textBox1.ClientRectangle, borderSize * 2);
-                textBox1.Region = new Region(pathTxt);
+                Rectangle clientRectangle = base.ClientRectangle;
+                Rectangle rectangle = Rectangle.Inflate(clientRectangle, -this.borderSize, -this.borderSize);
+                int num = (this.borderSize > 0 ? this.borderSize : 1);
+                using (GraphicsPath figurePath = this.GetFigurePath(clientRectangle, this.borderRadius))
+                {
+                    using (GraphicsPath graphicsPath = this.GetFigurePath(rectangle, this.borderRadius - this.borderSize))
+                    {
+                        using (Pen pen1 = new Pen(base.Parent.BackColor, (float)num))
+                        {
+                            using (Pen pen2 = new Pen(this.borderColor, (float)this.borderSize))
+                            {
+                                base.Region = new Region(figurePath);
+                                if (this.borderRadius > 15)
+                                {
+                                    this.SetTextBoxRoundedRegion();
+                                }
+                                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                                pen2.Alignment = PenAlignment.Center;
+                                if (this.isFocused)
+                                {
+                                    pen2.Color = this.borderFocusColor;
+                                }
+                                if (!this.underlinedStyle)
+                                {
+                                    graphics.DrawPath(pen1, figurePath);
+                                    graphics.DrawPath(pen2, graphicsPath);
+                                }
+                                else
+                                {
+                                    graphics.DrawPath(pen1, figurePath);
+                                    graphics.SmoothingMode = SmoothingMode.None;
+                                    graphics.DrawLine(pen2, 0, base.Height - 1, base.Width, base.Height - 1);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            pathTxt.Dispose();
         }
-        private void UpdateControlHeight()
+
+        protected override void OnResize(EventArgs e)
         {
-            if (textBox1.Multiline == false)
+            base.OnResize(e);
+            if (base.DesignMode)
             {
-                int txtHeight = TextRenderer.MeasureText("Text", this.Font).Height + 1;
-                textBox1.Multiline = true;
-                textBox1.MinimumSize = new Size(0, txtHeight);
-                textBox1.Multiline = false;
-
-                this.Height = textBox1.Height + this.Padding.Top + this.Padding.Bottom;
+                this.UpdateControlHeight();
             }
         }
-        #endregion
 
-        #region -> TextBox events
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void RemovePlaceholder()
         {
-            if (textBox1.Text != this.PlaceholderText)
-               baseText = textBox1.Text;
-
-            if (_TextChanged != null)
-                _TextChanged.Invoke(sender, e);
+            if ((!this.isPlaceholder ? false : this.placeholderText != ""))
+            {
+                this.isPlaceholder = false;
+                this.textBox1.Text = "";
+                this.textBox1.ForeColor = this.ForeColor;
+                if (this.isPasswordChar)
+                {
+                    this.textBox1.UseSystemPasswordChar = true;
+                }
+            }
         }
 
-        
+        private void SetPlaceholder()
+        {
+            if ((!string.IsNullOrWhiteSpace(this.textBox1.Text) ? false : this.placeholderText != ""))
+            {
+                this.isPlaceholder = true;
+                this.textBox1.Text = this.placeholderText;
+                this.textBox1.ForeColor = this.placeholderColor;
+                if (this.isPasswordChar)
+                {
+                    this.textBox1.UseSystemPasswordChar = false;
+                }
+            }
+        }
+
+        private void SetTextBoxRoundedRegion()
+        {
+            GraphicsPath figurePath;
+            if (!this.Multiline)
+            {
+                figurePath = this.GetFigurePath(this.textBox1.ClientRectangle, this.borderSize * 2);
+                this.textBox1.Region = new Region(figurePath);
+            }
+            else
+            {
+                figurePath = this.GetFigurePath(this.textBox1.ClientRectangle, this.borderRadius - this.borderSize);
+                this.textBox1.Region = new Region(figurePath);
+            }
+            figurePath.Dispose();
+        }
+
         private void textBox1_Click(object sender, EventArgs e)
         {
             this.OnClick(e);
         }
-        private void textBox1_MouseEnter(object sender, EventArgs e)
+
+        private void textBox1_Enter(object sender, EventArgs e)
         {
-            this.OnMouseEnter(e);
+            this.isFocused = true;
+            base.Invalidate();
+            this.RemovePlaceholder();
         }
-        private void textBox1_MouseLeave(object sender, EventArgs e)
-        {
-            this.OnMouseLeave(e);
-        }
+
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
             this.OnKeyPress(e);
         }
 
-        private void textBox1_Enter(object sender, EventArgs e)
-        {
-            isFocused = true;
-            this.Invalidate();
-            RemovePlaceholder();
-        }
         private void textBox1_Leave(object sender, EventArgs e)
         {
-            isFocused = false;
-            this.Invalidate();
-            SetPlaceholder();
+            this.isFocused = false;
+            base.Invalidate();
+            this.SetPlaceholder();
         }
-        ///::::+
-        #endregion
+
+        private void textBox1_MouseEnter(object sender, EventArgs e)
+        {
+            this.OnMouseEnter(e);
+        }
+
+        private void textBox1_MouseLeave(object sender, EventArgs e)
+        {
+            this.OnMouseLeave(e);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (this._TextChanged != null)
+            {
+                this._TextChanged(sender, e);
+            }
+        }
+
+        private void UpdateControlHeight()
+        {
+            if (!this.textBox1.Multiline)
+            {
+                Size size = TextRenderer.MeasureText("Text", this.Font);
+                int height = size.Height + 1;
+                this.textBox1.Multiline = true;
+                this.textBox1.MinimumSize = new Size(0, height);
+                this.textBox1.Multiline = false;
+                int num = this.textBox1.Height;
+                Padding padding = base.Padding;
+                int top = num + padding.Top;
+                padding = base.Padding;
+                base.Height = top + padding.Bottom;
+            }
+        }
+
+        public event EventHandler _TextChanged;
     }
 }

@@ -1,4 +1,5 @@
-﻿using JMControls.Helpers;
+﻿using JMControls.Enums;
+using JMControls.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 namespace JMControls.Controls
 {
     [Description("Text")]
-    public class AltoButton : Control, IButtonControl
+    public class ButtonGradiente : Control, IButtonControl
     {
         #region Variables
         int radius;
@@ -33,7 +34,7 @@ namespace JMControls.Controls
        
         #endregion
         #region AltoButton
-        public AltoButton()
+        public ButtonGradiente()
         {
             Width = 65;
             Height = 30;
@@ -391,11 +392,5 @@ namespace JMControls.Controls
         }
         #endregion
     }
-    public enum MouseState
-    {
-        Enter,
-        Leave,
-        Down,
-        Up,
-    }
+  
 }

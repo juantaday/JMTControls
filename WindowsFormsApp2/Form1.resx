@@ -117,53 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="calendarDark" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendarDark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="calendarWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\calendarWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ellipsis" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ellipsis1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="hamburger_22_Down_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hamburger_22_Down_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="hamburger_22_white2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hamburger_22_white2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="magnifier13" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\magnifier13.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="zoom_Grin_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\zoom_Grin_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon-expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Upload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Upload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="up_256" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\up_256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="_1downarrow1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\1downarrow1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_struct_hide_collapsed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_struct_hide_collapsed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Arrow3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Arrow3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Danasha_intelligence" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Danasha_intelligence.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MiniApp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MiniApp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="buttonSolid2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACMAAAAaCAYAAAA9rOU8AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EQAACxEBf2RfkQAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGcSURBVEhL7Zcx
+        S8NAFICzugn+AXEWjRxUsaUEBMGhWCuChVYCATdBBFcN+Ae66Jypf6B/oODqoIvQzf9QcH2+l7sLL+m1
+        mpBcHTp8XO7du3sf1zTcOQDgbDfb68gtMrbMANkkB0KJnH1iC0ukrWUiHdw9vITHrVPYq/kp7u470Dzq
+        p+OdBwmP5cA96HGZLy1D2xWLjDaOMSTiVojrmDA8xzwBk0kDPC+Q8fYTiNdvCT2r3Ly4+1dcyE1kmqIP
+        k7VGLEOtnjAaoSDKTKc1aLV8GQ9eQLxhlKBnlVuEnfqFlvESGdo6zw3iXaGWTxgOT6Db7aVi4iaS8FgB
+        5sqYkqvGKEOd+vOHi1BrBXppef2szAAZ22KhDA3ahtefkUFjyElYZN6fZXTib2BuSKhnbMx5WVYy87Ai
+        gxj/NQZwilyD1y9TZuY7sgi9Bq9f9s5kSdbMotfg9UuVyYzRz2Fck/d5/ZUM7/P6RpmcVPfO2IbX553I
+        lFwlWNNXtYn42EnXBR2gw7lnCboa6brJgZzuTO9sYBnIq4rarn9wiQPnBxi9yDsZrWY/AAAAAElFTkSu
+        QmCC
+</value>
   </data>
 </root>

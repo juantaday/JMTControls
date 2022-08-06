@@ -120,6 +120,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Class\ResponseSpliter.cs" />
+    <Compile Include="Controls\ButtonSolid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Enums\MouseState.cs" />
     <Compile Include="ExpandCollapsePanel\AccordionCotrol.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -153,7 +157,7 @@
     <Compile Include="Controls\AlertPanelControl.Designer.cs">
       <DependentUpon>AlertPanelControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AltoButton.cs">
+    <Compile Include="Controls\ButtonGradiente.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\AltoNumericUpDown.cs">
@@ -175,7 +179,6 @@
     <Compile Include="Controls\CheckedListBoxSource.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Class1.cs" />
     <Compile Include="Controls\ComboBoxAutocompleteSuggestion.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -217,9 +220,6 @@
     </Compile>
     <Compile Include="Controls\RJTextBox.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\RJTextBox.designer.cs">
-      <DependentUpon>RJTextBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\TextBoxRounded.cs">
       <SubType>Component</SubType>
@@ -265,6 +265,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="App.ico" />
+    <Compile Include="Controls\ButtonSolid.Designer.cs" />
+    <None Include="Resources\MiniApp.png" />
     <None Include="Resources\Upload.png" />
     <None Include="Resources\up_256.png" />
     <None Include="Resources\icon-expand.png" />

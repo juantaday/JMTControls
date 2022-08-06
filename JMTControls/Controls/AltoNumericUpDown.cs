@@ -12,8 +12,8 @@ namespace JMControls.Controls
     #region AltoNMUpDown
     public class AltoNumericUpDown : Control
     {
-        AltoButton btnUp = new AltoButton();
-        AltoButton btnDown = new AltoButton();
+        ButtonGradiente btnUp = new ButtonGradiente();
+        ButtonGradiente btnDown = new ButtonGradiente();
         TextBox box = new TextBox();
         private decimal value;
         private Color signColor;

@@ -79,7 +79,7 @@ namespace JMControls.Implementation
         /// <summary>
         /// Gets whether or not this row can be selected and activated
         /// </summary>
-        public bool Enabled
+        public new   bool Enabled
         {
             get { return this.enabled; }
             internal set { this.enabled = value; }

@@ -183,6 +183,16 @@ namespace JMControls.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap MiniApp {
+            get {
+                object obj = ResourceManager.GetObject("MiniApp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap up_256 {
             get {
                 object obj = ResourceManager.GetObject("up_256", resourceCulture);

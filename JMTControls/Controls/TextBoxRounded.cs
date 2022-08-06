@@ -1,4 +1,5 @@
-﻿using JMControls.Helpers;
+﻿using JMControls.Enums;
+using JMControls.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -360,6 +361,19 @@ namespace JMControls.Controls
         }
 
 
+        private GraphicsPath GetFigurePath(Rectangle rect, int radius)
+        {
+            GraphicsPath graphicsPath = new GraphicsPath();
+            float single = (float)radius * 2f;
+            graphicsPath.StartFigure();
+            graphicsPath.AddArc((float)rect.X, (float)rect.Y, single, single, 180f, 90f);
+            graphicsPath.AddArc((float)rect.Right - single, (float)rect.Y, single, single, 270f, 90f);
+            graphicsPath.AddArc((float)rect.Right - single, (float)rect.Bottom - single, single, single, 0f, 90f);
+            graphicsPath.AddArc((float)rect.X, (float)rect.Bottom - single, single, single, 90f, 90f);
+            graphicsPath.CloseFigure();
+            return graphicsPath;
+        }
+
 
         protected override void OnTextChanged(EventArgs e)
         {
@@ -511,8 +525,11 @@ namespace JMControls.Controls
 
         protected override void OnResize(EventArgs e)
         {
-            Invalidate();
             base.OnResize(e);
+            if (base.DesignMode)
+            {
+                this.UpdateControlHeight();
+            }
         }
 
         public string SelectedText {
@@ -724,7 +741,7 @@ namespace JMControls.Controls
                     else if (borderRadius < 12)
                         this.Padding = new Padding(6, 4, 6, 4);
                     else
-                        this.Padding = new Padding(8, 5, 7, 5);
+                        this.Padding = new Padding(9, 5, 7, 5);
 
                     UpdateControlHeight();
                     this.Invalidate();//Redraw control
@@ -735,14 +752,19 @@ namespace JMControls.Controls
 
         private void UpdateControlHeight()
         {
-            if (textBox1.Multiline == false)
-            {
-                int txtHeight = TextRenderer.MeasureText("Text", this.Font).Height + 1;
-                textBox1.Multiline = true;
-                textBox1.MinimumSize = new Size(0, txtHeight);
-                textBox1.Multiline = false;
 
-                this.Height = textBox1.Height + this.Padding.Top + this.Padding.Bottom;
+            if (!this.textBox1.Multiline)
+            {
+                Size size = TextRenderer.MeasureText("Text", this.Font);
+                int height = size.Height + 1;
+                this.textBox1.Multiline = true;
+                this.textBox1.MinimumSize = new Size(0, height);
+                this.textBox1.Multiline = false;
+                int num = this.textBox1.Height;
+                Padding padding = base.Padding;
+                int top = num + padding.Top;
+                padding = base.Padding;
+                base.Height = top + padding.Bottom;
             }
         }
 
@@ -781,6 +803,34 @@ namespace JMControls.Controls
                 if (!isPlaceholder)
                     textBox1.UseSystemPasswordChar = value;
             }
+        }
+
+        public bool Multiline
+        {
+            get
+            {
+                return this.textBox1.Multiline;
+            }
+            set
+            {
+                this.textBox1.Multiline = value;
+            }
+        }
+
+        private void SetTextBoxRoundedRegion()
+        {
+            GraphicsPath figurePath;
+            if (!this.Multiline)
+            {
+                figurePath = this.GetFigurePath(this.textBox1.ClientRectangle, this.BorderThickness * 2);
+                this.textBox1.Region = new Region(figurePath);
+            }
+            else
+            {
+                figurePath = this.GetFigurePath(this.textBox1.ClientRectangle, this.borderRadius - this.BorderThickness);
+                this.textBox1.Region = new Region(figurePath);
+            }
+            figurePath.Dispose();
         }
 
         private void SetPlaceholder()
