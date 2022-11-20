@@ -19,7 +19,7 @@ namespace JMControls.Controls
             {
                 Cursor = Cursors.Default,
                 TabStop = false,
-                BackgroundImage = Properties.Resources.ellipsis,
+                BackgroundImage = Properties.Resources.ellipsis1,
                 BackgroundImageLayout = ImageLayout.Zoom
             };
             this.Controls.Add(_button);
@@ -63,7 +63,7 @@ namespace JMControls.Controls
             {
                 _buttonImage = value;
                 if (_buttonImage == null)
-                    _button.BackgroundImage = Properties.Resources.ellipsis;
+                    _button.BackgroundImage = Properties.Resources.ellipsis1;
                 else
                     _button.BackgroundImage = _buttonImage;
             }

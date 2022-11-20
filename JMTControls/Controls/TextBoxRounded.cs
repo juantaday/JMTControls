@@ -160,7 +160,7 @@ namespace JMControls.Controls
             {
                 _buttonImage = value;
                 if (_buttonImage == null)
-                    _button.Image = Properties.Resources.ellipsis;
+                    _button.Image = Properties.Resources.ellipsis1;
                 else
                     _button.Image = _buttonImage;
                 _button.ImageAlign = ContentAlignment.MiddleRight;

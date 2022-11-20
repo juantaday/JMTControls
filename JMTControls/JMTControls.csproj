@@ -251,21 +251,85 @@
     <Compile Include="Controls\RJDropdownMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tools\GenerateDataTable.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Models\ListItemSuggestions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TabControlGRD\CaptionColorChooser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TabControlGRD\CaptionColorChooser.Designer.cs">
+      <DependentUpon>CaptionColorChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TabControlGRD\CaptionColorChooserEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TabControlGRD\ICaptionRandomizer.cs" />
+    <Compile Include="TabControlGRD\JMTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TabControlGRD\SelectedIndexChangingEventArgs.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tools\GenerateDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Models\ListItemSuggestions.cs" />
     <Compile Include="Tools\GridTheme.cs" />
     <Compile Include="Tools\StringList.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Win32\Enum.cs" />
+    <Compile Include="Win32\User32.cs" />
     <Content Include="App.ico" />
     <Compile Include="Controls\ButtonSolid.Designer.cs" />
+    <Content Include="Resources\CaptionClose.bmp" />
+    <Content Include="Resources\delete_12x12.png" />
+    <Content Include="Resources\DownArrow.png" />
+    <Content Include="Resources\DropDown.bmp" />
+    <Content Include="Resources\InsertTabControlHS.png" />
+    <Content Include="Resources\leftArrow.bmp" />
+    <Content Include="Resources\leftArrowDown.bmp" />
+    <Content Include="Resources\leftArrowHover.bmp" />
+    <Content Include="Resources\LeftDownBlackGlass.png" />
+    <Content Include="Resources\LeftDownKRBBlue.png" />
+    <Content Include="Resources\LeftDownOfficeBlue.png" />
+    <Content Include="Resources\LeftDownOfficeOlive.png" />
+    <Content Include="Resources\LeftDownOfficeSilver.png" />
+    <Content Include="Resources\LeftHoverBlackGlass.png" />
+    <Content Include="Resources\LeftHoverKRBBlue.png" />
+    <Content Include="Resources\LeftHoverOfficeBlue.png" />
+    <Content Include="Resources\LeftHoverOfficeOlive.png" />
+    <Content Include="Resources\LeftHoverOfficeSilver.png" />
+    <Content Include="Resources\LeftNormalBlackGlass.png" />
+    <Content Include="Resources\LeftNormalKRBBlue.png" />
+    <Content Include="Resources\LeftNormalOfficeBlue.png" />
+    <Content Include="Resources\LeftNormalOfficeOlive.png" />
+    <Content Include="Resources\LeftNormalOfficeSilver.png" />
+    <Content Include="Resources\PushpinHS.png" />
+    <Content Include="Resources\RightArrow.bmp" />
+    <Content Include="Resources\RightArrowDown.bmp" />
+    <Content Include="Resources\RightArrowHover.bmp" />
+    <Content Include="Resources\RightDownBlackGlass.png" />
+    <Content Include="Resources\RightDownKRBBlue.png" />
+    <Content Include="Resources\RightDownOfficeBlue.png" />
+    <Content Include="Resources\RightDownOfficeOlive.png" />
+    <Content Include="Resources\RightDownOfficeSilver.png" />
+    <Content Include="Resources\RightHoverBlackGlass.png" />
+    <Content Include="Resources\RightHoverKRBBlue.png" />
+    <Content Include="Resources\RightHoverOfficeBlue.png" />
+    <Content Include="Resources\RightHoverOfficeOlive.png" />
+    <Content Include="Resources\RightHoverOfficeSilver.png" />
+    <Content Include="Resources\RightNormalBlackGlass.png" />
+    <Content Include="Resources\RightNormalKRBBlue.png" />
+    <Content Include="Resources\RightNormalOfficeBlue.png" />
+    <Content Include="Resources\RightNormalOfficeOlive.png" />
+    <Content Include="Resources\RightNormalOfficeSilver.png" />
+    <Content Include="Resources\TabClose.png" />
+    <Content Include="Resources\TabHover.png" />
+    <Content Include="Resources\TabPressed.png" />
+    <Content Include="Resources\UpArrow.png" />
     <None Include="Resources\MiniApp.png" />
     <None Include="Resources\Upload.png" />
     <None Include="Resources\up_256.png" />
@@ -302,8 +366,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

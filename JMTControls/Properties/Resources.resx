@@ -118,14 +118,38 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Arrow3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Arrow3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="calendarDark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\calendarDark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="calendarWhite" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\calendarWhite.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ellipsis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="CaptionClose" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CaptionClose.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Danasha_intelligence" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Danasha_intelligence.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="delete_12x12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\delete_12x12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DownArrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DownArrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DropDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DropDown.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ellipsis1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ellipsis1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Hamburger" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hamburger.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="hamburger_22_Down_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hamburger_22_Down_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -133,14 +157,143 @@
   <data name="hamburger_22_white2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\hamburger_22_white2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icon_expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon-expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_struct_hide_collapsed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icon_struct_hide_collapsed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="InsertTabControlHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InsertTabControlHS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="leftArrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\leftArrow.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="leftArrowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\leftArrowDown.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="leftArrowHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\leftArrowHover.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftDownBlackGlass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftDownBlackGlass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftDownKRBBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftDownKRBBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftDownOfficeBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftDownOfficeBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftDownOfficeOlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftDownOfficeOlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftDownOfficeSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftDownOfficeSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftHoverBlackGlass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftHoverBlackGlass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftHoverKRBBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftHoverKRBBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftHoverOfficeBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftHoverOfficeBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftHoverOfficeOlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftHoverOfficeOlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftHoverOfficeSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftHoverOfficeSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftNormalBlackGlass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftNormalBlackGlass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftNormalKRBBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftNormalKRBBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftNormalOfficeBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftNormalOfficeBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftNormalOfficeOlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftNormalOfficeOlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LeftNormalOfficeSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LeftNormalOfficeSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="magnifier13" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\magnifier13.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="zoom_Grin_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\zoom_Grin_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MiniApp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MiniApp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="icon_expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon-expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="PushpinHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PushpinHS.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightArrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightArrow.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightArrowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightArrowDown.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightArrowHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightArrowHover.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightDownBlackGlass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightDownBlackGlass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightDownKRBBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightDownKRBBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightDownOfficeBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightDownOfficeBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightDownOfficeOlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightDownOfficeOlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightDownOfficeSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightDownOfficeSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightHoverBlackGlass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightHoverBlackGlass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightHoverKRBBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightHoverKRBBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightHoverOfficeBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightHoverOfficeBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightHoverOfficeOlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightHoverOfficeOlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightHoverOfficeSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightHoverOfficeSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightNormalBlackGlass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightNormalBlackGlass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightNormalKRBBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightNormalKRBBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightNormalOfficeBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightNormalOfficeBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightNormalOfficeOlive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightNormalOfficeOlive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RightNormalOfficeSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RightNormalOfficeSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TabClose" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TabClose.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TabHover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TabHover.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TabPressed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TabPressed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UpArrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\UpArrow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Upload" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Upload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -148,22 +301,10 @@
   <data name="up_256" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\up_256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="zoom_Grin_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoom_Grin_24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="_1downarrow1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\1downarrow1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_struct_hide_collapsed" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icon_struct_hide_collapsed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Arrow3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Arrow3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Danasha_intelligence" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Danasha_intelligence.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MiniApp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MiniApp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
