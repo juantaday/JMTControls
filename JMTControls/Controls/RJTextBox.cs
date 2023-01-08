@@ -323,6 +323,7 @@ namespace JMControls.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
             Graphics graphics = e.Graphics;
             if (this.borderRadius <= 1)
             {
