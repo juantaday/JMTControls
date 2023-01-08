@@ -54,7 +54,7 @@ namespace JMControls.Componets
 
             }
 
-            public int ElipseRadius
+            public int CornerRadius
         {
                 get { return _CornerRadius; }
                 set

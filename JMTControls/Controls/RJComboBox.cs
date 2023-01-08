@@ -22,6 +22,7 @@ namespace JMControls.Controls
         private ComboBox cmbList;
         private Label lblText;
         private Button btnIcon;
+        private Button btnSRC;
 
         //Events
         public event EventHandler OnSelectedIndexChanged;//Default event
@@ -32,6 +33,7 @@ namespace JMControls.Controls
             cmbList = new ComboBox();
             lblText = new Label();
             btnIcon = new Button();
+            btnSRC = new Button();
             this.SuspendLayout();
 
             //ComboBox: Dropdown list
@@ -51,6 +53,15 @@ namespace JMControls.Controls
             btnIcon.Click += new EventHandler(Icon_Click);//Open dropdown list
             btnIcon.Paint += new PaintEventHandler(Icon_Paint);//Draw icon
 
+            //Button: search
+            btnSRC.Dock = DockStyle.Right;
+            btnSRC.FlatStyle = FlatStyle.Flat;
+            btnSRC.FlatAppearance.BorderSize = 0;
+            btnSRC.BackColor = backColor;
+            btnSRC.Size = new Size(30, 30);
+            btnSRC.Cursor = Cursors.Hand;
+  
+
             //Label: Text
             lblText.Dock = DockStyle.Fill;
             lblText.AutoSize = false;
@@ -64,8 +75,9 @@ namespace JMControls.Controls
             lblText.MouseLeave += new EventHandler(Surface_MouseLeave);
 
             //User Control
-            this.Controls.Add(lblText);//2
-            this.Controls.Add(btnIcon);//1
+            this.Controls.Add(lblText);//3
+            this.Controls.Add(btnIcon);//2
+            this.Controls.Add(btnSRC);//1
             this.Controls.Add(cmbList);//0
             this.MinimumSize = new Size(200, 30);
             this.Size = new Size(200, 30);
@@ -287,6 +299,41 @@ namespace JMControls.Controls
             get { return cmbList.ValueMember; }
             set { cmbList.ValueMember = value; }
         }
+
+        public bool VisibleButtonOption { get=>btnSRC.Visible;
+            set {
+                btnSRC.Visible=value;
+                Invalidate();
+            }
+        }
+
+        public int WidthButton
+        {
+            get => btnSRC.Width;
+
+            set
+            {
+                btnSRC.Width = value;
+                Invalidate();
+            }
+        }
+
+        public Image ButtonImage { get=>btnSRC.Image;
+            set
+            {
+                btnSRC.Image = value;
+                Invalidate();
+            }
+        }
+
+        public bool DroppedDown { get=>cmbList.DroppedDown;
+            set
+            {
+                cmbList.DroppedDown = value;
+            }
+        }
+
+        public ComboBox  GetComboBox { get=>cmbList; }
 
         //Private methods
         private void AdjustComboBoxDimensions()

@@ -8,14 +8,20 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace JMControls.Controls
 {
-    public class TextBoxRounded : Control
+    public class TextBoxRounded : UserControl
     {
-        int borderRadius = 12;
+        private  string  oldText;
+        private TypeDataEnum _typeData;
+        private bool _keyValidated;
+        private int decimalPoint;
+        int borderRadius = 8;
         private Pen pensBorder;
         private string placeholderText;
         private string baseText;
@@ -51,8 +57,10 @@ namespace JMControls.Controls
 
             state = MouseState.Leave;
             statetText = MouseState.Leave;
-
-            pensBorder = new Pen(Color.Gray);
+            _typeData = TypeDataEnum.VarChar;
+            decimalPoint= 2; 
+             
+        pensBorder = new Pen(Color.Gray);
             borderStyle = BorderStyle.FixedSingle;
             borderThickness = 1;
             borderColorIdle = Color.Teal;
@@ -66,11 +74,11 @@ namespace JMControls.Controls
                 BorderStyle = BorderStyle.None,
                  TextAlign = HorizontalAlignment.Left,
                 BackColor = fillColor,
+                Dock =DockStyle.Fill ,
                };
 
 
 
-            Controls.Add(textBox1);
 
            
 
@@ -91,7 +99,8 @@ namespace JMControls.Controls
             textBox1.Enter += Box_Enter;
             textBox1.Leave += Box_Leave;
             textBox1.MouseDown += Box_MouseDown;
-            textBox1.MouseMove += Box_MouseMove; ;
+            textBox1.MouseMove += Box_MouseMove;
+            textBox1.KeyPress += Box_KeyPress;
 
             baseText = "";
             textBox1.Text = baseText;
@@ -118,10 +127,94 @@ namespace JMControls.Controls
             _button.FlatAppearance.MouseDownBackColor = Color.FromArgb(200, 200, 200);
             _button.BackColor = Color.Transparent;
 
+            this.borderThickness = 2;
+
+            this.Controls.Add(textBox1);
             this.Controls.Add(_button);
-            this.Padding = new Padding(1, 1, 1, 1);
+
+
+
+            base.Margin = new Padding(4);
+            base.Name = "TextBoxRounded";
+            base.Padding = new Padding(10, 7, 10, 7);
+            base.Size = new Size(250, 22);
+            base.ResumeLayout(false);
+            base.PerformLayout();
+
             _button.GotFocus += _button_GotFocus; ;
             _button.BringToFront();
+        }
+
+        private void Box_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            _keyValidated = false;
+            try
+            {
+                if (Regex.Match(e.KeyChar.ToString(), @"^[\b]").Success)
+                    return;
+
+                bool regis=false;
+
+                switch (_typeData)
+                {
+                    case TypeDataEnum.Decimal:
+
+                         if (e.KeyChar.ToString ().Equals(".")  &&  this.textBox1.Text.Contains("."))
+                        {
+                            e.Handled = true;
+                            return;
+                        }
+                        if (e.KeyChar.ToString().Equals("."))
+                        {
+                            return;
+                        }
+                        else 
+                        {
+                            // regis = Regex.Match(e.KeyChar.ToString(), @"^[0-9]+([.][0-9]{1,2})?$").Success;
+                            regis = Regex.Match(e.KeyChar.ToString(), @"^[0-9]?$").Success;
+                            if (!regis)
+                            {
+                                e.Handled = true;
+                                return;
+                            }
+                            if (decimalPoint > 0 && this.textBox1.Text.Contains(".")) 
+                            {
+                                if (textBox1.SelectionLength > 0)
+                                    return;
+
+                                var positioEdit = textBox1.SelectionStart;
+
+                                var indexOf = textBox1.Text.IndexOf(".") + 1;
+                                var lentDecimal = textBox1.Text.Substring(indexOf, (textBox1.Text.Length - indexOf)).Length;
+
+                                if ((lentDecimal >= decimalPoint) && (positioEdit> indexOf))
+                                {
+                                    e.Handled = true;
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        _keyValidated = true;
+                        break;
+                    case TypeDataEnum.Numeric:
+                         regis = Regex.Match(e.KeyChar.ToString(), @"^[0-9]+([.][0-9]{1,2})?$").Success;
+                        if (!regis)
+                        {
+                            e.Handled = true;
+                            return;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
         }
 
         private void _button_GotFocus(object sender, EventArgs e)
@@ -410,7 +503,7 @@ namespace JMControls.Controls
 
 
             if (textBox1.Height >= Height - (int)(BorderThickness * 2.8))
-                Height = textBox1.Height + (int)(BorderThickness * 2.8);
+                this.Height = 4+ textBox1.Height + (int)(BorderThickness * 2.8);
 
             int borderDelimi =  9 + (int)(BorderThickness *1);
             if (BorderThickness == 0) borderDelimi = 10;
@@ -531,6 +624,12 @@ namespace JMControls.Controls
                 this.UpdateControlHeight();
             }
         }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            this.UpdateControlHeight();
+        }
+
 
         public string SelectedText {
             get
@@ -749,14 +848,13 @@ namespace JMControls.Controls
             }
         }
 
-
         private void UpdateControlHeight()
         {
 
             if (!this.textBox1.Multiline)
             {
                 Size size = TextRenderer.MeasureText("Text", this.Font);
-                int height = size.Height + 1;
+                int height = size.Height ;
                 this.textBox1.Multiline = true;
                 this.textBox1.MinimumSize = new Size(0, height);
                 this.textBox1.Multiline = false;
@@ -901,6 +999,35 @@ namespace JMControls.Controls
                 this.textBox1.ForeColor = value;
               }
         }
+
+        public int SelectionLength { get=>textBox1.SelectionLength; set=> textBox1.SelectionLength=value ; }
+        public TypeDataEnum TypeData { 
+            get=> _typeData;
+            set {
+                _typeData = value;
+                this.textBox1.Text = string.Empty;
+                Invalidate();
+            }
+        }
+
+        public bool Autosize { get; set; }
+        public CharacterCasing CharacterCasing { get=>textBox1.CharacterCasing; 
+            set
+            {
+                textBox1.CharacterCasing = value;
+                this.textBox1.Text = string.Empty;
+                Invalidate();
+            }
+        }
+
+        public int DecimalPosition { get=>decimalPoint; set
+            {
+                decimalPoint = value;
+                this.textBox1.Text = string.Empty;
+                Invalidate();
+            }
+        }
+
 
         #endregion
 

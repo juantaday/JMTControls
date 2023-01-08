@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JMControls.Enums;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -34,6 +35,7 @@ namespace JMControls.Controls
         private IContainer components = null;
 
         private TextBox textBox1;
+        private TypeDataEnum _typeData;
 
         [Category("RJ Code Advance")]
         public override Color BackColor
@@ -94,7 +96,7 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code Advance")]
-        public int BorderSize
+        public int BorderThickness
         {
             get
             {
@@ -173,7 +175,7 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code Advance")]
-        public Color PlaceholderColor
+        public Color PlaceHolderColor
         {
             get
             {
@@ -190,7 +192,7 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code Advance")]
-        public string PlaceholderText
+        public string PlaceHolderText
         {
             get
             {
@@ -230,6 +232,36 @@ namespace JMControls.Controls
                 this.underlinedStyle = value;
                 base.Invalidate();
             }
+        }
+
+        public CharacterCasing CharacterCasing { get=>textBox1.CharacterCasing;
+            set {
+
+                textBox1.CharacterCasing =value;
+                base.Invalidate();
+            }
+        }
+
+        public int MaxLength { get=>textBox1.MaxLength; set=> textBox1.MaxLength= value;}
+
+        public bool ReadOnly { get=>textBox1.ReadOnly; set=>textBox1.ReadOnly = value ;}
+        public HorizontalAlignment TextAlign { get=>textBox1.TextAlign;
+
+            set {
+                textBox1.TextAlign = value;
+                base.Invalidate();
+            } 
+        }
+
+        public TypeDataEnum TypeData { get=>_typeData;
+
+            set
+            {
+                _typeData = value;
+                textBox1.Text = string.Empty;
+                base.Invalidate();
+            }
+               
         }
 
         public RJTextBox()

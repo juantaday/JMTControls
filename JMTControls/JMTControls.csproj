@@ -120,10 +120,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Class\ResponseSpliter.cs" />
+    <Compile Include="Controls\AltoButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ButtonSolid.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Enums\MouseState.cs" />
+    <Compile Include="Enums\TypeDataEnum.cs" />
     <Compile Include="ExpandCollapsePanel\AccordionCotrol.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -222,7 +226,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\TextBoxRounded.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ToggleSwitch.cs">
       <SubType>Component</SubType>
