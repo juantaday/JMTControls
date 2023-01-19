@@ -9,9 +9,11 @@ using System.Windows.Forms;
 
 namespace JMControls.Controls
 {
-    [DefaultEvent("_TextChanged")]
+    [DefaultEvent("TextChanged")]
     public class RJTextBox : UserControl
     {
+        private string baseText;
+
         private Color borderColor = Color.MediumSlateBlue;
 
         private Color borderFocusColor = Color.HotPink;
@@ -202,23 +204,29 @@ namespace JMControls.Controls
             {
                 this.placeholderText = value;
                 this.textBox1.Text = "";
+                baseText = this.textBox1.Text;
                 this.SetPlaceholder();
             }
         }
 
-        [Category("RJ Code Advance")]
-        public string Texts
+
+        [Browsable(true)]
+        public new string Text { get => this.Texts; set => this.Texts = value; }
+
+        private string Texts
         {
             get
             {
-                return (!this.isPlaceholder ? this.textBox1.Text : "");
+                return baseText;
             }
             set
             {
-                this.textBox1.Text = value;
-                this.SetPlaceholder();
+                textBox1.Text = value;
+                baseText = value;
+                SetPlaceholder();
             }
         }
+
 
         [Category("RJ Code Advance")]
         public bool UnderlinedStyle
@@ -301,6 +309,12 @@ namespace JMControls.Controls
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new Size(230, 15);
             this.textBox1.TabIndex = 0;
+            this.textBox1.TextChanged += TextBox1_TextChanged;
+
+            baseText = string.Empty;
+            textBox1.Text = baseText;
+            this.Text = baseText;
+
             base.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = SystemColors.Window;
             base.Controls.Add(this.textBox1);
@@ -313,6 +327,7 @@ namespace JMControls.Controls
             base.ResumeLayout(false);
             base.PerformLayout();
         }
+
 
         protected override void OnLoad(EventArgs e)
         {
@@ -398,15 +413,13 @@ namespace JMControls.Controls
 
         private void RemovePlaceholder()
         {
-            if ((!this.isPlaceholder ? false : this.placeholderText != ""))
+            if (isPlaceholder && placeholderText != "" && this.baseText.Equals(placeholderText))
             {
-                this.isPlaceholder = false;
-                this.textBox1.Text = "";
-                this.textBox1.ForeColor = this.ForeColor;
-                if (this.isPasswordChar)
-                {
-                    this.textBox1.UseSystemPasswordChar = true;
-                }
+                isPlaceholder = false;
+                textBox1.Text = "";
+                textBox1.ForeColor = this.ForeColor;
+                if (isPasswordChar)
+                    textBox1.UseSystemPasswordChar = true;
             }
         }
 
@@ -474,12 +487,14 @@ namespace JMControls.Controls
             this.OnMouseLeave(e);
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void TextBox1_TextChanged(object sender, EventArgs e)
         {
-            if (this._TextChanged != null)
+            baseText = textBox1.Text;
+            if (this.TextChanged != null)
             {
-                this._TextChanged(sender, e);
+                this.TextChanged(sender, e);
             }
+           
         }
 
         private void UpdateControlHeight()
@@ -499,6 +514,6 @@ namespace JMControls.Controls
             }
         }
 
-        public event EventHandler _TextChanged;
+        public new  event EventHandler TextChanged;
     }
 }

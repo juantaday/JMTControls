@@ -105,7 +105,7 @@ namespace JMControls.Controls
             _button.FlatAppearance.MouseDownBackColor = Color.FromArgb(200, 200, 200);
             _button.BackColor = Color.Transparent;
 
-            baseText = string.Empty ;
+            baseText = string.Empty;
             textBox1.Text = baseText;
 
             this.Text = baseText;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -12,13 +13,18 @@ namespace JMControls.Controls
     #region AltoNMUpDown
     public class AltoNumericUpDown : Control
     {
-        ButtonGradiente btnUp = new ButtonGradiente();
-        ButtonGradiente btnDown = new ButtonGradiente();
-        TextBox box = new TextBox();
+        AltoButton btnUp = new AltoButton();
+        AltoButton btnDown = new AltoButton();
+        TextBox textbox = new TextBox();
+        private bool isChanging;
         private decimal value;
+        private decimal _maximum;
+        private decimal _minimum;
         private Color signColor;
         bool dec;
         System.Windows.Forms.Timer timer;
+        private int _decimalPlace = 3;
+
         #region Constructor
 
         public AltoNumericUpDown()
@@ -29,9 +35,12 @@ namespace JMControls.Controls
             Width = 60;
             Height = 20;
             signColor = Color.White;
-            decimal.TryParse("0.00000", out value);
+            _minimum = 0;
+            _maximum = 999999;
 
-            box.Text = value.ToString();
+            decimal.TryParse("0.000", out value);
+
+            textbox.Text = value.ToString();
             dec = false;
             btnDown.Active1 = btnDown.Active2 = btnUp.Active1 = btnUp.Active2 = Color.Gray;
             btnDown.Inactive1 = btnDown.Inactive2 = btnUp.Inactive1 = btnUp.Inactive2 = Color.LightSlateGray;
@@ -48,19 +57,32 @@ namespace JMControls.Controls
             btnDown.MouseDown += btnDown_MouseDown;
             btnDown.MouseUp += btnDown_MouseUp;
             btnDown.Click += btnDown_Click;
-            box.Parent = this;
-            box.KeyDown += box_KeyDown;
-            box.Location = new Point(3, 3);
+            textbox.Parent = this;
+            textbox.KeyDown += box_KeyDown;
+            textbox.Location = new Point(3, 3);
             btnDown.Top = 0;
-            box.BorderStyle = BorderStyle.None;
+            textbox.BorderStyle = BorderStyle.None;
             Font = new Font("Comic Sans MS", 12);
-            box.KeyPress += box_KeyPress;
+            textbox.KeyPress += box_KeyPress;
+            textbox.TextChanged += Box_TextChanged;
             this.Invalidate();
             timer = new System.Windows.Forms.Timer()
             {
                 Interval = 400
             };
             timer.Tick += timer_Tick;
+        }
+
+        private void Box_TextChanged(object sender, EventArgs e)
+        {
+            if (isChanging) return;
+
+            if (textbox.Text.Length > 0 && textbox.Text.Substring(textbox.Text.Length - 1, 1).Equals("."))
+                return;
+
+            decimal currentValue = Convert.ToDecimal(textbox.Text == "" ? "0" : textbox.Text);
+            if (this.Value != currentValue)
+                this.value = currentValue;
         }
 
         void box_KeyDown(object sender, KeyEventArgs e)
@@ -76,8 +98,34 @@ namespace JMControls.Controls
 
         void timer_Tick(object sender, EventArgs e)
         {
-            value = dec ? value - 1 : value + 1;
-            box.Text = value.ToString();
+            if (dec)
+            {
+                if (value <= this.Minimum)
+                {
+                    timer.Stop();
+                    return;
+                }
+                else
+                {
+                    value = value - 1;
+                    this.textbox.Text = Math.Round(value, _decimalPlace).ToString();
+                }
+
+            }
+            else
+            {
+                if (value >= this.Maximum)
+                {
+                    timer.Stop();
+                    return;
+                }
+                else
+                {
+                    value = value + 1;
+                    this.textbox.Text = Math.Round(value, _decimalPlace).ToString();
+                }
+            }
+
             if (timer.Interval >= 50)
                 timer.Interval /= 2;
 
@@ -94,7 +142,7 @@ namespace JMControls.Controls
         {
             btnDown.Focus();
             dec = true;
-            value = decimal.Parse(box.Text);
+            value = decimal.Parse(textbox.Text);
             timer.Start();
         }
 
@@ -109,7 +157,7 @@ namespace JMControls.Controls
         {
             btnUp.Focus();
             dec = false;
-            value = decimal.Parse(box.Text);
+            value = decimal.Parse(textbox.Text);
             timer.Start();
         }
         #endregion
@@ -117,21 +165,30 @@ namespace JMControls.Controls
 
         void btnDown_Click(object sender, EventArgs e)
         {
-            value--;
-            box.Text = value.ToString();
+
+            if (value > _minimum)
+            {
+                value--;
+                textbox.Text = value.ToString();
+            }
+
         }
 
         void btnUp_Click(object sender, EventArgs e)
         {
-            value++;
-            box.Text = value.ToString();
+            if (value < _maximum)
+            {
+                value++;
+                textbox.Text = value.ToString();
+            }
+
         }
 
         void box_KeyPress(object sender, KeyPressEventArgs e)
         {
-
-            if (box.SelectedText.Length >= box.Text.Length)
-                box.Text = "";
+            isChanging = true;
+            if (textbox.SelectedText.Length >= textbox.Text.Length)
+                textbox.Text = "";
             if (!char.IsControl(e.KeyChar) && (!char.IsDigit(e.KeyChar))
         && (e.KeyChar != '.') && (e.KeyChar != '-'))
                 e.Handled = true;
@@ -143,7 +200,42 @@ namespace JMControls.Controls
             // only allow minus sign at the beginning
             if (e.KeyChar == '-' && (sender as TextBox).Text.Length > 0)
                 e.Handled = true;
+
+            var exist = (sender as TextBox).Text.IndexOf('.');
+            if (e.KeyChar != '\b' && exist != -1)
+            {
+                string decimalReal = this.textbox.Text.Substring(exist + 1, this.textbox.Text.Length - (exist + 1));
+                if (decimalReal.Length >= this._decimalPlace)
+                    e.Handled = true;
+            }
+
+
+            isChanging = false;
         }
+
+
+        [Category("Action"), Description("Se genera cuando cambia el texto..")]
+        public new event EventHandler TextChanged
+        {
+            add { textbox.TextChanged += value; }
+            remove { textbox.TextChanged -= value; }
+        }
+
+
+        [Category("Action"), Description("Se genera cuado preciona y sualta una tecla")]
+        public new event KeyPressEventHandler KeyPress
+        {
+            add { textbox.KeyPress += value; }
+            remove { textbox.KeyPress -= value; }
+        }
+
+        public new void Focus()
+        {
+            this.textbox.Focus();
+        }
+
+
+
         protected override void OnResize(EventArgs e)
         {
 
@@ -156,8 +248,8 @@ namespace JMControls.Controls
         {
             if (Height > 0)
             {
-                box.Font = new System.Drawing.Font("Arial", Height * 0.5f);
-                box.Location = new Point(3, Height / 2 - box.Height / 2);
+                textbox.Font = new System.Drawing.Font("Arial", Height * 0.5f);
+                textbox.Location = new Point(3, Height / 2 - textbox.Height / 2);
             }
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             float w = btnUp.Width / 2 - 1;
@@ -192,7 +284,7 @@ namespace JMControls.Controls
             btnUp.Height = btnDown.Height = Height - 1;
             e.Graphics.FillRectangle(Brushes.White, 0, 0, Width, Height);
             e.Graphics.DrawRectangle(Pens.Gray, 0, 0, Width - 1, Height - 1);
-            box.Width = this.Width - 2 * btnDown.Width - 4;
+            textbox.Width = this.Width - 2 * btnDown.Width - 4;
             using (Pen pen = new Pen(Color.Black, 2))
                 base.OnPaint(e);
         }
@@ -200,7 +292,7 @@ namespace JMControls.Controls
 
         protected override void OnFontChanged(EventArgs e)
         {
-            box.Font = Font;
+            textbox.Font = Font;
             Height = Font.Height * 2;
             base.OnFontChanged(e);
         }
@@ -219,12 +311,99 @@ namespace JMControls.Controls
             get { return value; }
             set
             {
-                this.value = value;
-                box.Text = value.ToString();
-                Invalidate();
+                if (this.value != value)
+                {
+                    this.value = value;
+                    textbox.Text = value.ToString();
+                    Invalidate();
+                }
+
             }
         }
 
+        public int DecimalPlace
+        {
+            get => _decimalPlace;
+            set
+            {
+                if (_decimalPlace != value)
+                {
+                    _decimalPlace = value;
+                    textbox.Text = Math.Round(this.Value, _decimalPlace).ToString();
+                    Invalidate();
+                }
+
+            }
+        }
+
+        public decimal Minimum
+        {
+            get => _minimum;
+            set
+            {
+                if (_minimum != value)
+                {
+                    _minimum = value;
+                    if (this.Value < _minimum)
+                        this.Value = _minimum;
+
+                    textbox.Text = Math.Round(this.Value, _decimalPlace).ToString();
+                    Invalidate();
+                }
+
+            }
+        }
+
+        public decimal Maximum
+        {
+            get => _maximum;
+            set
+            {
+                if (_maximum != value)
+                {
+                    _maximum = value;
+                    if (this.Value > _maximum)
+                        this.Value = _maximum;
+
+                    textbox.Text = Math.Round(this.Value, _decimalPlace).ToString();
+                    Invalidate();
+                }
+
+            }
+        }
+
+        public Color ButtonBackColor
+        {
+            get => btnUp.Active1;
+            set
+            {
+                if (btnUp.Active1 != value)
+                {
+                    btnUp.Active1 = value;
+                    btnDown.Active1 = value;
+                    Invalidate();
+                }
+
+            }
+        }
+
+
+        public HorizontalAlignment TextAlign
+        {
+            get => textbox.TextAlign;
+            set
+            {
+                if (textbox.TextAlign != value)
+                {
+                    textbox.TextAlign = value;
+                    Invalidate();
+                }
+
+            }
+        }
+
+
     }
+
     #endregion
 }

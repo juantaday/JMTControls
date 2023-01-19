@@ -341,7 +341,7 @@ namespace JMControls.Controls
             cmbList.Width = lblText.Width;
             cmbList.Location = new Point()
             {
-                X = this.Width - this.Padding.Right - cmbList.Width,
+                X = 3,
                 Y = lblText.Bottom - cmbList.Height
             };
         }
@@ -390,7 +390,7 @@ namespace JMControls.Controls
             this.OnClick(e);
             //Select combo box
             cmbList.Select();
-            if (cmbList.DropDownStyle == ComboBoxStyle.DropDownList)
+            //if (cmbList.DropDownStyle ==( ComboBoxStyle.DropDownList | ComboBoxStyle.DropDown))
                 cmbList.DroppedDown = true;//Open dropdown list
         }
         private void ComboBox_TextChanged(object sender, EventArgs e)
