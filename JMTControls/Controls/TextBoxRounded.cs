@@ -138,7 +138,7 @@ namespace JMControls.Controls
                         break;
                     case TypeDataEnum.Decimal:
 
-                        if (e.KeyChar.ToString().Equals(".") && oldText.Contains("."))
+                        if (e.KeyChar.ToString().Equals(".") && textBox1.Text.Contains("."))
                         {
                             e.Handled = true;
                             return;
@@ -882,7 +882,7 @@ namespace JMControls.Controls
 
         private void RemovePlaceholder()
         {
-            if (isPlaceholder && placeholderText != "" && this.baseText.Equals(placeholderText))
+            if (isPlaceholder && placeholderText != "" && this.baseText.ToUpper().Equals(placeholderText.ToUpper()))
             {
                 isPlaceholder = false;
                 textBox1.Text = "";
