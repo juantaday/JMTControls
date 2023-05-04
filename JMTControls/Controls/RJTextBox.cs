@@ -272,6 +272,49 @@ namespace JMControls.Controls
                
         }
 
+        public void SelectecText(int star, int length)
+        {
+            try
+            {
+                this.textBox1.Select(star, length);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        public new void Focus()
+        {
+            this.textBox1.Focus();
+        }
+
+        public int TextLength { get => this.textBox1.TextLength; }
+
+        [Category("Action"), Description("Se genera cuando cambia el texto..")]
+        public new event EventHandler TextChanged
+        {
+            add { textBox1.TextChanged += value; }
+            remove { textBox1.TextChanged -= value; }
+        }
+
+        public int SelectionLength
+        {
+            get => textBox1.SelectionLength;
+            set
+            {
+                textBox1.SelectionLength = value;
+                textBox1.Text = string.Empty;
+                Invalidate();
+            }
+
+        }
+
+        public void SelectAll()
+        {
+            textBox1.SelectAll();
+        }
+
         public RJTextBox()
         {
             this.InitializeComponent();
@@ -490,11 +533,22 @@ namespace JMControls.Controls
         private void TextBox1_TextChanged(object sender, EventArgs e)
         {
             baseText = textBox1.Text;
-            if (this.TextChanged != null)
+
+            if (string.IsNullOrEmpty(textBox1.Text) ||
+                isPlaceholder)
             {
-                this.TextChanged(sender, e);
+                textBox1.ForeColor = this.placeholderColor;
+
             }
-           
+            else
+            {
+                textBox1.ForeColor = this.ForeColor;
+            }
+
+            baseText = textBox1.Text;
+
+            base.OnTextChanged(e);
+
         }
 
         private void UpdateControlHeight()
@@ -514,6 +568,6 @@ namespace JMControls.Controls
             }
         }
 
-        public new  event EventHandler TextChanged;
+      
     }
 }

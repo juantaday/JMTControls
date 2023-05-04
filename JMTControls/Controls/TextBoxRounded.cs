@@ -382,6 +382,7 @@ namespace JMControls.Controls
             this.textBox1.Focus();
         }
 
+        public int TextLength { get => this.textBox1.TextLength; }
 
 
         void box_KeyDown(object sender, KeyEventArgs e)

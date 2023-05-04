@@ -148,7 +148,7 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code - Appearance")]
-        public int BorderSize
+        public int BorderThickness
         {
             get { return borderSize; }
             set
@@ -171,7 +171,7 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code - Appearance")]
-        public override Font Font
+        public new  Font Font
         {
             get { return base.Font; }
             set
@@ -199,6 +199,16 @@ namespace JMControls.Controls
                     cmbList.DropDownStyle = value;
             }
         }
+
+
+        [Category("Action")]
+        public event EventHandler ButtonOptionClick
+        {
+            add { btnSRC.Click += value; }
+            remove { btnSRC.Click -= value; }
+        }
+
+
         //Properties
         //-> Data
         [Category("RJ Code - Data")]

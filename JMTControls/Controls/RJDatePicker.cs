@@ -55,7 +55,7 @@ namespace JMControls.Controls
             }
         }
 
-        public int BorderSize
+        public int BorderThickness
         {
             get { return borderSize; }
             set

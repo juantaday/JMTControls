@@ -70,8 +70,8 @@ namespace JMControls.Controls
 		}
 
 		[Category("RJ Code Advance")]
-		public int BorderSize
-		{
+		public int BorderThickness
+        {
 			get
 			{
 				return this.borderSize;
