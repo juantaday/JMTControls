@@ -40,6 +40,13 @@ namespace JMControls.Controls
         private TypeDataEnum _typeData;
 
         [Category("RJ Code Advance")]
+        public CharacterCasing CharacterCasin
+        {
+            get { return textBox1.CharacterCasing; }
+            set { textBox1.CharacterCasing = value; }
+        }
+
+        [Category("RJ Code Advance")]
         public override Color BackColor
         {
             get
@@ -211,9 +218,7 @@ namespace JMControls.Controls
 
 
         [Browsable(true)]
-        public new string Text { get => this.Texts; set => this.Texts = value; }
-
-        private string Texts
+        private  new string Text
         {
             get
             {

@@ -7,94 +7,41 @@ using System;
 
 namespace JMControls.Controls
 {
-    [DefaultEvent("OnSelectedIndexChanged")]
+    [DefaultEvent("SelectedIndexChanged")]
+
     public class RJComboBox : UserControl
     {
-        //Fields
         private Color backColor = Color.WhiteSmoke;
+
         private Color iconColor = Color.MediumSlateBlue;
+
         private Color listBackColor = Color.FromArgb(230, 228, 245);
+
         private Color listTextColor = Color.DimGray;
+
         private Color borderColor = Color.MediumSlateBlue;
+
         private int borderSize = 1;
 
-        //Items
         private ComboBox cmbList;
+
         private Label lblText;
+
         private Button btnIcon;
+
         private Button btnSRC;
 
-        //Events
-        public event EventHandler OnSelectedIndexChanged;//Default event
+        public event EventHandler SelectedIndexChanged;
+        public event DrawItemEventHandler DrawItem;
 
-        //Constructor
-        public RJComboBox()
-        {
-            cmbList = new ComboBox();
-            lblText = new Label();
-            btnIcon = new Button();
-            btnSRC = new Button();
-            this.SuspendLayout();
 
-            //ComboBox: Dropdown list
-            cmbList.BackColor = listBackColor;
-            cmbList.Font = new Font(this.Font.Name, 10F);
-            cmbList.ForeColor = listTextColor;
-            cmbList.SelectedIndexChanged += new EventHandler(ComboBox_SelectedIndexChanged);//Default event
-            cmbList.TextChanged += new EventHandler(ComboBox_TextChanged);//Refresh text
-
-            //Button: Icon
-            btnIcon.Dock = DockStyle.Right;
-            btnIcon.FlatStyle = FlatStyle.Flat;
-            btnIcon.FlatAppearance.BorderSize = 0;
-            btnIcon.BackColor = backColor;
-            btnIcon.Size = new Size(30, 30);
-            btnIcon.Cursor = Cursors.Hand;
-            btnIcon.Click += new EventHandler(Icon_Click);//Open dropdown list
-            btnIcon.Paint += new PaintEventHandler(Icon_Paint);//Draw icon
-
-            //Button: search
-            btnSRC.Dock = DockStyle.Right;
-            btnSRC.FlatStyle = FlatStyle.Flat;
-            btnSRC.FlatAppearance.BorderSize = 0;
-            btnSRC.BackColor = backColor;
-            btnSRC.Size = new Size(30, 30);
-            btnSRC.Cursor = Cursors.Hand;
-  
-
-            //Label: Text
-            lblText.Dock = DockStyle.Fill;
-            lblText.AutoSize = false;
-            lblText.BackColor = backColor;
-            lblText.TextAlign = ContentAlignment.MiddleLeft;
-            lblText.Padding = new Padding(8, 0, 0, 0);
-            lblText.Font = new Font(this.Font.Name, 10F);
-            //->Attach label events to user control event
-            lblText.Click += new EventHandler(Surface_Click);//Select combo box
-            lblText.MouseEnter += new EventHandler(Surface_MouseEnter);
-            lblText.MouseLeave += new EventHandler(Surface_MouseLeave);
-
-            //User Control
-            this.Controls.Add(lblText);//3
-            this.Controls.Add(btnIcon);//2
-            this.Controls.Add(btnSRC);//1
-            this.Controls.Add(cmbList);//0
-            this.MinimumSize = new Size(200, 30);
-            this.Size = new Size(200, 30);
-            this.ForeColor = Color.DimGray;
-            this.Padding = new Padding(borderSize);//Border Size
-            this.Font = new Font(this.Font.Name, 10F);
-            base.BackColor = borderColor; //Border Color
-            this.ResumeLayout();
-            AdjustComboBoxDimensions();
-        }
-
-        //Properties
-        //-> Appearance
         [Category("RJ Code - Appearance")]
         public new Color BackColor
         {
-            get { return backColor; }
+            get
+            {
+                return backColor;
+            }
             set
             {
                 backColor = value;
@@ -106,18 +53,24 @@ namespace JMControls.Controls
         [Category("RJ Code - Appearance")]
         public Color IconColor
         {
-            get { return iconColor; }
+            get
+            {
+                return iconColor;
+            }
             set
             {
                 iconColor = value;
-                btnIcon.Invalidate();//Redraw icon
+                btnIcon.Invalidate();
             }
         }
 
         [Category("RJ Code - Appearance")]
         public Color ListBackColor
         {
-            get { return listBackColor; }
+            get
+            {
+                return listBackColor;
+            }
             set
             {
                 listBackColor = value;
@@ -128,7 +81,10 @@ namespace JMControls.Controls
         [Category("RJ Code - Appearance")]
         public Color ListTextColor
         {
-            get { return listTextColor; }
+            get
+            {
+                return listTextColor;
+            }
             set
             {
                 listTextColor = value;
@@ -139,22 +95,28 @@ namespace JMControls.Controls
         [Category("RJ Code - Appearance")]
         public Color BorderColor
         {
-            get { return borderColor; }
+            get
+            {
+                return borderColor;
+            }
             set
             {
                 borderColor = value;
-                base.BackColor = borderColor; //Border Color
+                base.BackColor = borderColor;
             }
         }
 
         [Category("RJ Code - Appearance")]
         public int BorderThickness
         {
-            get { return borderSize; }
+            get
+            {
+                return borderSize;
+            }
             set
             {
                 borderSize = value;
-                this.Padding = new Padding(borderSize);//Border Size
+                base.Padding = new Padding(borderSize);
                 AdjustComboBoxDimensions();
             }
         }
@@ -162,7 +124,10 @@ namespace JMControls.Controls
         [Category("RJ Code - Appearance")]
         public override Color ForeColor
         {
-            get { return base.ForeColor; }
+            get
+            {
+                return base.ForeColor;
+            }
             set
             {
                 base.ForeColor = value;
@@ -171,63 +136,69 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code - Appearance")]
-        public new  Font Font
+        public new Font Font
         {
-            get { return base.Font; }
+            get
+            {
+                return base.Font;
+            }
             set
             {
                 base.Font = value;
                 lblText.Font = value;
-                cmbList.Font = value;//Optional
+                cmbList.Font = value;
             }
         }
 
         [Category("RJ Code - Appearance")]
         public string Texts
         {
-            get { return lblText.Text; }
-            set { lblText.Text = value; }
+            get
+            {
+                return lblText.Text;
+            }
+            set
+            {
+                lblText.Text = value;
+            }
         }
 
         [Category("RJ Code - Appearance")]
         public ComboBoxStyle DropDownStyle
         {
-            get { return cmbList.DropDownStyle; }
+            get
+            {
+                return cmbList.DropDownStyle;
+            }
             set
             {
-                if (cmbList.DropDownStyle != ComboBoxStyle.Simple)
+                if (cmbList.DropDownStyle != 0)
+                {
                     cmbList.DropDownStyle = value;
+                }
             }
         }
 
-
-        [Category("Action")]
-        public event EventHandler ButtonOptionClick
-        {
-            add { btnSRC.Click += value; }
-            remove { btnSRC.Click -= value; }
-        }
-
-
-        //Properties
-        //-> Data
         [Category("RJ Code - Data")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         [Localizable(true)]
         [MergableProperty(false)]
-        public ComboBox.ObjectCollection Items
-        {
-            get { return cmbList.Items; }
-        }
+        public ComboBox.ObjectCollection Items => cmbList.Items;
 
         [Category("RJ Code - Data")]
         [AttributeProvider(typeof(IListSource))]
         [DefaultValue(null)]
         public object DataSource
         {
-            get { return cmbList.DataSource; }
-            set { cmbList.DataSource = value; }
+            get
+            {
+                return cmbList.DataSource;
+            }
+            set
+            {
+                cmbList.DataSource = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -238,8 +209,14 @@ namespace JMControls.Controls
         [Localizable(true)]
         public AutoCompleteStringCollection AutoCompleteCustomSource
         {
-            get { return cmbList.AutoCompleteCustomSource; }
-            set { cmbList.AutoCompleteCustomSource = value; }
+            get
+            {
+                return cmbList.AutoCompleteCustomSource;
+            }
+            set
+            {
+                cmbList.AutoCompleteCustomSource = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -248,8 +225,14 @@ namespace JMControls.Controls
         [EditorBrowsable(EditorBrowsableState.Always)]
         public AutoCompleteSource AutoCompleteSource
         {
-            get { return cmbList.AutoCompleteSource; }
-            set { cmbList.AutoCompleteSource = value; }
+            get
+            {
+                return cmbList.AutoCompleteSource;
+            }
+            set
+            {
+                cmbList.AutoCompleteSource = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -258,8 +241,14 @@ namespace JMControls.Controls
         [EditorBrowsable(EditorBrowsableState.Always)]
         public AutoCompleteMode AutoCompleteMode
         {
-            get { return cmbList.AutoCompleteMode; }
-            set { cmbList.AutoCompleteMode = value; }
+            get
+            {
+                return cmbList.AutoCompleteMode;
+            }
+            set
+            {
+                cmbList.AutoCompleteMode = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -268,8 +257,14 @@ namespace JMControls.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object SelectedItem
         {
-            get { return cmbList.SelectedItem; }
-            set { cmbList.SelectedItem = value; }
+            get
+            {
+                return cmbList.SelectedItem;
+            }
+            set
+            {
+                cmbList.SelectedItem = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -278,8 +273,14 @@ namespace JMControls.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public object SelectedValue
         {
-            get { return cmbList.SelectedValue; }
-            set { cmbList.SelectedValue = value; }
+            get
+            {
+                return cmbList.SelectedValue;
+            }
+            set
+            {
+                cmbList.SelectedValue = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -287,8 +288,14 @@ namespace JMControls.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedIndex
         {
-            get { return cmbList.SelectedIndex; }
-            set { cmbList.SelectedIndex = value; }
+            get
+            {
+                return cmbList.SelectedIndex;
+            }
+            set
+            {
+                cmbList.SelectedIndex = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -297,8 +304,14 @@ namespace JMControls.Controls
         [TypeConverter("System.Windows.Forms.Design.DataMemberFieldConverter, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
         public string DisplayMember
         {
-            get { return cmbList.DisplayMember; }
-            set { cmbList.DisplayMember = value; }
+            get
+            {
+                return cmbList.DisplayMember;
+            }
+            set
+            {
+                cmbList.DisplayMember = value;
+            }
         }
 
         [Category("RJ Code - Data")]
@@ -306,21 +319,35 @@ namespace JMControls.Controls
         [Editor("System.Windows.Forms.Design.DataMemberFieldEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         public string ValueMember
         {
-            get { return cmbList.ValueMember; }
-            set { cmbList.ValueMember = value; }
+            get
+            {
+                return cmbList.ValueMember;
+            }
+            set
+            {
+                cmbList.ValueMember = value;
+            }
         }
 
-        public bool VisibleButtonOption { get=>btnSRC.Visible;
-            set {
-                btnSRC.Visible=value;
+        public bool VisibleButtonOption
+        {
+            get
+            {
+                return btnSRC.Visible;
+            }
+            set
+            {
+                btnSRC.Visible = value;
                 Invalidate();
             }
         }
 
         public int WidthButton
         {
-            get => btnSRC.Width;
-
+            get
+            {
+                return btnSRC.Width;
+            }
             set
             {
                 btnSRC.Width = value;
@@ -328,7 +355,12 @@ namespace JMControls.Controls
             }
         }
 
-        public Image ButtonImage { get=>btnSRC.Image;
+        public Image ButtonImage
+        {
+            get
+            {
+                return btnSRC.Image;
+            }
             set
             {
                 btnSRC.Image = value;
@@ -336,38 +368,128 @@ namespace JMControls.Controls
             }
         }
 
-        public bool DroppedDown { get=>cmbList.DroppedDown;
+        public bool DroppedDown
+        {
+            get
+            {
+                return cmbList.DroppedDown;
+            }
             set
             {
                 cmbList.DroppedDown = value;
             }
         }
 
-        public ComboBox  GetComboBox { get=>cmbList; }
+        public ComboBox GetComboBox => cmbList;
 
-        //Private methods
+        public DrawMode DrawMode { get=>this.cmbList.DrawMode; set => cmbList.DrawMode = value;}
+
+        [Category("Action")]
+        public event EventHandler ButtonOptionClick
+        {
+            add
+            {
+                btnSRC.Click += value;
+            }
+            remove
+            {
+                btnSRC.Click -= value;
+            }
+        }
+
+        public RJComboBox()
+        {
+            cmbList = new ComboBox();
+            lblText = new Label();
+            btnIcon = new Button();
+            btnSRC = new Button();
+            SuspendLayout();
+
+
+            cmbList.BackColor = listBackColor;
+            cmbList.Font = new Font(Font.Name, 10f);
+            cmbList.ForeColor = listTextColor;
+            cmbList.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
+            cmbList.TextChanged += ComboBox_TextChanged;
+            cmbList.DrawItem += new DrawItemEventHandler(OnDrawItem);
+            cmbList.DrawMode = DrawMode.OwnerDrawFixed;
+
+
+            btnIcon.Dock = DockStyle.Right;
+            btnIcon.FlatStyle = FlatStyle.Flat;
+            btnIcon.FlatAppearance.BorderSize = 0;
+            btnIcon.BackColor = backColor;
+            btnIcon.Size = new Size(30, 30);
+            btnIcon.Cursor = Cursors.Hand;
+            btnIcon.Click += Icon_Click;
+            btnIcon.Paint += Icon_Paint;
+            btnSRC.Dock = DockStyle.Right;
+            btnSRC.FlatStyle = FlatStyle.Flat;
+            btnSRC.FlatAppearance.BorderSize = 0;
+            btnSRC.BackColor = backColor;
+            btnSRC.Size = new Size(30, 30);
+            btnSRC.Cursor = Cursors.Hand;
+            lblText.Dock = DockStyle.Fill;
+            lblText.AutoSize = false;
+            lblText.BackColor = backColor;
+            lblText.TextAlign = ContentAlignment.MiddleLeft;
+            lblText.Padding = new Padding(8, 0, 0, 0);
+            lblText.Font = new Font(Font.Name, 10f);
+            lblText.Click += Surface_Click;
+            lblText.MouseEnter += Surface_MouseEnter;
+            lblText.MouseLeave += Surface_MouseLeave;
+            base.Controls.Add(lblText);
+            base.Controls.Add(btnIcon);
+            base.Controls.Add(btnSRC);
+            base.Controls.Add(cmbList);
+            MinimumSize = new Size(200, 30);
+            base.Size = new Size(200, 30);
+            ForeColor = Color.DimGray;
+            base.Padding = new Padding(borderSize);
+            Font = new Font(Font.Name, 10f);
+            base.BackColor = borderColor;
+            ResumeLayout();
+            AdjustComboBoxDimensions();
+        }
+
+        private void OnDrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (DrawItem != null)
+            {
+                DrawItem(sender, e);
+            }
+            else if (e.Index >= 0)
+            {
+                // La lógica de dibujo por defecto
+                string itemText = cmbList.GetItemText(cmbList.Items[e.Index]);
+                e.DrawBackground();
+                e.Graphics.DrawString(itemText, e.Font, new SolidBrush(e.ForeColor), e.Bounds, StringFormat.GenericDefault);
+                e.DrawFocusRectangle();
+            }
+        }
+
+
+
         private void AdjustComboBoxDimensions()
         {
             cmbList.Width = lblText.Width;
-            cmbList.Location = new Point()
+            cmbList.Location = new Point
             {
                 X = 3,
                 Y = lblText.Bottom - cmbList.Height
             };
         }
 
-        //Event methods
-
-        //-> Default event
         private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (OnSelectedIndexChanged != null)
-                OnSelectedIndexChanged.Invoke(sender, e);
-            //Refresh text
+            if (this.SelectedIndexChanged != null)
+            {
+                this.SelectedIndexChanged(sender, e);
+            }
+
             lblText.Text = cmbList.Text;
         }
 
-        //-> Draw icon
         private void Icon_Paint(object sender, PaintEventArgs e)
         {
             //Fields
@@ -387,47 +509,38 @@ namespace JMControls.Controls
             }
         }
 
-        //-> Items actions
         private void Icon_Click(object sender, EventArgs e)
         {
-            //Open dropdown list
             cmbList.Select();
             cmbList.DroppedDown = true;
         }
+
         private void Surface_Click(object sender, EventArgs e)
         {
-            //Attach label click to user control click
-            this.OnClick(e);
-            //Select combo box
+            OnClick(e);
             cmbList.Select();
-            //if (cmbList.DropDownStyle ==( ComboBoxStyle.DropDownList | ComboBoxStyle.DropDown))
-                cmbList.DroppedDown = true;//Open dropdown list
+            cmbList.DroppedDown = true;
         }
+
         private void ComboBox_TextChanged(object sender, EventArgs e)
         {
-            //Refresh text
             lblText.Text = cmbList.Text;
         }
 
-        //->Attach label events to user control event
         private void Surface_MouseLeave(object sender, EventArgs e)
         {
-            this.OnMouseLeave(e);
+            OnMouseLeave(e);
         }
 
         private void Surface_MouseEnter(object sender, EventArgs e)
         {
-            this.OnMouseEnter(e);
+            OnMouseEnter(e);
         }
-        //::::+
 
-        //Overridden methods
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             AdjustComboBoxDimensions();
         }
-
-
     }
 }

@@ -15,7 +15,7 @@ using System.Windows;
 
 
 //[module:CLSCompliant(true)]
-namespace DGVPrinterHelper //AllocationRequest
+namespace JMControls.Controls  //AllocationRequest
 {    
     #region Supporting Classes
 

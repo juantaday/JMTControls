@@ -70,7 +70,7 @@ namespace JMControls.Controls
 		}
 
 		[Category("RJ Code Advance")]
-		public int BorderThickness
+		public int BorderSize
         {
 			get
 			{

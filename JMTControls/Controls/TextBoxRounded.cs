@@ -11,12 +11,10 @@ using System.Windows.Forms;
 namespace JMControls.Controls
 {
 
-
-
     public class TextBoxRounded : Control
     {
         int borderRadius = 8;
-        private string oldText=string.Empty ;
+        private string oldText = string.Empty;
         private Pen pensBorder;
         private string placeholderText;
         private string baseText;
@@ -30,10 +28,10 @@ namespace JMControls.Controls
         private readonly Button _button;
         private ToolTip _ToolTip1;
         private BorderStyle borderStyle;
-        private int borderThickness =1;
+        private int borderThickness = 1;
         private Color borderColorHover = Color.Orange;
-        private Color borderColorActive= Color.Red;
-        private Color borderColorIdle= Color.DeepPink;
+        private Color borderColorActive = Color.Red;
+        private Color borderColorIdle = Color.DeepPink;
         private Color borderColorDisable = Color.DimGray;
         private Color placeholderColor;
         private Color _foreColor;
@@ -46,8 +44,8 @@ namespace JMControls.Controls
 
         private Image _buttonImage;
         private bool _autosize;
-        private int decimalPosition=2;
-        private TypeDataEnum _typeData =TypeDataEnum.VarChar;
+        private int decimalPosition = 2;
+        private TypeDataEnum _typeData = TypeDataEnum.VarChar;
 
 
         public TextBoxRounded()
@@ -86,7 +84,7 @@ namespace JMControls.Controls
             textBox1.MouseMove += Box_MouseMove;
             textBox1.KeyPress += TextBox1_KeyPress;
 
-            _ToolTip1 = new System. Windows.Forms.ToolTip();
+            _ToolTip1 = new System.Windows.Forms.ToolTip();
 
             _button = new Button
             {
@@ -122,7 +120,7 @@ namespace JMControls.Controls
 
         private void TextBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar.ToString ().Equals ("\b"))
+            if (e.KeyChar.ToString().Equals("\b"))
                 return;
             try
             {
@@ -171,8 +169,8 @@ namespace JMControls.Controls
                                 {
                                     e.Handled = true;
                                     return;
-                                } 
-                 
+                                }
+
                             }
 
                         }
@@ -190,7 +188,7 @@ namespace JMControls.Controls
             {
             }
         }
-       
+
 
         private void _button_GotFocus(object sender, EventArgs e)
         {
@@ -215,7 +213,7 @@ namespace JMControls.Controls
         }
 
 
-   
+
 
         [Category("Appearance"), Description("Imagen del botón")]
         public Image ButtonImage
@@ -377,7 +375,7 @@ namespace JMControls.Controls
 
             }
         }
-        public new  void Focus()
+        public new void Focus()
         {
             this.textBox1.Focus();
         }
@@ -588,10 +586,7 @@ namespace JMControls.Controls
             }
         }
 
-        [Browsable (true)]
-        public new  string Text { get => this.Texts; set => this.Texts = value; }
-
-        private string Texts
+        public  new   string Text
         {
             get
             {
@@ -824,7 +819,7 @@ namespace JMControls.Controls
                 textBox1.MinimumSize = new Size(0, txtHeight);
                 textBox1.Multiline = false;
 
-                this.Height =4+ textBox1.Height + this.Padding.Top + this.Padding.Bottom;
+                this.Height = 4 + textBox1.Height + this.Padding.Top + this.Padding.Bottom;
             }
         }
 
@@ -939,33 +934,35 @@ namespace JMControls.Controls
             }
         }
 
-        public bool Autosize { get=> _autosize; set=> _autosize = value ; }
+        public bool Autosize { get => _autosize; set => _autosize = value; }
 
         public CharacterCasing CharacterCasing { get => textBox1.CharacterCasing; set => textBox1.CharacterCasing = value; }
 
-        public int DecimalPosition { 
-            get=>decimalPosition; 
-            set {
+        public int DecimalPosition
+        {
+            get => decimalPosition;
+            set
+            {
                 decimalPosition = value;
                 textBox1.Text = string.Empty;
                 Invalidate();
 
-            } 
+            }
 
         }
 
-        public bool  Multiline
+        public bool Multiline
         {
             get => textBox1.Multiline;
             set
             {
-                textBox1.Multiline = value ;
+                textBox1.Multiline = value;
                 Invalidate();
             }
 
         }
 
-        public int  SelectionLength
+        public int SelectionLength
         {
             get => textBox1.SelectionLength;
             set
@@ -1000,18 +997,18 @@ namespace JMControls.Controls
                     default:
                         break;
                 }
-              
+
                 Invalidate();
             }
 
         }
 
-       
+
 
 
         #endregion
 
-   
+
     }
 
 }

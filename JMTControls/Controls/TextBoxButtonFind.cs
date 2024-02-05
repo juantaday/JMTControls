@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace JMControls.Controls
 {
-    public  class TextBoxButtonFind: TextBox
+    public class TextBoxButtonFind : TextBox
     {
         private bool _VisibleButton;
         private readonly Button _button;
@@ -24,25 +20,25 @@ namespace JMControls.Controls
                 ImageAlign = ContentAlignment.MiddleRight,
                 FlatStyle = FlatStyle.Flat,
                 Dock = DockStyle.Right,
-                Width=35
+                Width = 35
             };
             _button.FlatAppearance.BorderSize = 1;
-            _button.FlatAppearance.BorderColor = Color.FromArgb(220,220,220);
-            _button.FlatAppearance.MouseOverBackColor = Color.FromArgb(224,224,224);
+            _button.FlatAppearance.BorderColor = Color.FromArgb(220, 220, 220);
+            _button.FlatAppearance.MouseOverBackColor = Color.FromArgb(224, 224, 224);
             _button.FlatAppearance.MouseDownBackColor = Color.FromArgb(200, 200, 200);
             this.Controls.Add(_button);
-           // PosicionarBoton();
+            // PosicionarBoton();
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-          //  PosicionarBoton();
+            //  PosicionarBoton();
         }
 
         private void PosicionarBoton()
         {
-            _button.Size = new Size(45,this.ClientSize.Height);
+            _button.Size = new Size(45, this.ClientSize.Height);
             _button.Location = new Point(this.ClientSize.Width - _button.Width, 0);
             SendMessage(this.Handle, 0xd3, (IntPtr)2, (IntPtr)(_button.Width << 16));
         }
@@ -91,9 +87,11 @@ namespace JMControls.Controls
             }
         }
 
-        public  Button GetButton {
-            get {
-                return _button; 
+        public Button GetButton
+        {
+            get
+            {
+                return _button;
             }
         }
         public virtual System.Windows.Forms.DockStyle DockButton
@@ -106,7 +104,7 @@ namespace JMControls.Controls
             set
             {
                 _button.Dock = value;
-              }
+            }
         }
 
 
