@@ -243,12 +243,6 @@ namespace JMControls.Controls
             set { textBox1.TextAlign = value; }
         }
 
-        public void SetFocus()
-        {
-            textBox1.Focus();
-        }
-
-
         public bool VisibleButton
         {
             get

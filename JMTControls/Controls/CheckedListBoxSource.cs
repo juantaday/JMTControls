@@ -1,22 +1,15 @@
-﻿using JMControls.Implementation;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.ListView;
 
 namespace JMControls.Controls
 {
-    public class CheckedListBoxSource: CheckedListBox
+    public class CheckedListBoxSource : CheckedListBox
     {
         private IEnumerable _dataSource;
-        private bool multiChecked =true;
+        private bool multiChecked = true;
         private bool Changering = false;
 
         public CheckedListBoxSource()
@@ -24,11 +17,13 @@ namespace JMControls.Controls
 
         }
 
-        public new  IEnumerable DataSource { get=> _dataSource;
+        public new IEnumerable DataSource
+        {
+            get => _dataSource;
             set
             {
                 _dataSource = value;
-    
+
                 this.Items.Clear();
                 if (_dataSource == null) return;
 
@@ -37,20 +32,23 @@ namespace JMControls.Controls
                     this.Items.Add(item);
                 }
             }
-         }
+        }
 
-        public   List<T> GetListItemsChecked<T> () where T : class, new()
+        public List<T> GetListItemsChecked<T>() where T : class, new()
         {
             if (_dataSource == null) return null;
             if (this.Items.Count == 0) return null;
-       
+
             List<T> x2 = new List<T>();
-            return  this.CheckedItems.Cast<T>().ToList();
+            return this.CheckedItems.Cast<T>().ToList();
 
         }
 
-        public bool MultiCheck { get => multiChecked;
-            set { 
+        public bool MultiCheck
+        {
+            get => multiChecked;
+            set
+            {
                 multiChecked = value;
                 Invalidate();
             }
@@ -59,7 +57,8 @@ namespace JMControls.Controls
         protected override void OnItemCheck(ItemCheckEventArgs ice)
         {
             if (Changering) return;
-            if (!multiChecked && ice.NewValue == CheckState.Checked) {
+            if (!multiChecked && ice.NewValue == CheckState.Checked)
+            {
                 Changering = true;
 
                 for (int i = 0; i < this.Items.Count; i++)
@@ -78,13 +77,14 @@ namespace JMControls.Controls
 
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
-            if (!multiChecked) {
+            if (!multiChecked)
+            {
                 this.SetItemChecked(this.SelectedIndex, true);
             }
             base.OnSelectedIndexChanged(e);
             Invalidate();
         }
-       
+
     }
 
 }

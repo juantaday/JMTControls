@@ -218,7 +218,7 @@ namespace JMControls.Controls
 
 
         [Browsable(true)]
-        private  new string Text
+        public   new string Text
         {
             get
             {
