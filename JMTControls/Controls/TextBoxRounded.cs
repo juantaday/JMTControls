@@ -594,6 +594,26 @@ namespace JMControls.Controls
             }
         }
 
+        public decimal GetValue  
+        {
+            get {
+              
+                decimal.TryParse(textBox1.Text, out valueDecimal);
+                return valueDecimal;
+            }
+        }
+        private decimal valueDecimal =0;
+        public bool HasValuedDecimal
+        {
+            get
+            {
+
+                return decimal.TryParse(textBox1.Text, out valueDecimal);
+ 
+            }
+        }
+
+
 
         private void Box_Enter(object sender, EventArgs e)
         {
