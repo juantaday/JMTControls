@@ -1,15 +1,13 @@
-﻿using System;
-using System.Text;
-using System.Drawing;
-using System.Drawing.Design;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using System.Threading;
-using System.Windows.Forms;
+﻿using JMControls.Win32;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Collections.Generic;
-using JMControls.Win32;
+using System.Drawing;
+using System.Drawing.Design;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace JMControls.TabControlGRD
 {
@@ -188,9 +186,11 @@ namespace JMControls.TabControlGRD
 
             this.ItemSize = new Size()
             {
-                Width = 0,
+                Width = 120,
                 Height = 26
             };
+
+            this.Font  =  new Font("Tahoma",14);
 
             _tabGradient = new GradientTab(Color.White, Color.Gainsboro, LinearGradientMode.Horizontal, Color.Black, Color.Black, FontStyle.Regular);    //Instantiate
             _tabGradient.GradientChanged += new EventHandler(CONTROL_INVALIDATE_UPDATE);
@@ -872,7 +872,7 @@ namespace JMControls.TabControlGRD
                                 case TabAlignments.Top:
                                     return new Rectangle(5, ItemSize.Height + 6, this.Width - 10, this.Height - (ItemSize.Height + 11));
                                 default:
-                                    return new Rectangle(1, 1, this.Width-2 , this.Height - (ItemSize.Height+7));
+                                    return new Rectangle(1, 1, this.Width-2, this.Height - (ItemSize.Height+7));
                             }
                         }
                         else
@@ -1000,7 +1000,7 @@ namespace JMControls.TabControlGRD
         {
             if (Visible)
             {
-                // Draw Caption Bar
+                // Dibujar barra de título (Caption)
                 DrawCaption(pe.Graphics);
 
                 if (conditionBooleanArray[6])
@@ -1015,10 +1015,25 @@ namespace JMControls.TabControlGRD
                         return;
                 }
 
-                // If appropriate fill tab control's background and paint tab items.
+                // Ajustar tamaño de las pestañas en función del texto
+                int maxWidth = 0;
+                using (Graphics g = this.CreateGraphics())
+                {
+                    foreach (TabPage tabPage in this.TabPages)
+                    {
+                        int width = (int)g.MeasureString(tabPage.Text, this.Font).Width + 20; // Agrega un margen
+                        maxWidth = Math.Max(maxWidth, width);
+                    }
+                }
+
+                // Actualiza el tamaño de las pestañas si es necesario
+                this.ItemSize = new Size(maxWidth+20, this.ItemSize.Height);
+
+                // Dibujar fondo y elementos de las pestañas
                 Draw(pe.Graphics);
             }
         }
+
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs gfbevent)
         {
@@ -1271,7 +1286,7 @@ namespace JMControls.TabControlGRD
                 }
             }
 
-        Enough:;
+Enough:;
             base.OnMouseMove(e);
         }
 
@@ -1393,7 +1408,7 @@ namespace JMControls.TabControlGRD
                 }
             }
 
-        Finalize:;
+Finalize:;
             base.OnMouseDown(e);
         }
 
@@ -1452,7 +1467,7 @@ namespace JMControls.TabControlGRD
                 }
             }
 
-        Finalize:;
+Finalize:;
             base.OnMouseUp(e);
         }
 
@@ -1544,7 +1559,7 @@ namespace JMControls.TabControlGRD
                 }
             }
 
-        Finalize:;
+Finalize:;
             base.OnMouseClick(e);
         }
 
@@ -1613,14 +1628,35 @@ namespace JMControls.TabControlGRD
                 }
             }
 
+            this.ItemSize = new Size(300, 35);
             base.OnSelectedIndexChanged(e);
             this.Invalidate();
         }
 
+        protected override void OnFontChanged(EventArgs e)
+        {
+            base.OnFontChanged(e);
+
+            //// Recalcular el ancho de las pestañas basado en el tamaño de la fuente
+            //int maxWidth = 0;
+            //using (Graphics g = this.CreateGraphics())
+            //{
+            //    foreach (TabPage tabPage in this.TabPages)
+            //    {
+            //        int width = (int)g.MeasureString(tabPage.Text, this.Font).Width + 20; // Agrega margen adicional
+            //        maxWidth = Math.Max(maxWidth, width);
+            //    }
+            //}
+
+            //// Ajustar el tamaño de las pestañas
+            //this.ItemSize = new Size(maxWidth, this.ItemSize.Height);
+            this.Invalidate(); // Forzar redibujado
+
+        }
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-
+     
             if (e.Control is TabPageEx && e.Control.Text == String.Empty)
             {
                 TabPageEx adding = e.Control as TabPageEx;
@@ -1643,6 +1679,8 @@ namespace JMControls.TabControlGRD
                 adding.Name = "tabPageEx" + (value + 1).ToString();
                 adding.Text = adding.Name;
             }
+          
+          
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -2024,6 +2062,8 @@ namespace JMControls.TabControlGRD
 
         protected virtual void Draw(Graphics gfx)
         {
+         
+
             DrawBorder(gfx);
 
             // Draw Tab Header Background and Fill the tabpage border line.
@@ -2102,11 +2142,12 @@ namespace JMControls.TabControlGRD
                 }
 
                 //Draw Tabs
-                for (int i = 0; i < this.TabCount; i++) {
+                for (int i = 0; i < this.TabCount; i++)
+                {
 
                     DrawTabs(gfx, i);
                 }
-                   
+
             }
         }
 
@@ -2114,8 +2155,8 @@ namespace JMControls.TabControlGRD
         {
             Rectangle currentTab = this.GetTabRect(nIndex);
 
-              /* Eğer ilk tabın indisi 0 ise Rectangle'ın Left location değerini belirtilen oranda artırıyoruz.
-            Aynı zamanda Tab genişliğinide gene belirlenen oran kadar küçültüyoruz. */
+            /* Eğer ilk tabın indisi 0 ise Rectangle'ın Left location değerini belirtilen oranda artırıyoruz.
+          Aynı zamanda Tab genişliğinide gene belirlenen oran kadar küçültüyoruz. */
             if (nIndex == 0)
             {
                 currentTab.X += _tabHOffset;
@@ -2488,7 +2529,7 @@ namespace JMControls.TabControlGRD
                     {
                         X = currentTab.X + 5,
                         Y = currentTab.Y + 0,//+5
-                        Width = currentTab.Width ,//-5,
+                        Width = currentTab.Width,//-5,
                         Height = currentTab.Height //- 5
                     };
                 }
@@ -2532,7 +2573,7 @@ namespace JMControls.TabControlGRD
                     gfx.DrawString(this.TabPages[nIndex].Text, currentFont, brush, currentTab, format);
                 }
             }
-        
+
         }
 
         protected virtual void DrawBorder(Graphics gfx)
@@ -2833,7 +2874,7 @@ namespace JMControls.TabControlGRD
             ToolStripMenuItem menuItem;
             if (this.TabCount > 0)
             {
-                menuItem = new ToolStripMenuItem("Close",Properties.Resources.delete_12x12, null, Keys.Control | Keys.C);
+                menuItem = new ToolStripMenuItem("Close", Properties.Resources.delete_12x12, null, Keys.Control | Keys.C);
                 menuItem.ImageScaling = ToolStripItemImageScaling.None;
                 TabPageEx closingTabPage = (TabPageEx)this.SelectedTab;
                 menuItem.Enabled = closingTabPage.IsClosable ? closingTabPage.Enabled : false;
@@ -2861,7 +2902,7 @@ namespace JMControls.TabControlGRD
 
                 if (this.TabCount > 1)
                 {
-                    menuItem = new ToolStripMenuItem("Close All But This", Properties. Resources.PushpinHS, null, Keys.Control | Keys.A);
+                    menuItem = new ToolStripMenuItem("Close All But This", Properties.Resources.PushpinHS, null, Keys.Control | Keys.A);
                     menuItem.Click += (sender, ea) =>
                     {
                         // Iterate All TabPages in the collection.
@@ -3040,7 +3081,7 @@ namespace JMControls.TabControlGRD
                     bmp = Properties.Resources.TabPressed;
                     break;
                 default:
-                         bmp = Properties.Resources.TabClose;
+                    bmp = Properties.Resources.TabClose;
                     break;
             }
 
@@ -4300,7 +4341,7 @@ namespace JMControls.TabControlGRD
                         brush.Blend = bl;
                         e.Graphics.FillRectangle(brush, e.Bounds);
 
-                        Image captionDropDown =Properties. Resources.DropDown;
+                        Image captionDropDown = Properties.Resources.DropDown;
                         using (ImageAttributes attributes = new ImageAttributes())
                         {
                             ColorMap[] map = new ColorMap[2];
@@ -6504,7 +6545,7 @@ namespace JMControls.TabControlGRD
         private bool _isClosable = true;
         private string _text = null;
         private Image _image;
-        private Point _imageLocation = new Point (15,5);
+        private Point _imageLocation = new Point(15, 5);
         #endregion
 
         #region Constructor
@@ -6617,9 +6658,16 @@ namespace JMControls.TabControlGRD
             {
                 if (value != null && !value.Equals(_text))
                 {
-                    base.Text = value;
-                    base.Text = base.Text.Trim();
-                    base.Text = base.Text.PadRight(base.Text.Length + 2);
+                 
+                    int width = 2;
+                    if (this.Font.Size > 10 && this.Font.Size<=12)
+                        width = 10; 
+                    if (this.Font.Size > 12 && this.Font.Size<=14)
+                        width = 20;
+                    if (this.Font.Size > 14 && this.Font.Size<=16)
+                        width = 25;
+    
+                    base.Text = value.Trim().PadRight(value.Trim().Length + width);
                     _text = base.Text.TrimEnd();
                 }
             }

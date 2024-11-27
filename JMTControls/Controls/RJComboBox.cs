@@ -151,7 +151,7 @@ namespace JMControls.Controls
         }
 
         [Category("RJ Code - Appearance")]
-        public string Texts
+        public new  string Text
         {
             get
             {
