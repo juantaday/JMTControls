@@ -186,11 +186,9 @@ namespace JMControls.TabControlGRD
 
             this.ItemSize = new Size()
             {
-                Width = 120,
+                Width = 32,
                 Height = 26
             };
-
-            this.Font  =  new Font("Tahoma",14);
 
             _tabGradient = new GradientTab(Color.White, Color.Gainsboro, LinearGradientMode.Horizontal, Color.Black, Color.Black, FontStyle.Regular);    //Instantiate
             _tabGradient.GradientChanged += new EventHandler(CONTROL_INVALIDATE_UPDATE);
@@ -1014,22 +1012,6 @@ namespace JMControls.TabControlGRD
                     if (this.Width <= 2 || (this.TabCount == 0 ? this.Height <= 2 : DisplayRectangle.Height <= -4))
                         return;
                 }
-
-                // Ajustar tamaño de las pestañas en función del texto
-                int maxWidth = 0;
-                using (Graphics g = this.CreateGraphics())
-                {
-                    foreach (TabPage tabPage in this.TabPages)
-                    {
-                        int width = (int)g.MeasureString(tabPage.Text, this.Font).Width + 20; // Agrega un margen
-                        maxWidth = Math.Max(maxWidth, width);
-                    }
-                }
-
-                // Actualiza el tamaño de las pestañas si es necesario
-                this.ItemSize = new Size(maxWidth+20, this.ItemSize.Height);
-
-                // Dibujar fondo y elementos de las pestañas
                 Draw(pe.Graphics);
             }
         }
@@ -6662,8 +6644,8 @@ Finalize:;
                     int width = 2;
                     if (this.Font.Size > 10 && this.Font.Size<=12)
                         width = 10; 
-                    if (this.Font.Size > 12 && this.Font.Size<=14)
-                        width = 20;
+                    if (this.Font.Size> 12 && this.Font.Size<=14)
+                        width = 15;
                     if (this.Font.Size > 14 && this.Font.Size<=16)
                         width = 25;
     

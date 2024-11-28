@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace JMControls.Controls
@@ -183,10 +179,14 @@ namespace JMControls.Controls
             }
 
         }
-
+        
         void box_KeyPress(object sender, KeyPressEventArgs e)
         {
             isChanging = true;
+
+            if (this.ReadOnly)
+                return;
+                
             if (textbox.SelectedText.Length >= textbox.Text.Length)
                 textbox.Text = "";
             if (!char.IsControl(e.KeyChar) && (!char.IsDigit(e.KeyChar))
@@ -234,6 +234,19 @@ namespace JMControls.Controls
             this.textbox.Focus();
         }
 
+        public bool ReadOnly
+        {
+            get { return textbox.ReadOnly; }
+
+            set
+            {
+                if (textbox.ReadOnly != value)
+                {
+                    this.textbox.ReadOnly = value;
+                }
+            }
+
+        }
 
 
         protected override void OnResize(EventArgs e)

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace JMControls.Controls
 {
-
+    [DefaultEvent("TextChanged")]
     public class TextBoxRounded : Control
     {
         int borderRadius = 8;
@@ -318,7 +318,7 @@ namespace JMControls.Controls
             remove { textBox1.Click -= value; }
         }
 
-
+        [Browsable(true)]
         [Category("Action"), Description("Se genera cuando cambia el texto..")]
         public new event EventHandler TextChanged
         {
@@ -412,8 +412,7 @@ namespace JMControls.Controls
             remove { textBox1.KeyUp -= value; }
         }
 
-
-
+        
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
@@ -612,8 +611,6 @@ namespace JMControls.Controls
  
             }
         }
-
-
 
         private void Box_Enter(object sender, EventArgs e)
         {

@@ -3,9 +3,9 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+
 
 namespace JMControls.Controls
 {
@@ -37,6 +37,7 @@ namespace JMControls.Controls
         private IContainer components = null;
 
         private TextBox textBox1;
+        private int decimalPosition = 2;
         private TypeDataEnum _typeData;
 
         [Category("RJ Code Advance")]
@@ -218,7 +219,7 @@ namespace JMControls.Controls
 
 
         [Browsable(true)]
-        public   new string Text
+        public new string Text
         {
             get
             {
@@ -247,35 +248,61 @@ namespace JMControls.Controls
             }
         }
 
-        public CharacterCasing CharacterCasing { get=>textBox1.CharacterCasing;
-            set {
+        public CharacterCasing CharacterCasing
+        {
+            get => textBox1.CharacterCasing;
+            set
+            {
 
                 textBox1.CharacterCasing =value;
                 base.Invalidate();
             }
         }
 
-        public int MaxLength { get=>textBox1.MaxLength; set=> textBox1.MaxLength= value;}
+        public int MaxLength { get => textBox1.MaxLength; set => textBox1.MaxLength= value; }
 
-        public bool ReadOnly { get=>textBox1.ReadOnly; set=>textBox1.ReadOnly = value ;}
-        public HorizontalAlignment TextAlign { get=>textBox1.TextAlign;
+        public bool ReadOnly { get => textBox1.ReadOnly; set => textBox1.ReadOnly = value; }
 
-            set {
-                textBox1.TextAlign = value;
-                base.Invalidate();
-            } 
-        }
-
-        public TypeDataEnum TypeData { get=>_typeData;
+        public HorizontalAlignment TextAlign
+        {
+            get => textBox1.TextAlign;
 
             set
             {
-                _typeData = value;
-                textBox1.Text = string.Empty;
+                textBox1.TextAlign = value;
                 base.Invalidate();
             }
-               
         }
+
+        public TypeDataEnum TypeData
+        {
+            get => _typeData;
+            set
+            {
+                _typeData = value;
+                switch (_typeData)
+                {
+                    case TypeDataEnum.Numeric:
+                        textBox1.Text = "";
+                        break;
+                    case TypeDataEnum.Decimal:
+                        textBox1.Text = "";
+                        break;
+                    case TypeDataEnum.VarChar:
+                        textBox1.Text = "";
+                        break;
+                    case TypeDataEnum.DateTime:
+                        textBox1.Text = DateTime.Now.ToString();
+                        break;
+                    default:
+                        break;
+                }
+
+                Invalidate();
+            }
+
+        }
+
 
         public void SelectecText(int star, int length)
         {
@@ -296,11 +323,22 @@ namespace JMControls.Controls
 
         public int TextLength { get => this.textBox1.TextLength; }
 
+        [Browsable(true)]
         [Category("Action"), Description("Se genera cuando cambia el texto..")]
         public new event EventHandler TextChanged
         {
             add { textBox1.TextChanged += value; }
             remove { textBox1.TextChanged -= value; }
+        }
+
+
+        [Browsable (true)]
+        [Category("Action")]
+        [Description("Se produce cuando se presiona una tecla mientras el control tiene el foco.")]
+        public new event KeyPressEventHandler KeyPress
+        {
+            add { textBox1.KeyPress += value; }
+            remove { textBox1.KeyPress -= value; }
         }
 
         public int SelectionLength
@@ -315,6 +353,39 @@ namespace JMControls.Controls
 
         }
 
+        public int DecimalPosition
+        {
+            get => decimalPosition;
+            set
+            {
+                decimalPosition = value;
+                textBox1.Text = string.Empty;
+                Invalidate();
+
+            }
+
+        }
+
+        public decimal GetValue
+        {
+            get
+            {
+
+                decimal.TryParse(textBox1.Text, out valueDecimal);
+                return valueDecimal;
+            }
+        }
+        private decimal valueDecimal = 0;
+        public bool HasValuedDecimal
+        {
+            get
+            {
+
+                return decimal.TryParse(textBox1.Text, out valueDecimal);
+
+            }
+        }
+
         public void SelectAll()
         {
             textBox1.SelectAll();
@@ -323,6 +394,21 @@ namespace JMControls.Controls
         public RJTextBox()
         {
             this.InitializeComponent();
+
+
+            textBox1.Enter += textBox1_Enter;
+            textBox1.Leave += textBox1_Leave;
+            textBox1.KeyPress += textBox1_KeyPress;
+            textBox1.TextChanged += textBox1_TextChanged;
+            textBox1.Click += textBox1_Click;
+            textBox1.MouseDoubleClick += textBox1_MouseDoubleClick;
+           
+        }
+
+        private void textBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != System.Windows.Forms.MouseButtons.Left) return;
+            textBox1.SelectAll();
         }
 
         protected override void Dispose(bool disposing)
@@ -349,31 +435,32 @@ namespace JMControls.Controls
 
         private void InitializeComponent()
         {
-            this.textBox1 = new TextBox();
-            base.SuspendLayout();
-            this.textBox1.BorderStyle = BorderStyle.None;
-            this.textBox1.Dock = DockStyle.Fill;
-            this.textBox1.Location = new Point(10, 7);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // textBox1
+            // 
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Location = new System.Drawing.Point(10, 7);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new Size(230, 15);
+            this.textBox1.Size = new System.Drawing.Size(230, 15);
             this.textBox1.TabIndex = 0;
-            this.textBox1.TextChanged += TextBox1_TextChanged;
+            // 
+            // RJTextBox
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackColor = System.Drawing.SystemColors.Window;
+            this.Controls.Add(this.textBox1);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
+            this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "RJTextBox";
+            this.Padding = new System.Windows.Forms.Padding(10, 7, 10, 7);
+            this.Size = new System.Drawing.Size(250, 30);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
-            baseText = string.Empty;
-            textBox1.Text = baseText;
-            this.Text = baseText;
-
-            base.AutoScaleMode = AutoScaleMode.None;
-            this.BackColor = SystemColors.Window;
-            base.Controls.Add(this.textBox1);
-            this.Font = new Font("Microsoft Sans Serif", 9.5f);
-            this.ForeColor = Color.FromArgb(64, 64, 64);
-            base.Margin = new Padding(4);
-            base.Name = "RJTextBox";
-            base.Padding = new Padding(10, 7, 10, 7);
-            base.Size = new Size(250, 30);
-            base.ResumeLayout(false);
-            base.PerformLayout();
         }
 
 
@@ -461,10 +548,15 @@ namespace JMControls.Controls
 
         private void RemovePlaceholder()
         {
-            if (isPlaceholder && placeholderText != "" && this.baseText.Equals(placeholderText))
+            if ( !string.IsNullOrEmpty(placeholderText) && this.baseText.ToUpper().Equals(placeholderText.ToUpper()))
             {
                 isPlaceholder = false;
                 textBox1.Text = "";
+                textBox1.ForeColor = this.ForeColor;
+                if (isPasswordChar)
+                    textBox1.UseSystemPasswordChar = true;
+            }
+            else  {
                 textBox1.ForeColor = this.ForeColor;
                 if (isPasswordChar)
                     textBox1.UseSystemPasswordChar = true;
@@ -473,7 +565,8 @@ namespace JMControls.Controls
 
         private void SetPlaceholder()
         {
-            if ((!string.IsNullOrWhiteSpace(this.textBox1.Text) ? false : this.placeholderText != ""))
+
+            if (string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(placeholderText))
             {
                 this.isPlaceholder = true;
                 this.textBox1.Text = this.placeholderText;
@@ -482,6 +575,9 @@ namespace JMControls.Controls
                 {
                     this.textBox1.UseSystemPasswordChar = false;
                 }
+            }
+            else {
+                this.isPlaceholder = false;
             }
         }
 
@@ -515,7 +611,73 @@ namespace JMControls.Controls
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            this.OnKeyPress(e);
+            if (e.KeyChar.ToString().Equals("\b"))
+                return;
+            try
+            {
+                switch (_typeData)
+                {
+                    case TypeDataEnum.Numeric:
+                        var resgN = Regex.Match(e.KeyChar.ToString(), @"[0-9]").Success;
+                        if (!resgN)
+                        {
+                            e.Handled = true;
+                            return;
+                        }
+                        break;
+                    case TypeDataEnum.Decimal:
+
+                        if (e.KeyChar.ToString().Equals(".") && textBox1.Text.Contains("."))
+                        {
+                            e.Handled = true;
+                            return;
+                        }
+                        else if (e.KeyChar.ToString().Equals(".") && decimalPosition > 0)
+                        {
+                            return;
+                        }
+                        else if (e.KeyChar.ToString().Equals(".") && decimalPosition <= 0)
+                        {
+                            e.Handled = true;
+                            return;
+                        }
+                        else
+                        {
+                            var resg = Regex.Match(e.KeyChar.ToString(), @"[0-9]").Success;
+                            if (!resg)
+                            {
+                                e.Handled = true;
+                                return;
+                            }
+                            if (decimalPosition > 0 && textBox1.Text.Contains("."))
+                            {
+                                var positionEdit = textBox1.SelectionStart;
+                                var lenthSelect = textBox1.SelectionLength;
+                                var indexOf = textBox1.Text.IndexOf(".") + 1;
+                                var dcmLength = textBox1.Text.Substring(indexOf, (textBox1.Text.Length - indexOf)).Length;
+
+                                if ((positionEdit > indexOf) && ((dcmLength - lenthSelect) >= decimalPosition))
+                                {
+                                    e.Handled = true;
+                                    return;
+                                }
+
+                            }
+
+                        }
+
+                        break;
+                    case TypeDataEnum.VarChar:
+                        break;
+                    case TypeDataEnum.DateTime:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void textBox1_Leave(object sender, EventArgs e)
@@ -535,15 +697,12 @@ namespace JMControls.Controls
             this.OnMouseLeave(e);
         }
 
-        private void TextBox1_TextChanged(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            baseText = textBox1.Text;
 
-            if (string.IsNullOrEmpty(textBox1.Text) ||
-                isPlaceholder)
+            if (string.IsNullOrEmpty(textBox1.Text) ||( this.placeholderText.ToUpper().Equals(textBox1.Text.ToUpper())))
             {
                 textBox1.ForeColor = this.placeholderColor;
-
             }
             else
             {
@@ -551,7 +710,6 @@ namespace JMControls.Controls
             }
 
             baseText = textBox1.Text;
-
             base.OnTextChanged(e);
 
         }
@@ -573,6 +731,6 @@ namespace JMControls.Controls
             }
         }
 
-      
+
     }
 }
