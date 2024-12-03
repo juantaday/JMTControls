@@ -17,7 +17,7 @@ namespace JMControls.Controls
 		internal System.Int32 rowExpandedDivider = 300 - 22;
 		internal System.Int32 rowDividerMargin = 5;
 		internal bool collapseRow;
-		internal DetailControl childView; // VBConversions Note: Initial value cannot be assigned here since it is non-static.  Assignment has been moved to the class constructors.
+		public DetailControl childView; // VBConversions Note: Initial value cannot be assigned here since it is non-static.  Assignment has been moved to the class constructors.
 		private System.ComponentModel.IContainer components;
 
 		//
@@ -69,7 +69,7 @@ namespace JMControls.Controls
 		}
 		#endregion
 		#region DataControl
-		internal void setParentSource(string tableName, string foreignKey)
+		public void setParentSource(string tableName, string foreignKey)
 		{
 			this.DataSource = new DataView(_cDataset.Tables[tableName]);
 			GridTheme.SetGridRowHeader(this);

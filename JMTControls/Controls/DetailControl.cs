@@ -17,7 +17,7 @@ namespace JMControls.Controls
 		internal DataSet _cDataset;
 		#endregion
 		#region Populate Childview
-		internal void Add(string tableName, string pageCaption)
+		public void Add(string tableName, string pageCaption)
 		{
 			TabPage tPage = new TabPage() { Text = pageCaption };
 			this.TabPages.Add(tPage);
