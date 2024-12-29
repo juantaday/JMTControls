@@ -33,8 +33,8 @@ namespace JMControls.Controls
         private Color borderColorActive = Color.Red;
         private Color borderColorIdle = Color.DeepPink;
         private Color borderColorDisable = Color.DimGray;
-        private Color placeholderColor;
-        private Color _foreColor;
+        private Color placeholderColor = Color.FromArgb(180,180,180);
+        private Color _foreColor = Color.Black;
         private bool isPasswordChar;
         private bool isPlaceholder;
         private bool isFocused = false;
@@ -43,10 +43,13 @@ namespace JMControls.Controls
         MouseState statetText;
 
         private Image _buttonImage;
+        private PictureBox _iconPictureLeft;
+        private Image _iconLeft;
         private bool _autosize;
         private int decimalPosition = 2;
         private TypeDataEnum _typeData = TypeDataEnum.VarChar;
-
+        private Padding _textBoxPadding = new Padding(15, 5, 5, 5);
+        private Color _iconLeftBackColor = Color.Transparent;
 
         public TextBoxRounded()
         {
@@ -69,8 +72,17 @@ namespace JMControls.Controls
                 BorderStyle = BorderStyle.None,
                 TextAlign = HorizontalAlignment.Left,
                 BackColor = fillColor,
+                ForeColor = _foreColor
             };
 
+
+            _iconPictureLeft  = new PictureBox
+            {
+                Size = new Size(16, 16),
+                BackColor = _iconLeftBackColor,
+                Location = new Point(2, 2),
+                Visible   = false,
+            };
 
             Font = new Font("Comic Sans MS", 11);
             Size = new Size(135, 33);
@@ -109,9 +121,9 @@ namespace JMControls.Controls
             this.Text = baseText;
             this.TabStop = false;
             this.BorderColorDisable = Color.FromArgb(160, 160, 160);
-            this.ForeColor = Color.FromArgb(60, 60, 60);
             this.Controls.Add(textBox1);
             this.Controls.Add(_button);
+            this.Controls.Add(_iconPictureLeft);
             base.Padding = new Padding(15, 5, 5, 5);
             _button.GotFocus += _button_GotFocus; ;
             _button.BringToFront();
@@ -206,7 +218,7 @@ namespace JMControls.Controls
         }
 
         [Category("Action"), Description("Se genera cuando presiona una tecla en el texto")]
-        public event KeyPressEventHandler KeyPressTextBox
+        public new event KeyPressEventHandler KeyPress
         {
             add { textBox1.KeyPress += value; }
             remove { textBox1.KeyPress -= value; }
@@ -245,15 +257,13 @@ namespace JMControls.Controls
 
         public bool VisibleButton
         {
-            get
-            {
-                return _VisibleButton;
-            }
+            get => _VisibleButton;
 
             set
             {
                 _VisibleButton = value;
                 _button.Visible = _VisibleButton;
+                Invalidate();
             }
         }
 
@@ -294,14 +304,7 @@ namespace JMControls.Controls
             }
         }
 
-        public Button Button
-        {
-            get
-            {
-                return _button;
-            }
 
-        }
 
         protected override void OnParentFontChanged(EventArgs e)
         {
@@ -391,9 +394,8 @@ namespace JMControls.Controls
         /// </summary>
         /// <remarks>este eventa en controlado porTextBoxRounded </remarks>
         [Category("Action"),
-         Description("Evento que se genera cuando el control es activo y preciona una tecla."),
-         DefaultValue(false)]
-        public event KeyEventHandler KeyDownInTextBox
+         Description("Evento que se genera cuando el control es activo y preciona una tecla.")]
+        public new  event KeyEventHandler KeyDown
         {
             add { textBox1.KeyDown += value; }
             remove { textBox1.KeyDown -= value; }
@@ -404,9 +406,8 @@ namespace JMControls.Controls
         /// </summary>
         /// <remarks>este eventa en controlado porTextBoxRounded </remarks>
         [Category("Action"),
-         Description("Evento que se genera cuando el control es activo y preciona y suelta una tecla."),
-         DefaultValue(false)]
-        public event KeyEventHandler KeyKeyUpInTextBox
+         Description("Evento que se genera cuando el control es activo y preciona y suelta una tecla.")]
+        public new  event KeyEventHandler KeyUp
         {
             add { textBox1.KeyUp += value; }
             remove { textBox1.KeyUp -= value; }
@@ -438,122 +439,185 @@ namespace JMControls.Controls
         protected override void OnForeColorChanged(EventArgs e)
         {
             base.OnForeColorChanged(e);
-            textBox1.ForeColor = ForeColor;
-            Invalidate();
+            textBox1.ForeColor = this.ForeColor; // Sincroniza el color
+            this.Invalidate(); // Redibuja el control
         }
+
+
+        public Button Button
+        {
+            get
+            {
+                return _button;
+            }
+
+        }
+
+        public Padding TextBoxPadding {
+            get => _textBoxPadding;
+            set
+            {
+                if (_textBoxPadding != value) {
+                    _textBoxPadding = value;
+                    Invalidate();
+                }
+                 
+            }   
+        }
+
+        public Image IconLeft
+        {
+            get => _iconLeft;
+            set
+            {
+                if (_iconLeft != value)  // Solo actualiza si hay un cambio
+                {
+                    _iconLeft = value;
+                    Invalidate();
+                }
+            }
+        }
+
+        public Color IconLeftBackColor
+        {
+            get => _iconLeftBackColor;
+            set
+            {
+                if (_iconLeftBackColor != value)  // Solo actualiza si hay un cambio
+                {
+                    _iconLeftBackColor = value;
+                    Invalidate();
+                }
+            }
+        }
+
+        public bool IconLeftVisible
+        {  // Corregido el error tipográfico "IconLefthVisible"
+            get => _iconPictureLeft.Visible;
+            set
+            {
+                if (_iconPictureLeft.Visible != value)  // Solo actualiza si hay un cambio
+                {
+                    _iconPictureLeft.Visible = value;
+                    Invalidate();
+                }
+            }
+        }
+
+        // IconLocationLeft
+        public Point IconLocationLeft
+        {
+            get => _iconPictureLeft.Location;
+            set
+            {
+                if (_iconPictureLeft.Location != value)  // Solo actualiza si hay un cambio
+                {
+                    _iconPictureLeft.Location = value;
+                    Invalidate();
+                }
+            }
+        }
+
+        // IconSizeLeft
+        public Size IconSizeLeft
+        {
+            get => _iconPictureLeft.Size;
+            set
+            {
+                if (_iconPictureLeft.Size != value)  // Solo actualiza si hay un cambio
+                {
+                    _iconPictureLeft.Size = value;
+                    Invalidate();
+                }
+            }
+        }
+
+
         protected override void OnPaint(PaintEventArgs e)
         {
+            // Habilitar gráficos de alta calidad
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-            innerRect = new RoundedRectangleF(this.Width - 1, this.Height - 1, BorderRadius, 1f, 1f).Path;
+            // Calcular rectángulo interno redondeado
+            var innerRect = new RoundedRectangleF(this.Width - 1, this.Height - 1, BorderRadius, 1f, 1f).Path;
 
-
+            // Ajustar altura del control según el cuadro de texto
             if (textBox1.Height >= Height - (int)(BorderThickness * 2.8))
                 Height = textBox1.Height + (int)(BorderThickness * 2.8);
 
-            int borderDelimi = 9 + (int)(BorderThickness * 1);
-            if (BorderThickness == 0) borderDelimi = 10;
+            // Definir márgenes y posiciones
+            int padding = (int)(BorderThickness * 1.5);
+            int iconSize = Height - padding * 2; // Tamaño del ícono
+            int buttonSize = iconSize; // Tamaño del botón
 
+            int iconLeftX = padding;
+            int textBoxX = iconLeftX + iconSize + padding;
+            int textBoxWidth = Width - textBoxX - buttonSize - padding * 2;
+            int buttonX = textBoxX + textBoxWidth + padding;
 
-            textBox1.Width = (this.Width - 2) - (borderDelimi + (int)(BorderRadius * 0.3));
+            // Establecer ubicación y tamaño de los controles
+            _iconPictureLeft.Size = new Size(iconSize, iconSize);
+            _iconPictureLeft.Location = new Point(iconLeftX, Height / 2 - iconSize / 2);
 
+            textBox1.Size = new Size(textBoxWidth, Height - padding * 2);
+            textBox1.Location = new Point(textBoxX, Height / 2 - textBox1.Height / 2);
 
-            var fonWith = textBox1.Font.Size;
-            int locationy = BorderRadius > 0 ? (int)(BorderRadius * .2) + (int)(fonWith * 0.25) + (int)(BorderThickness * 0.9) : (int)(BorderThickness * 2.5);
-            if (BorderThickness == 0) locationy += 5;
+            _button.Size = new Size(buttonSize, buttonSize);
+            _button.Location = new Point(buttonX, Height / 2 - buttonSize / 2);
 
-            textBox1.Location = new Point(locationy + 1, Height / 2 - textBox1.Font.Height / 2);
-
-
-
-
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-
-            //rellena el color de fondo
+            // Dibujar fondo del control
             using (SolidBrush brush = new SolidBrush(FillColor))
                 e.Graphics.FillPath(brush, innerRect);
 
-
-            if (this.Enabled)
+            // Dibujar borde según el estado del mouse
+            Color borderColor;
+            if (state == MouseState.Leave)
             {
-                if (state == MouseState.Leave)
-                {
-                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                        using (Pen pen = new Pen(BorderColorIdle, BorderThickness))
-                        {
-                            if (BorderRadius == 0)
-                            {
-                                Rectangle path = new Rectangle(new Point(borderThickness, borderThickness), new Size { Height = (this.Height - BorderThickness * 2), Width = this.Width - (BorderThickness * 2) });
-                                e.Graphics.DrawRectangle(pen, path);
-
-                            }
-                            else
-                            {
-                                using (GraphicsPath path = new RoundedRectangleF(this.Width - 1, this.Height - 1, BorderRadius, 1, 1).Path)
-                                {
-                                    e.Graphics.DrawPath(pen, path);
-
-                                }
-                            }
-                        }
-
-                }
-
-                else if (state == MouseState.Enter)
-                {
-                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                        using (Pen pen = new Pen(BorderColorHover, BorderThickness))
-                        {
-                            if (BorderRadius == 0)
-                            {
-                                Rectangle path = new Rectangle(new Point(borderThickness, borderThickness), new Size { Height = (this.Height - BorderThickness * 2), Width = this.Width - (BorderThickness * 2) });
-                                e.Graphics.DrawRectangle(pen, path);
-
-                            }
-                            else
-                            {
-                                using (GraphicsPath path = new RoundedRectangleF(this.Width - 1, this.Height - 1, BorderRadius, 1, 1).Path)
-                                {
-                                    e.Graphics.DrawPath(pen, path);
-
-                                }
-                            }
-                        }
-                }
-
-
-                else if (state == MouseState.Down)
-                {
-
-                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                        using (Pen pen = new Pen(BorderColorActive, BorderThickness))
-                        {
-                            if (BorderRadius == 0)
-                            {
-                                Rectangle path = new Rectangle(new Point(borderThickness, borderThickness), new Size { Height = (this.Height - BorderThickness * 2), Width = this.Width - (BorderThickness * 2) });
-                                e.Graphics.DrawRectangle(pen, path);
-                            }
-                            else
-                            {
-                                using (GraphicsPath path = new RoundedRectangleF(this.Width - 1, this.Height - 1, BorderRadius, 1, 1).Path)
-                                {
-                                    e.Graphics.DrawPath(pen, path);
-                                }
-                            }
-                        }
-
-                }
-
+                borderColor = BorderColorIdle;
+            }
+            else if (state == MouseState.Enter)
+            {
+                borderColor = BorderColorHover;
+            }
+            else if (state == MouseState.Down)
+            {
+                borderColor = BorderColorActive;
             }
             else
             {
-
-                if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                    using (Pen pen = new Pen(BorderColorDisable, BorderThickness))
-                    using (GraphicsPath path = new RoundedRectangleF(Width - (BorderRadius > 0 ? 0 : 1), Height - (BorderRadius > 0 ? 0 : 1), BorderRadius).Path)
-                        e.Graphics.DrawPath(pen, path);
+                borderColor = BorderColorIdle;
             }
 
+            if (BorderStyle != BorderStyle.None && BorderThickness > 0)
+            {
+                using (Pen pen = new Pen(borderColor, BorderThickness))
+                {
+                    if (BorderRadius == 0)
+                    {
+                        Rectangle borderRect = new Rectangle(
+                            new Point(BorderThickness, BorderThickness),
+                            new Size(Width - BorderThickness * 2, Height - BorderThickness * 2)
+                        );
+                        e.Graphics.DrawRectangle(pen, borderRect);
+                    }
+                    else
+                    {
+                        using (GraphicsPath borderPath = new RoundedRectangleF(
+                            Width - 1, Height - 1, BorderRadius, 1, 1).Path)
+                        {
+                            e.Graphics.DrawPath(pen, borderPath);
+                        }
+                    }
+                }
+            }
+
+            // Dibujar ícono a la izquierda
+            if (_iconLeft != null && _iconPictureLeft.Visible)
+            {
+                e.Graphics.DrawImage(_iconLeft, _iconPictureLeft.Bounds);
+            }
+
+            // Llamar a la base y manejar transparencia
             Transparenter.MakeTransparent(this, e.Graphics);
             base.OnPaint(e);
         }
@@ -628,7 +692,6 @@ namespace JMControls.Controls
             isFocused = false;
             Invalidate();
             SetPlaceholder();
-
         }
 
         private void Box_MouseMove(object sender, MouseEventArgs e)
@@ -866,8 +929,7 @@ namespace JMControls.Controls
             set
             {
                 isPasswordChar = value;
-                if (!isPlaceholder)
-                    textBox1.UseSystemPasswordChar = value;
+                textBox1.UseSystemPasswordChar = value;
             }
         }
 
@@ -878,12 +940,12 @@ namespace JMControls.Controls
                 isPlaceholder = true;
                 textBox1.Text = placeholderText;
                 textBox1.ForeColor = placeholderColor;
-                if (isPasswordChar)
-                    textBox1.UseSystemPasswordChar = false;
+                textBox1.UseSystemPasswordChar = false;
             }
             else
             {
                 textBox1.ForeColor = this._foreColor;
+                textBox1.UseSystemPasswordChar = isPasswordChar;
             }
         }
 
@@ -894,8 +956,10 @@ namespace JMControls.Controls
                 isPlaceholder = false;
                 textBox1.Text = "";
                 textBox1.ForeColor = this.ForeColor;
-                if (isPasswordChar)
-                    textBox1.UseSystemPasswordChar = true;
+                textBox1.UseSystemPasswordChar = isPasswordChar;
+            }
+            else {
+                textBox1.UseSystemPasswordChar = isPasswordChar;
             }
         }
 
@@ -937,13 +1001,16 @@ namespace JMControls.Controls
 
         public override Color ForeColor
         {
-            get => _foreColor;
+            get => base.ForeColor;
             set
             {
-                this._foreColor = value;
-                this.textBox1.ForeColor = value;
+                base.ForeColor = value; // Asegúrate de establecer el valor en la clase base.
+                _foreColor = value;
+                textBox1.ForeColor = value; // Propaga el color al control interno.
+                this.Invalidate(); // Redibuja el control para reflejar el cambio.
             }
         }
+
 
         public bool Autosize { get => _autosize; set => _autosize = value; }
 
@@ -1014,7 +1081,38 @@ namespace JMControls.Controls
 
         }
 
+        public AutoCompleteMode AutoCompleteMode
+        {
+            get => textBox1.AutoCompleteMode;
+            set
+            {
+                textBox1.AutoCompleteMode = value;
+                Invalidate();
+            }
 
+        }
+
+        public AutoCompleteSource AutoCompleteSource
+        {
+            get => textBox1.AutoCompleteSource;
+            set
+            {
+                textBox1.AutoCompleteSource = value;
+                Invalidate();
+            }
+
+        }
+
+        public AutoCompleteStringCollection AutoCompleteCustomSource
+        {
+            get => textBox1.AutoCompleteCustomSource;
+            set
+            {
+                textBox1.AutoCompleteCustomSource = value;
+                Invalidate();
+            }
+
+        }
 
 
         #endregion

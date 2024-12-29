@@ -122,7 +122,7 @@ namespace JMControls.Controls
                         _heitParent = panel.Height;
                         for (int i = 0; 36 <= panel.Height; i++)
                         {
-                            this.Invoke(new MethodInvoker(() => {
+                            this.Invoke(new Action(() => {
                                 panel.Height -= 2;
                                 panel.Refresh();
                             }));
@@ -147,7 +147,7 @@ namespace JMControls.Controls
                         }
                         for (int i = 0; _heitParent >= panel.Height; i++)
                         {
-                            this.Invoke(new MethodInvoker(() => {
+                            this.Invoke(new Action(() => {
                                 panel.Height += 2;
                                 panel.Refresh();
                             }));
