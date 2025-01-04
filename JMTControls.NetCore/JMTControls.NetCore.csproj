@@ -1,0 +1,142 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Version>1.0.2.1</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Update="Controls\AlertPanelControl.cs">
+	    <SubType>UserControl</SubType>
+	  </Compile>
+	  <Compile Update="Controls\AltoButton.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\AltoNumericUpDown.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\AltoSlidingLabel.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\BetterFolderBrowser.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ButtonGradiente.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ButtonHamburgerWhite.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ButtonSolid.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\CheckBoxColor.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\CheckedListBoxSource.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ColumnComboBox.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ComboBoxAutocompleteSuggestion.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\DataGridViewExt.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\DetailControl.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\GroupBoxLiner.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\MasterControl.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJButton.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJCircularPictureBox.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJComboBox.cs">
+	    <SubType>UserControl</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJDatePicker.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJDropdownMenu.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJProgressBar.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJRadioButton.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\RJTextBox.cs">
+	    <SubType>UserControl</SubType>
+	  </Compile>
+	  <Compile Update="Controls\TextBoxButton.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\TextBoxButtonFind.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\TextBoxRounded.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ToggleSwitch.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Controls\ToggleSwitchAlto.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Properties\Resources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Resources.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Properties\Settings.Designer.cs">
+	    <DesignTimeSharedInput>True</DesignTimeSharedInput>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Settings.settings</DependentUpon>
+	  </Compile>
+	  <Compile Update="TabControlGRD\CaptionColorChooser.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="TabControlGRD\CaptionColorChooserEditor.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="TabControlGRD\JMTabControl.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="TabControlGRD\SelectedIndexChangingEventArgs.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Tools\GenerateDataTable.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Tools\StringList.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\Resources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Properties\Settings.settings">
+	    <Generator>SettingsSingleFileGenerator</Generator>
+	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+</Project>

@@ -203,6 +203,16 @@ namespace JMControls.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icon {
+            get {
+                object obj = ResourceManager.GetObject("icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icon_expand {
             get {
                 object obj = ResourceManager.GetObject("icon_expand", resourceCulture);
@@ -433,6 +443,16 @@ namespace JMControls.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PasswordIconRight {
+            get {
+                object obj = ResourceManager.GetObject("PasswordIconRight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PushpinHS {
             get {
                 object obj = ResourceManager.GetObject("PushpinHS", resourceCulture);
@@ -616,6 +636,26 @@ namespace JMControls.Properties {
         internal static System.Drawing.Bitmap RightNormalOfficeSilver {
             get {
                 object obj = ResourceManager.GetObject("RightNormalOfficeSilver", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap searchIcon {
+            get {
+                object obj = ResourceManager.GetObject("searchIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap searchImage_16 {
+            get {
+                object obj = ResourceManager.GetObject("searchImage_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

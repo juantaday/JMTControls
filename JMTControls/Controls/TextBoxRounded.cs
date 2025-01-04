@@ -1,133 +1,686 @@
-﻿using JMControls.Enums;
-using JMControls.Helpers;
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-
-
-namespace JMControls.Controls
+﻿namespace JMControls.Controls
 {
+    using System;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+    using JMControls.Enums;
+    using JMControls.Helpers;
+   
+
+
     [DefaultEvent("TextChanged")]
     public class TextBoxRounded : Control
     {
-        int borderRadius = 8;
-        private string oldText = string.Empty;
-        private Pen pensBorder;
-        private string placeholderText;
-        private string baseText;
-        private string _ToolTipButtonToString;
-        private TextBox textBox1;
 
-        GraphicsPath innerRect;
-        private Color fillColor = Color.White;
+       
+        private TextBox textBox;
+        private Button searchButton;
+        private PictureBox iconPictureBox;
+        private ToolTip _toolTip1;
 
-        private bool _VisibleButton;
-        private readonly Button _button;
-        private ToolTip _ToolTip1;
-        private BorderStyle borderStyle;
-        private int borderThickness = 1;
-        private Color borderColorHover = Color.Orange;
-        private Color borderColorActive = Color.Red;
-        private Color borderColorIdle = Color.DeepPink;
-        private Color borderColorDisable = Color.DimGray;
+        private string placeholderText = "JMTControls TextBoxRounded..";
         private Color placeholderColor = Color.FromArgb(180,180,180);
-        private Color _foreColor = Color.Black;
-        private bool isPasswordChar;
         private bool isPlaceholder;
-        private bool isFocused = false;
-
-        MouseState state;
-        MouseState statetText;
-
-        private Image _buttonImage;
-        private PictureBox _iconPictureLeft;
-        private Image _iconLeft;
-        private bool _autosize;
-        private int decimalPosition = 2;
+        private bool _visibleButton = true;
+        private Image buttonImage = Properties.Resources.searchImage_16;
+        private Image iconImage = Properties.Resources.calendarDark;
         private TypeDataEnum _typeData = TypeDataEnum.VarChar;
-        private Padding _textBoxPadding = new Padding(15, 5, 5, 5);
-        private Color _iconLeftBackColor = Color.Transparent;
+        private int decimalPosition = 2;
+        private int _paddingLefth = 5;
+        private MouseState state;
+        private MouseState statetText;
+        private BorderStyle borderStyle = BorderStyle.FixedSingle;
 
         public TextBoxRounded()
         {
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.ResizeRedraw, true);
+          
+
+            textBox = new TextBox();
+            searchButton = new Button();
+            iconPictureBox = new PictureBox();
+
+            _toolTip1 = new System.Windows.Forms.ToolTip();
 
             state = MouseState.Leave;
             statetText = MouseState.Leave;
 
-            pensBorder = new Pen(Color.Gray);
-            borderStyle = BorderStyle.FixedSingle;
+            textBox.BorderStyle = BorderStyle.None;
+            textBox.Location = new Point(30, 5);
+            textBox.Width = this.Width - 60;
 
-            _VisibleButton = true;
+            searchButton.Size = new Size(20, 20);
+            searchButton.Location = new Point(this.Width - 25, 5);
+            searchButton.FlatStyle = FlatStyle.Flat;
+            searchButton.FlatAppearance.BorderSize = 0;
+            searchButton.BackColor = this.BackColor;
+            searchButton.Image =  buttonImage;
+            searchButton.BackColor = Color.Transparent;
+            searchButton.Visible = _visibleButton;
 
-            textBox1 = new TextBox
+            iconPictureBox.Size = new Size(20, 20);
+            iconPictureBox.Location = new Point(7, 5); // Ajuste inicial
+            iconPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            iconPictureBox.Image =  iconImage;
+            iconPictureBox.BackColor = Color.Transparent;
+            iconPictureBox.Visible = false;
+
+            this.Controls.Add(textBox);
+            this.Controls.Add(searchButton);
+            this.Controls.Add(iconPictureBox);
+            this.Font  = new Font("Arial", 12);
+
+           
+            AdjustHeight();
+
+            // Agregar eventos de mouse
+            textBox.Enter += RemovePlaceholder;
+            textBox.Leave += SetPlaceholder;
+
+            textBox.MouseLeave += TextBox_MouseLeave;
+            textBox.MouseMove += TextBox_MouseMove;
+            iconPictureBox.MouseMove += TextBox_MouseMove;
+            searchButton.MouseMove += TextBox_MouseMove;
+            this.MouseMove += Control_MouseMove;
+
+            textBox.TextChanged += TextBox_TextChanged;
+            textBox.FontChanged += TextBox_FontChanged;
+            textBox.KeyPress += TextBox1_KeyPress;
+
+            this.BackColor = Color.White;
+        }
+
+
+        private void Control_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (state == MouseState.Leave || textBox.Focused)
+                return;
+
+            state = MouseState.Leave;
+            Invalidate();
+        }
+
+        private void TextBox_MouseMove(object sender, MouseEventArgs e)
+        {
+
+            if (statetText == MouseState.Down)
             {
-                Parent = this,
-                Location = new Point(2, 0),
-                BorderStyle = BorderStyle.None,
-                TextAlign = HorizontalAlignment.Left,
-                BackColor = fillColor,
-                ForeColor = _foreColor
-            };
-
-
-            _iconPictureLeft  = new PictureBox
+                state = MouseState.Down;
+            }
+            else
             {
-                Size = new Size(16, 16),
-                BackColor = _iconLeftBackColor,
-                Location = new Point(2, 2),
-                Visible   = false,
-            };
+                if (state == MouseState.Enter)
+                    return;
 
-            Font = new Font("Comic Sans MS", 11);
-            Size = new Size(135, 33);
-            DoubleBuffered = true;
+                state = MouseState.Enter;
+                base.OnMouseEnter(e);
+                Invalidate();
+            }
+        }
 
-            textBox1.TextChanged += box_TextChanged;
-            textBox1.MouseDoubleClick += box_MouseDoubleClick;
-            textBox1.Enter += Box_Enter;
-            textBox1.Leave += Box_Leave;
-            textBox1.MouseDown += Box_MouseDown;
-            textBox1.MouseMove += Box_MouseMove;
-            textBox1.KeyPress += TextBox1_KeyPress;
 
-            _ToolTip1 = new System.Windows.Forms.ToolTip();
-
-            _button = new Button
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            if (textBox.Focused)
             {
-                Cursor = Cursors.Default,
-                TabStop = false,
-                Image = Properties.Resources.zoom_Grin_24,
-                ImageAlign = ContentAlignment.MiddleRight,
-                FlatStyle = FlatStyle.Flat,
-                Dock = DockStyle.Right,
-                Width = 32
-            };
+                statetText = MouseState.Down;
+                state = MouseState.Down;
+                base.OnMouseEnter(e);
+                Invalidate();
+            }
+            else if (statetText == MouseState.Down)
+            {
+                state = MouseState.Down;
+                base.OnMouseEnter(e);
+                Invalidate();
+            }
+            else
+            {
+                state = MouseState.Leave;
+                base.OnMouseEnter(e);
+                Invalidate();
+            }
+        }
 
-            _button.Parent = this;
-            _button.FlatAppearance.BorderSize = 0;
-            _button.FlatAppearance.MouseOverBackColor = Color.FromArgb(224, 224, 224);
-            _button.FlatAppearance.MouseDownBackColor = Color.FromArgb(200, 200, 200);
-            _button.BackColor = Color.Transparent;
+        private void TextBox_MouseLeave(object sender, EventArgs e)
+        {
+            if (statetText == MouseState.Leave)
+            {
+                state = MouseState.Leave;
+                base.OnMouseEnter(e);
+                Invalidate();
+            }
+        }
 
-            baseText = string.Empty;
-            textBox1.Text = baseText;
+        private void Control_MouseDown(object sender, MouseEventArgs e)
+        {
+            Capture = false;
+            state = MouseState.Down;
+            base.OnMouseDown(e);
+            Invalidate();
+        }
 
-            this.Text = baseText;
-            this.TabStop = false;
-            this.BorderColorDisable = Color.FromArgb(160, 160, 160);
-            this.Controls.Add(textBox1);
-            this.Controls.Add(_button);
-            this.Controls.Add(_iconPictureLeft);
-            base.Padding = new Padding(15, 5, 5, 5);
-            _button.GotFocus += _button_GotFocus; ;
-            _button.BringToFront();
 
+
+        private void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            this.OnTextChanged(e);
+        }
+
+        private void SetPlaceholder(object sender, EventArgs e)
+        {
+            statetText = MouseState.Leave;
+            state = MouseState.Leave;
+            if (string.IsNullOrEmpty(textBox.Text))
+            {
+                isPlaceholder = true;
+                textBox.Text = placeholderText;
+                textBox.ForeColor = placeholderColor;
+            }
+            Invalidate();
+        }
+
+        private void RemovePlaceholder(object sender, EventArgs e)
+        {
+            statetText = MouseState.Down;
+            state = MouseState.Down;
+
+            if (isPlaceholder)
+            {
+                isPlaceholder = false;
+                textBox.Text = "";
+                textBox.ForeColor = this.ForeColor;
+            }
+
+            Invalidate();
+        }
+
+        private void TextBox_FontChanged(object sender, EventArgs e)
+        {
+            AdjustHeight();
+        }
+
+
+        private bool _isUpdatingHeight;
+
+        private void UpdateControlHeight()
+        {
+            if (_isUpdatingHeight) return;
+
+            _isUpdatingHeight = true;
+
+            try
+            {
+                int txtHeight = TextRenderer.MeasureText("Text", this.Font).Height + 1;
+                textBox.MinimumSize = new Size(0, txtHeight);
+                this.Height = 4 + textBox.Height + this.Padding.Top + this.Padding.Bottom;
+            }
+            finally
+            {
+                _isUpdatingHeight = false;
+            }
+        }
+
+
+        private void AdjustHeight()
+        {
+            if (this.Width == 0) return;
+
+            // Establece la altura mínima
+            int minHeight = TextRenderer.MeasureText("Text", this.Font).Height + 14;
+
+            // Si Multiline es false, ajusta automáticamente la altura
+            if (!textBox.Multiline)
+            {
+                this.Height = minHeight;
+                textBox.Height = textBox.PreferredHeight;
+            }
+            else
+            {
+                // Si Multiline es true, permite que el usuario redimensione el alto
+                this.Height = Math.Max(this.Height, minHeight);
+                textBox.Height = this.Height - 10;
+            }
+
+            // Ajuste del tamaño y la posición de los controles internos
+            searchButton.Height = textBox.Height;
+            iconPictureBox.Height = textBox.Height;
+
+            int offset = Math.Max(BorderThickness, BorderRadius / 2);
+            searchButton.Location = new Point(this.Width - searchButton.Width - offset - BorderThickness - 2, (this.Height - searchButton.Height) / 2);
+
+            if (iconPictureBox.Visible)
+            {
+                iconPictureBox.Location = new Point(offset + BorderThickness, (this.Height - iconPictureBox.Height) / 2);
+                textBox.Location = new Point(iconPictureBox.Right + _paddingLefth, (this.Height - textBox.Height) / 2);
+                textBox.Width = this.Width - iconPictureBox.Width - searchButton.Width - (2 * offset) - (2 * BorderThickness) - 5;
+            }
+            else
+            {
+                textBox.Location = new Point(offset + BorderThickness + _paddingLefth, (this.Height - textBox.Height) / 2);
+                textBox.Width = this.Width - searchButton.Width - (2 * offset) - (2 * BorderThickness) - 5;
+            }
+        }
+
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (Width <= 0 || Height <= 0) return;
+            base.OnPaint(e);
+            Graphics g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            // Rellenar el fondo con el color del control padre
+            g.Clear(this.Parent.BackColor);
+
+            if (BorderStyle != BorderStyle.None && BorderThickness > 0)
+            {
+                using (Pen pen = new Pen(GetBorderColor(), BorderThickness))
+                {
+                    using (GraphicsPath path = GetRoundedRectanglePath(Width, Height, BorderRadius))
+                    {
+                        using (SolidBrush brush = new SolidBrush(this.BackColor))
+                        {
+                            g.FillPath(brush, path);
+                        }
+                        g.DrawPath(pen, path);
+                    }
+                }
+            }
+           
+        }
+
+        private GraphicsPath GetRoundedRectanglePath(int width, int height, int radius)
+        {
+            return new RoundedRectangleF(width - 1, height - 1, radius, 1f, 1f).Path;
+        }
+
+        private Color GetBorderColor()
+        {
+            switch (state)
+            {
+                case MouseState.Leave:
+                    return BorderColorIdle;
+                case MouseState.Enter:
+                    return BorderColorHover;
+                case MouseState.Down:
+                    return BorderColorActive;
+                default:
+                    return BorderColorIdle;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the button is visible.
+        /// </summary>
+        public bool VisibleButton
+        {
+            get => _visibleButton;
+
+            set
+            {
+                if (_visibleButton != value)
+                {
+                    _visibleButton = value;
+                    if (searchButton != null)
+                    {
+                        searchButton.Visible = _visibleButton;
+                    }
+                    Invalidate();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the tooltip text for the button.
+        /// </summary>
+        public string ToolTipButton
+        {
+            get => _toolTipButton;
+
+            set
+            {
+                _toolTipButton = string.IsNullOrEmpty(value) ? string.Empty : value;
+                _toolTip1.SetToolTip(searchButton, _toolTipButton);
+                OnToolTipButtonChanged(EventArgs.Empty);
+            }
+        }
+
+        // Campo privado para almacenar el valor de la propiedad.
+        private string _toolTipButton = string.Empty;
+
+        public event EventHandler ToolTipButtonChanged;
+
+        protected virtual void OnToolTipButtonChanged(EventArgs e)
+        {
+            ToolTipButtonChanged?.Invoke(this, e);
+        }
+
+
+        public Button Button
+        {
+            get => searchButton;
+            set => searchButton = value;    
+        }
+
+
+        [Category("Behavior")]
+        [Browsable(true)]
+        public CharacterCasing CharacterCasing
+        {
+            get => _characterCasing;
+            set
+            {
+               textBox.CharacterCasing  =  _characterCasing = value;
+               Invalidate();
+            }
+        }
+
+        private CharacterCasing _characterCasing;
+
+        [Category("Appearance")]
+        public int BorderRadius { get; set; } = 14;
+
+        [Category("Appearance")]
+        public int BorderThickness { get; set; } = 2;
+
+        [Category("Appearance")]
+        public Color BorderColorIdle { get; set; } = Color.Gray;
+
+        [Category("Appearance")]
+        public Color BorderColorActive { get; set; } = Color.Red;
+
+        [Category("Appearance")]
+        public Color BorderColorHover { get; set; } = Color.Orange;
+
+        [Category("Appearance")]
+        public Color BorderColorDisable { get; set; } = Color.LightGray;
+
+
+        [Category("Appearance")]
+        public BorderStyle BorderStyle
+        {
+            get => borderStyle; set
+            {
+                borderStyle = value;
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        public string PlaceHolderText
+        {
+            get { return placeholderText; }
+            set
+            {
+                placeholderText = value;
+                SetPlaceholder(null, new EventArgs());
+            }
+        }
+
+        [Category("Appearance")]
+        public Color PlaceHolderColor
+        {
+            get { return placeholderColor; }
+            set
+            {
+                placeholderColor = value;
+                if (isPlaceholder)
+                {
+                    textBox.ForeColor = placeholderColor;
+                }
+            }
+        }
+
+        [Category("Appearance")]
+        public override Color BackColor
+        {
+            get { return base.BackColor; }
+            set
+            {
+                base.BackColor = value;
+                textBox.BackColor = value;
+                searchButton.BackColor = value;
+                iconPictureBox.BackColor = value;
+                this.Invalidate(); // Redibuja el control para aplicar el nuevo color de fondo
+            }
+        }
+
+        [Category("Appearance")]
+        public override Font Font
+        {
+            get { return base.Font; }
+            set
+            {
+                base.Font = value;
+                textBox.Font = value;
+                searchButton.Font = value;
+                iconPictureBox.Font = value;
+                AdjustHeight();
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        [Browsable(true)]
+        public new  Color ForeColor
+        {
+            get { return base.ForeColor; }
+            set
+            {
+                base.ForeColor = value;
+                textBox.ForeColor = value;
+                searchButton.ForeColor = value;
+                iconPictureBox.ForeColor = value;
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        public Image ButtonImage
+        {
+            get { return buttonImage; }
+            set
+            {
+                buttonImage = value;
+                searchButton.Image = value;
+            }
+        }
+
+        [Category("Appearance")]
+        public Image IconLeft
+        {
+            get { return iconImage; }
+            set
+            {
+                iconImage = value;
+                iconPictureBox.Image = value;
+                Invalidate();
+            }
+        }
+
+        [Category("Appearance")]
+        public Color IconLeftBackColor
+        {
+            get { return iconPictureBox.BackColor; }
+            set
+            {
+                iconPictureBox.BackColor = value;
+                Invalidate();
+            }
+        }
+
+
+        [Category("Appearance")]
+        [Browsable(true)]
+        public bool  IconLeftVisible
+        {
+            get { return iconPictureBox.Visible; }
+            set
+            {
+                iconPictureBox.Visible = value;
+                AdjustHeight();
+                Invalidate();
+            }
+        }
+     
+
+
+        [Category("Behavior")]
+        public bool UseSystemPasswordChar
+        {
+            get { return textBox.UseSystemPasswordChar; }
+            set { textBox.UseSystemPasswordChar = value; }
+        }
+
+        [Category("Behavior")]
+        public char PasswordChar
+        {
+            get { return textBox.PasswordChar; }
+            set { textBox.PasswordChar = value == '\0' ? '\0' : '*'; }
+        }
+
+        [Category("Behavior")]
+        public int MaxLength
+        {
+            get { return textBox.MaxLength; }
+            set { textBox.MaxLength = value; }
+        }
+
+        [Category("Behavior")]
+        public int TextLength
+        {
+            get { return textBox.TextLength; }
+        }
+
+        [Category("Behavior")]
+        public HorizontalAlignment TextAlign
+        {
+            get { return textBox.TextAlign; }
+            set { textBox.TextAlign = value; }
+        }
+
+        [Category("Behavior")]
+        public bool ReadOnly
+        {
+            get { return textBox.ReadOnly; }
+            set { textBox.ReadOnly = value; }
+        }
+
+        [Category("Behavior")]
+        [Browsable(false)]
+        [DefaultValue("")]
+        public new string Text
+        {
+            get { return isPlaceholder ? string.Empty : textBox.Text; }
+            set
+            {
+                textBox.Text = value;
+                SetPlaceholder(null, null);
+            }
+        }
+
+        [Category("Behavior")]
+        public bool Multiline
+        {
+            get => textBox.Multiline;
+            set
+            {
+                textBox.Multiline = value;
+                AdjustHeight();
+                Invalidate();
+            }
+        }
+
+
+        public new void Focus()
+        {
+            textBox.Focus();
+        }
+
+        public void SelectAll()
+        {
+            textBox.SelectAll();
+        }
+
+        public new void Select()
+        {
+            textBox.Select();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            AdjustHeight();
+        }
+
+        [Category("Action")]
+        public event EventHandler ButtonClick
+        {
+            add { searchButton.Click += value; }
+            remove { searchButton.Click -= value; }
+        }
+
+
+        public new event KeyPressEventHandler KeyPress
+        {
+            add { textBox.KeyPress += value; }
+            remove { textBox.KeyPress -= value; }
+        }
+
+        public new event KeyEventHandler KeyUp
+        {
+            add { textBox.KeyUp += value; }
+            remove { textBox.KeyUp -= value; }
+        }
+
+        public new event KeyEventHandler KeyDown
+        {
+            add { textBox.KeyDown += value; }
+            remove { textBox.KeyDown -= value; }
+        }
+
+        public new event EventHandler TextChanged
+        {
+            add { textBox.TextChanged += value; }
+            remove { textBox.TextChanged -= value; }
+        }
+
+        public TypeDataEnum TypeData
+        {
+            get => _typeData;
+            set
+            {
+                _typeData = value;
+                switch (_typeData)
+                {
+                    case TypeDataEnum.Numeric:
+                        this.Text = "";
+                        break;
+                    case TypeDataEnum.Decimal:
+                        this.Text = "";
+                        break;
+                    case TypeDataEnum.VarChar:
+                        this.Text = "";
+                        break;
+                    case TypeDataEnum.DateTime:
+                        this.Text = DateTime.Now.ToString();
+                        break;
+                    default:
+                        break;
+                }
+
+                Invalidate();
+            }
+        }
+
+        public int DecimalPosition
+        {
+            get => decimalPosition;
+            set => decimalPosition = value;
         }
 
         private void TextBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -147,8 +700,7 @@ namespace JMControls.Controls
                         }
                         break;
                     case TypeDataEnum.Decimal:
-
-                        if (e.KeyChar.ToString().Equals(".") && textBox1.Text.Contains("."))
+                        if (e.KeyChar.ToString().Equals(".") && this.Text.Contains("."))
                         {
                             e.Handled = true;
                             return;
@@ -170,27 +722,26 @@ namespace JMControls.Controls
                                 e.Handled = true;
                                 return;
                             }
-                            if (decimalPosition > 0 && textBox1.Text.Contains("."))
+                            if (decimalPosition > 0 && textBox.Text.Contains("."))
                             {
-                                var positionEdit = textBox1.SelectionStart;
-                                var lenthSelect = textBox1.SelectionLength;
-                                var indexOf = textBox1.Text.IndexOf(".") + 1;
-                                var dcmLength = textBox1.Text.Substring(indexOf, (textBox1.Text.Length - indexOf)).Length;
+                                var positionEdit = textBox.SelectionStart;
+                                var lengthSelect = textBox.SelectionLength;
+                                var indexOf = textBox.Text.IndexOf(".") + 1;
+                                var dcmLength = textBox.Text.Substring(indexOf, (textBox.Text.Length - indexOf)).Length;
 
-                                if ((positionEdit > indexOf) && ((dcmLength - lenthSelect) >= decimalPosition))
+                                if ((positionEdit > indexOf) && ((dcmLength - lengthSelect) >= decimalPosition))
                                 {
                                     e.Handled = true;
                                     return;
                                 }
-
                             }
-
                         }
-
                         break;
                     case TypeDataEnum.VarChar:
+                        // No se necesita validación adicional para texto
                         break;
                     case TypeDataEnum.DateTime:
+                        // No se necesita validación adicional para DateTime
                         break;
                     default:
                         break;
@@ -198,843 +749,27 @@ namespace JMControls.Controls
             }
             catch (Exception)
             {
+                // Manejo de excepciones
             }
         }
 
 
-        private void _button_GotFocus(object sender, EventArgs e)
+        public AutoCompleteMode AutoCompleteMode
         {
-        }
-
-
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-
-        [Category("Action")]
-        public event EventHandler ButtonClick
-        {
-            add { _button.Click += value; }
-            remove { _button.Click -= value; }
-        }
-
-        [Category("Action"), Description("Se genera cuando presiona una tecla en el texto")]
-        public new event KeyPressEventHandler KeyPress
-        {
-            add { textBox1.KeyPress += value; }
-            remove { textBox1.KeyPress -= value; }
-        }
-
-
-
-
-        [Category("Appearance"), Description("Imagen del botón")]
-        public Image ButtonImage
-        {
-            get
-            {
-                return _buttonImage;
-            }
+            get => textBox.AutoCompleteMode;
             set
             {
-                _buttonImage = value;
-                if (_buttonImage == null)
-                    _button.Image = Properties.Resources.zoom_Grin_24;
-                else
-                    _button.Image = _buttonImage;
-                _button.ImageAlign = ContentAlignment.MiddleRight;
-            }
-        }
-
-
-        [Category("Appearance"), Description("Alint tex")]
-        public HorizontalAlignment TextAlign
-        {
-            get
-            { return textBox1.TextAlign; }
-
-            set { textBox1.TextAlign = value; }
-        }
-
-        public bool VisibleButton
-        {
-            get => _VisibleButton;
-
-            set
-            {
-                _VisibleButton = value;
-                _button.Visible = _VisibleButton;
+                textBox.AutoCompleteMode = value;
                 Invalidate();
             }
         }
 
-        public Button GetButton
+        public AutoCompleteSource AutoCompleteSource
         {
-            get
-            {
-                return _button;
-            }
-        }
-
-        public virtual System.Windows.Forms.DockStyle DockButton
-        {
-            get
-            {
-                return _button.Dock;
-            }
-
+            get => textBox.AutoCompleteSource;
             set
             {
-                _button.Dock = value;
-            }
-        }
-
-
-        public int MaxLenght { get => textBox1.MaxLength; set => textBox1.MaxLength = value; }
-
-        public int WidthButton
-        {
-            get
-            {
-                return _button.Width;
-            }
-
-            set
-            {
-                _button.Width = value;
-            }
-        }
-
-
-
-        protected override void OnParentFontChanged(EventArgs e)
-        {
-            this.textBox1.Font = base.Font;
-            this._button.Font = base.Font;
-            base.OnParentFontChanged(e);
-        }
-
-
-        [Category("Action"), Description("Se genera cuado hace click con el maus..")]
-        public new event EventHandler Click
-        {
-            add { textBox1.Click += value; }
-            remove { textBox1.Click -= value; }
-        }
-
-        [Browsable(true)]
-        [Category("Action"), Description("Se genera cuando cambia el texto..")]
-        public new event EventHandler TextChanged
-        {
-            add { textBox1.TextChanged += value; }
-            remove { textBox1.TextChanged -= value; }
-        }
-
-
-        void box_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button != System.Windows.Forms.MouseButtons.Left) return;
-            textBox1.SelectAll();
-        }
-
-        void box_TextChanged(object sender, EventArgs e)
-        {
-
-            if (string.IsNullOrEmpty(textBox1.Text) ||
-                isPlaceholder && statetText != MouseState.Down)
-            {
-                textBox1.ForeColor = this.placeholderColor;
-
-            }
-            else
-            {
-                textBox1.ForeColor = this.ForeColor;
-            }
-
-            baseText = textBox1.Text;
-
-            base.OnTextChanged(e);
-        }
-
-        public void SelectAll()
-        {
-            textBox1.SelectAll();
-        }
-
-
-        public void SelectecText(int star, int length)
-        {
-            try
-            {
-                this.textBox1.Select(star, length);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        public new void Focus()
-        {
-            this.textBox1.Focus();
-        }
-
-        public int TextLength { get => this.textBox1.TextLength; }
-
-
-        void box_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Control && e.KeyCode == Keys.A)
-            {
-                textBox1.SelectionStart = 0;
-                textBox1.SelectionLength = Text.Length;
-            }
-        }
-
-        /// <summary>
-        /// Evento que se genera cuando el control es activo y preciona una tecla
-        /// </summary>
-        /// <remarks>este eventa en controlado porTextBoxRounded </remarks>
-        [Category("Action"),
-         Description("Evento que se genera cuando el control es activo y preciona una tecla.")]
-        public new  event KeyEventHandler KeyDown
-        {
-            add { textBox1.KeyDown += value; }
-            remove { textBox1.KeyDown -= value; }
-        }
-
-        /// <summary>
-        /// Evento que se genera cuando el control es activo y preciona una tecla
-        /// </summary>
-        /// <remarks>este eventa en controlado porTextBoxRounded </remarks>
-        [Category("Action"),
-         Description("Evento que se genera cuando el control es activo y preciona y suelta una tecla.")]
-        public new  event KeyEventHandler KeyUp
-        {
-            add { textBox1.KeyUp += value; }
-            remove { textBox1.KeyUp -= value; }
-        }
-
-        
-        protected override void OnTextChanged(EventArgs e)
-        {
-            base.OnTextChanged(e);
-
-            if (string.IsNullOrEmpty(baseText))
-            {
-                textBox1.ForeColor = this.PlaceHolderColor;
-                textBox1.Text = this.PlaceHolderText;
-            }
-            else
-            {
-                textBox1.ForeColor = this.ForeColor;
-                textBox1.Text = baseText;
-            }
-
-        }
-        protected override void OnFontChanged(EventArgs e)
-        {
-            base.OnFontChanged(e);
-            textBox1.Font = Font;
-            Invalidate();
-        }
-        protected override void OnForeColorChanged(EventArgs e)
-        {
-            base.OnForeColorChanged(e);
-            textBox1.ForeColor = this.ForeColor; // Sincroniza el color
-            this.Invalidate(); // Redibuja el control
-        }
-
-
-        public Button Button
-        {
-            get
-            {
-                return _button;
-            }
-
-        }
-
-        public Padding TextBoxPadding {
-            get => _textBoxPadding;
-            set
-            {
-                if (_textBoxPadding != value) {
-                    _textBoxPadding = value;
-                    Invalidate();
-                }
-                 
-            }   
-        }
-
-        public Image IconLeft
-        {
-            get => _iconLeft;
-            set
-            {
-                if (_iconLeft != value)  // Solo actualiza si hay un cambio
-                {
-                    _iconLeft = value;
-                    Invalidate();
-                }
-            }
-        }
-
-        public Color IconLeftBackColor
-        {
-            get => _iconLeftBackColor;
-            set
-            {
-                if (_iconLeftBackColor != value)  // Solo actualiza si hay un cambio
-                {
-                    _iconLeftBackColor = value;
-                    Invalidate();
-                }
-            }
-        }
-
-        public bool IconLeftVisible
-        {  // Corregido el error tipográfico "IconLefthVisible"
-            get => _iconPictureLeft.Visible;
-            set
-            {
-                if (_iconPictureLeft.Visible != value)  // Solo actualiza si hay un cambio
-                {
-                    _iconPictureLeft.Visible = value;
-                    Invalidate();
-                }
-            }
-        }
-
-        // IconLocationLeft
-        public Point IconLocationLeft
-        {
-            get => _iconPictureLeft.Location;
-            set
-            {
-                if (_iconPictureLeft.Location != value)  // Solo actualiza si hay un cambio
-                {
-                    _iconPictureLeft.Location = value;
-                    Invalidate();
-                }
-            }
-        }
-
-        // IconSizeLeft
-        public Size IconSizeLeft
-        {
-            get => _iconPictureLeft.Size;
-            set
-            {
-                if (_iconPictureLeft.Size != value)  // Solo actualiza si hay un cambio
-                {
-                    _iconPictureLeft.Size = value;
-                    Invalidate();
-                }
-            }
-        }
-
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            // Habilitar gráficos de alta calidad
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-            // Calcular rectángulo interno redondeado
-            var innerRect = new RoundedRectangleF(this.Width - 1, this.Height - 1, BorderRadius, 1f, 1f).Path;
-
-            // Ajustar altura del control según el cuadro de texto
-            if (textBox1.Height >= Height - (int)(BorderThickness * 2.8))
-                Height = textBox1.Height + (int)(BorderThickness * 2.8);
-
-            // Definir márgenes y posiciones
-            int padding = (int)(BorderThickness * 1.5);
-            int iconSize = Height - padding * 2; // Tamaño del ícono
-            int buttonSize = iconSize; // Tamaño del botón
-
-            int iconLeftX = padding;
-            int textBoxX = iconLeftX + iconSize + padding;
-            int textBoxWidth = Width - textBoxX - buttonSize - padding * 2;
-            int buttonX = textBoxX + textBoxWidth + padding;
-
-            // Establecer ubicación y tamaño de los controles
-            _iconPictureLeft.Size = new Size(iconSize, iconSize);
-            _iconPictureLeft.Location = new Point(iconLeftX, Height / 2 - iconSize / 2);
-
-            textBox1.Size = new Size(textBoxWidth, Height - padding * 2);
-            textBox1.Location = new Point(textBoxX, Height / 2 - textBox1.Height / 2);
-
-            _button.Size = new Size(buttonSize, buttonSize);
-            _button.Location = new Point(buttonX, Height / 2 - buttonSize / 2);
-
-            // Dibujar fondo del control
-            using (SolidBrush brush = new SolidBrush(FillColor))
-                e.Graphics.FillPath(brush, innerRect);
-
-            // Dibujar borde según el estado del mouse
-            Color borderColor;
-            if (state == MouseState.Leave)
-            {
-                borderColor = BorderColorIdle;
-            }
-            else if (state == MouseState.Enter)
-            {
-                borderColor = BorderColorHover;
-            }
-            else if (state == MouseState.Down)
-            {
-                borderColor = BorderColorActive;
-            }
-            else
-            {
-                borderColor = BorderColorIdle;
-            }
-
-            if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-            {
-                using (Pen pen = new Pen(borderColor, BorderThickness))
-                {
-                    if (BorderRadius == 0)
-                    {
-                        Rectangle borderRect = new Rectangle(
-                            new Point(BorderThickness, BorderThickness),
-                            new Size(Width - BorderThickness * 2, Height - BorderThickness * 2)
-                        );
-                        e.Graphics.DrawRectangle(pen, borderRect);
-                    }
-                    else
-                    {
-                        using (GraphicsPath borderPath = new RoundedRectangleF(
-                            Width - 1, Height - 1, BorderRadius, 1, 1).Path)
-                        {
-                            e.Graphics.DrawPath(pen, borderPath);
-                        }
-                    }
-                }
-            }
-
-            // Dibujar ícono a la izquierda
-            if (_iconLeft != null && _iconPictureLeft.Visible)
-            {
-                e.Graphics.DrawImage(_iconLeft, _iconPictureLeft.Bounds);
-            }
-
-            // Llamar a la base y manejar transparencia
-            Transparenter.MakeTransparent(this, e.Graphics);
-            base.OnPaint(e);
-        }
-
-
-        #region Methods
-
-        protected override void OnResize(EventArgs e)
-        {
-
-            base.OnResize(e);
-            if (base.DesignMode)
-            {
-                this.UpdateControlHeight();
-            }
-        }
-
-        public string SelectedText
-        {
-            get
-            {
-                return textBox1.SelectedText;
-            }
-        }
-
-        public  new   string Text
-        {
-            get
-            {
-                return baseText;
-            }
-            set
-            {
-                textBox1.Text = value;
-                baseText = value;
-                SetPlaceholder();
-            }
-        }
-
-        public decimal GetValue  
-        {
-            get {
-              
-                decimal.TryParse(textBox1.Text, out valueDecimal);
-                return valueDecimal;
-            }
-        }
-        private decimal valueDecimal =0;
-        public bool HasValuedDecimal
-        {
-            get
-            {
-
-                return decimal.TryParse(textBox1.Text, out valueDecimal);
- 
-            }
-        }
-
-        private void Box_Enter(object sender, EventArgs e)
-        {
-            statetText = MouseState.Down;
-            state = MouseState.Down;
-
-            isFocused = true;
-            this.Invalidate();
-            RemovePlaceholder();
-        }
-        private void Box_Leave(object sender, EventArgs e)
-        {
-            statetText = MouseState.Leave;
-            state = MouseState.Leave;
-            isFocused = false;
-            Invalidate();
-            SetPlaceholder();
-        }
-
-        private void Box_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (statetText == MouseState.Down)
-            {
-                state = MouseState.Down;
-
-            }
-            else
-            {
-                state = MouseState.Enter;
-                base.OnMouseEnter(e);
-                Invalidate();
-            }
-
-        }
-
-        public new string Name
-        {
-            get { return base.Name; }
-            set
-            {
-                base.Name = value;
-                textBox1.Name = value;
-            }
-        }
-
-
-        public Color PlaceHolderColor { get => placeholderColor; set => placeholderColor = value; }
-
-
-        public string PlaceHolderText
-        {
-            get => placeholderText;
-            set
-            {
-
-                placeholderText = value;
-                // textBox1.Text = "";
-                SetPlaceholder();
-            }
-        }
-
-
-        private void Box_MouseDown(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            if (textBox1.Focused)
-            {
-                statetText = MouseState.Down;
-                state = MouseState.Down;
-                base.OnMouseEnter(e);
-                Invalidate();
-            }
-            else if (statetText == MouseState.Down)
-            {
-                state = MouseState.Down;
-                base.OnMouseEnter(e);
-                Invalidate();
-            }
-            else
-            {
-                state = MouseState.Enter;
-                base.OnMouseEnter(e);
-                Invalidate();
-            }
-
-        }
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            if (statetText == MouseState.Leave)
-            {
-                state = MouseState.Leave;
-                base.OnMouseEnter(e);
-                Invalidate();
-            }
-
-        }
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            Capture = false;
-            state = MouseState.Down;
-            base.OnMouseDown(e);
-            Invalidate();
-        }
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            if (state != MouseState.Leave)
-                state = MouseState.Enter;
-            base.OnMouseUp(e);
-            Invalidate();
-        }
-
-        #endregion
-
-
-        #region Properties
-
-
-        public override Color BackColor
-        {
-            get { return base.BackColor; }
-            set
-            {
-                base.BackColor = value;
-                textBox1.BackColor = value;
-            }
-        }
-
-        public Color BorderColorActive
-        {
-            get { return borderColorActive; }
-            set
-            {
-                borderColorActive = value;
-                Invalidate();
-            }
-
-        }
-
-        public Color BorderColorDisable
-        {
-            get { return borderColorDisable; }
-            set
-            {
-                borderColorDisable = value;
-                Invalidate();
-            }
-
-        }
-
-        public Color BorderColorHover
-        {
-            get { return borderColorHover; }
-            set
-            {
-                borderColorHover = value;
-                Invalidate();
-            }
-
-        }
-
-        public BorderStyle BorderStyle
-        {
-            get => borderStyle; set
-            {
-                borderStyle = value;
-                Invalidate();
-            }
-        }
-
-        public int BorderThickness
-        {
-            get => borderThickness; set
-            {
-                borderThickness = value;
-                Invalidate();
-            }
-        }
-
-
-        public int BorderRadius
-        {
-            get { return borderRadius; }
-            set
-            {
-                if (value >= 0)
-                {
-                    borderRadius = value;
-                    //if (borderRadius == 0)
-                    //    this.Padding = new Padding(1);
-                    //else if (borderRadius < 5)
-                    //    this.Padding = new Padding(3, 2, 3, 2);
-                    //else if (borderRadius < 9)
-                    //    this.Padding = new Padding(5, 3, 5, 3);
-                    //else if (borderRadius < 12)
-                    //    this.Padding = new Padding(6, 4, 6, 4);
-                    //else
-                    //    this.Padding = new Padding(8, 5, 7, 5);
-
-                    UpdateControlHeight();
-                    this.Invalidate();//Redraw control
-                }
-            }
-        }
-
-
-        private void UpdateControlHeight()
-        {
-            if (!this.Multiline)
-            {
-                int txtHeight = TextRenderer.MeasureText("Text", this.Font).Height + 1;
-                textBox1.Multiline = true;
-                textBox1.MinimumSize = new Size(0, txtHeight);
-                textBox1.Multiline = false;
-
-                this.Height = 4 + textBox1.Height + this.Padding.Top + this.Padding.Bottom;
-            }
-        }
-
-        public Color BorderColorIdle
-        {
-            get { return borderColorIdle; }
-
-            set
-            {
-                borderColorIdle = value;
-                Invalidate();
-            }
-        }
-        public Color FillColor
-        {
-            get => fillColor;
-
-            set
-            {
-                fillColor = value;
-                if (value != Color.Transparent)
-                {
-                    this.textBox1.BackColor = value;
-                }
-
-                Invalidate();
-            }
-        }
-
-        public bool PasswordChar
-        {
-            get { return isPasswordChar; }
-            set
-            {
-                isPasswordChar = value;
-                textBox1.UseSystemPasswordChar = value;
-            }
-        }
-
-        private void SetPlaceholder()
-        {
-            if (string.IsNullOrWhiteSpace(textBox1.Text) && !string.IsNullOrWhiteSpace(placeholderText))
-            {
-                isPlaceholder = true;
-                textBox1.Text = placeholderText;
-                textBox1.ForeColor = placeholderColor;
-                textBox1.UseSystemPasswordChar = false;
-            }
-            else
-            {
-                textBox1.ForeColor = this._foreColor;
-                textBox1.UseSystemPasswordChar = isPasswordChar;
-            }
-        }
-
-        private void RemovePlaceholder()
-        {
-            if (isPlaceholder && placeholderText != "" && this.baseText.ToUpper().Equals(placeholderText.ToUpper()))
-            {
-                isPlaceholder = false;
-                textBox1.Text = "";
-                textBox1.ForeColor = this.ForeColor;
-                textBox1.UseSystemPasswordChar = isPasswordChar;
-            }
-            else {
-                textBox1.UseSystemPasswordChar = isPasswordChar;
-            }
-        }
-
-
-        public string ToolTipButton
-        {
-
-            get { return _ToolTipButtonToString; }
-
-            set
-            {
-                if (value == null || string.IsNullOrEmpty(value))
-                {
-                    _ToolTipButtonToString = string.Empty;
-                    _ToolTip1.SetToolTip(_button, _ToolTipButtonToString);
-
-                }
-                else
-                {
-                    _ToolTipButtonToString = value;
-                    _ToolTip1.SetToolTip(_button, _ToolTipButtonToString);
-                }
-
-            }
-
-        }
-
-        public bool ReadOnly
-        {
-            get
-            {
-                return textBox1.ReadOnly;
-            }
-            set
-            {
-                textBox1.ReadOnly = value;
-            }
-        }
-
-        public override Color ForeColor
-        {
-            get => base.ForeColor;
-            set
-            {
-                base.ForeColor = value; // Asegúrate de establecer el valor en la clase base.
-                _foreColor = value;
-                textBox1.ForeColor = value; // Propaga el color al control interno.
-                this.Invalidate(); // Redibuja el control para reflejar el cambio.
-            }
-        }
-
-
-        public bool Autosize { get => _autosize; set => _autosize = value; }
-
-        public CharacterCasing CharacterCasing { get => textBox1.CharacterCasing; set => textBox1.CharacterCasing = value; }
-
-        public int DecimalPosition
-        {
-            get => decimalPosition;
-            set
-            {
-                decimalPosition = value;
-                textBox1.Text = string.Empty;
-                Invalidate();
-
-            }
-
-        }
-
-        public bool Multiline
-        {
-            get => textBox1.Multiline;
-            set
-            {
-                textBox1.Multiline = value;
+                textBox.AutoCompleteSource = value;
                 Invalidate();
             }
 
@@ -1042,80 +777,81 @@ namespace JMControls.Controls
 
         public int SelectionLength
         {
-            get => textBox1.SelectionLength;
+            get => textBox.SelectionLength;
             set
             {
-                textBox1.SelectionLength = value;
-                textBox1.Text = string.Empty;
-                Invalidate();
+                textBox.SelectionLength = value;
             }
-
-        }
-
-        public TypeDataEnum TypeData
-        {
-            get => _typeData;
-            set
-            {
-                _typeData = value;
-                switch (_typeData)
-                {
-                    case TypeDataEnum.Numeric:
-                        textBox1.Text = "";
-                        break;
-                    case TypeDataEnum.Decimal:
-                        textBox1.Text = "";
-                        break;
-                    case TypeDataEnum.VarChar:
-                        textBox1.Text = "";
-                        break;
-                    case TypeDataEnum.DateTime:
-                        textBox1.Text = DateTime.Now.ToString();
-                        break;
-                    default:
-                        break;
-                }
-
-                Invalidate();
-            }
-
-        }
-
-        public AutoCompleteMode AutoCompleteMode
-        {
-            get => textBox1.AutoCompleteMode;
-            set
-            {
-                textBox1.AutoCompleteMode = value;
-                Invalidate();
-            }
-
-        }
-
-        public AutoCompleteSource AutoCompleteSource
-        {
-            get => textBox1.AutoCompleteSource;
-            set
-            {
-                textBox1.AutoCompleteSource = value;
-                Invalidate();
-            }
-
         }
 
         public AutoCompleteStringCollection AutoCompleteCustomSource
         {
-            get => textBox1.AutoCompleteCustomSource;
+            get => textBox.AutoCompleteCustomSource;
             set
             {
-                textBox1.AutoCompleteCustomSource = value;
+                textBox.AutoCompleteCustomSource = value;
                 Invalidate();
             }
 
         }
 
+        public string SelectedText
+        {
+            get
+            {
+                return textBox.SelectedText;
+            }
+        }
 
-        #endregion
+        public new bool Enabled
+        {
+            get=> textBox.Enabled;
+            set {
+                if (base.Enabled != value) { 
+                    base.Enabled = value;
+                    textBox.Enabled = value;
+                }
+            }
+        }
+
+        // Bandera para detectar llamadas redundantes
+        private bool disposed = false;
+
+        // Método Dispose
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // Liberar textBox
+                    if (textBox != null)
+                    {
+                        textBox.Dispose();
+                        textBox = null;
+                    }
+
+                    // disposing Button
+                    if (searchButton != null)
+                    {
+                        searchButton.Dispose();
+                        searchButton = null;
+                    }
+
+                    // disposing Iconimage
+                    if (iconImage != null)
+                    {
+                        iconImage.Dispose();
+                        iconImage = null;
+                    }
+                }
+
+                // Llamar a la implementación base
+                base.Dispose(disposing);
+
+                disposed = true;
+            }
+        }
 
 
     }

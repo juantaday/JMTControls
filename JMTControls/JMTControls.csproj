@@ -126,6 +126,9 @@
     <Compile Include="Controls\ButtonSolid.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TextBoxRounded.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Enums\MouseState.cs" />
     <Compile Include="Enums\TypeDataEnum.cs" />
     <Compile Include="ExpandCollapsePanel\AccordionCotrol.cs">
@@ -225,7 +228,7 @@
     <Compile Include="Controls\RJTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\TextBoxRounded.cs">
+    <Compile Include="Controls\TextBoxRoundedxx.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ToggleSwitch.cs">
@@ -292,6 +295,8 @@
     <Content Include="Resources\delete_12x12.png" />
     <Content Include="Resources\DownArrow.png" />
     <Content Include="Resources\DropDown.bmp" />
+    <None Include="Resources\user_23.png" />
+    <None Include="Resources\find_Black_16.png" />
     <Content Include="Resources\InsertTabControlHS.png" />
     <Content Include="Resources\leftArrow.bmp" />
     <Content Include="Resources\leftArrowDown.bmp" />
@@ -311,6 +316,7 @@
     <Content Include="Resources\LeftNormalOfficeBlue.png" />
     <Content Include="Resources\LeftNormalOfficeOlive.png" />
     <Content Include="Resources\LeftNormalOfficeSilver.png" />
+    <None Include="Resources\PasswordIconRight.png" />
     <Content Include="Resources\PushpinHS.png" />
     <Content Include="Resources\RightArrow.bmp" />
     <Content Include="Resources\RightArrowDown.bmp" />
@@ -330,6 +336,7 @@
     <Content Include="Resources\RightNormalOfficeBlue.png" />
     <Content Include="Resources\RightNormalOfficeOlive.png" />
     <Content Include="Resources\RightNormalOfficeSilver.png" />
+    <None Include="Resources\searchImage_16.png" />
     <Content Include="Resources\TabClose.png" />
     <Content Include="Resources\TabHover.png" />
     <Content Include="Resources\TabPressed.png" />
@@ -362,8 +369,8 @@
     <EmbeddedResource Include="Controls\RJTextBox.resx">
       <DependentUpon>RJTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TextBoxRounded.resx">
-      <DependentUpon>TextBoxRounded.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\TextBoxRoundedxx.resx">
+      <DependentUpon>TextBoxRoundedxx.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ExpandCollapsePanel\AccordionCotrol.resx">
       <DependentUpon>AccordionCotrol.cs</DependentUpon>

@@ -1,16 +1,14 @@
 ﻿namespace JMControls.Controls
 {
+    using JMControls.Tools;
     using Microsoft.VisualBasic;
     using MultiColumnComboSuggestionBox.Funtions;
     using MultiColumnComboSuggestionBox.Models;
-    using JMControls.Tools;
     using System;
     using System.Collections.Generic;
     using System.Data;
     using System.Drawing;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows.Forms;
 
     public class ComboBoxAutocompleteSuggestion : System.Windows.Forms.ComboBox
@@ -280,7 +278,7 @@
             {
                 return null;
             }
-            foreach (DataRow item  in this.DataSourceSettig.Rows)
+            foreach (DataRow item in this.DataSourceSettig.Rows)
             {
                 if (i== index)
                 {
@@ -364,7 +362,7 @@
                 throw new Exception(ex.Message + "\r\nIn ColumnComboBox.OnKeyDown(KeyEventArgs).");
             }
         }
-        
+
 
         protected override void OnTextChanged(EventArgs e) //Doesn't call the base so no wiring up this event for you.
         {
@@ -578,7 +576,7 @@
                 throw new Exception(ex.Message + "\r\nIn ColumnComboBox.OnSelectedIndexChanged(EventArgs).");
             }
         }
-               
+
         //This is where the magic happens that makes it appear dropped down with multiple columns
         protected override void OnDrawItem(DrawItemEventArgs e)
         {
