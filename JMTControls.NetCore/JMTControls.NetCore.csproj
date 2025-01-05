@@ -8,6 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Update="Componets\ElipseComponent.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Componets\MoveComponent.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
 	  <Compile Update="Controls\AlertPanelControl.cs">
 	    <SubType>UserControl</SubType>
 	  </Compile>
@@ -93,6 +99,9 @@
 	    <SubType>Component</SubType>
 	  </Compile>
 	  <Compile Update="Controls\ToggleSwitchAlto.cs">
+	    <SubType>Component</SubType>
+	  </Compile>
+	  <Compile Update="Implementation\OLVCheckedListBoxItem.cs">
 	    <SubType>Component</SubType>
 	  </Compile>
 	  <Compile Update="Properties\Resources.Designer.cs">

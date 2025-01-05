@@ -179,6 +179,9 @@
                 textBox.Text = placeholderText;
                 textBox.ForeColor = placeholderColor;
             }
+            else {
+                isPlaceholder = false;
+            }
             Invalidate();
         }
 
@@ -229,7 +232,7 @@
             if (this.Width == 0) return;
 
             // Establece la altura mínima
-            int minHeight = TextRenderer.MeasureText("Text", this.Font).Height + 14;
+            int minHeight = TextRenderer.MeasureText("Text", this.Font).Height + 18;
 
             // Si Multiline es false, ajusta automáticamente la altura
             if (!textBox.Multiline)
@@ -571,7 +574,7 @@
         }
 
         [Category("Behavior")]
-        [Browsable(false)]
+        [Browsable(true)]
         [DefaultValue("")]
         public new string Text
         {
