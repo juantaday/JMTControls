@@ -173,11 +173,15 @@
         {
             statetText = MouseState.Leave;
             state = MouseState.Leave;
-            if (string.IsNullOrEmpty(textBox.Text))
+            if (string.IsNullOrEmpty(textBox.Text) && (this.placeholderText?? "").Length > 0)
             {
                 isPlaceholder = true;
                 textBox.Text = placeholderText;
                 textBox.ForeColor = placeholderColor;
+            }
+            else
+            {
+                isPlaceholder = false;
             }
             Invalidate();
         }
@@ -610,6 +614,7 @@
         {
             textBox.Select();
         }
+       
 
         protected override void OnResize(EventArgs e)
         {
@@ -795,12 +800,10 @@
 
         }
 
-        public string SelectedText
+        public  string SelectedText
         {
-            get
-            {
-                return textBox.SelectedText;
-            }
+            get => textBox.SelectedText;
+            set => textBox.SelectedText = value;
         }
 
         public new bool Enabled

@@ -801,14 +801,13 @@
 
         }
 
+        [Browsable(false)]
         public string SelectedText
         {
-            get
-            {
-                return textBox.SelectedText;
-            }
+            get => textBox.SelectedText;
+            set => textBox.SelectedText = value;
         }
-
+    
         public new bool Enabled
         {
             get=> textBox.Enabled;
