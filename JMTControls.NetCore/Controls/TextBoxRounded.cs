@@ -173,7 +173,7 @@
         {
             statetText = MouseState.Leave;
             state = MouseState.Leave;
-            if (string.IsNullOrEmpty(textBox.Text))
+            if (string.IsNullOrEmpty(textBox.Text) && (this.placeholderText?? "").Length > 0)
             {
                 isPlaceholder = true;
                 textBox.Text = placeholderText;
@@ -581,8 +581,11 @@
             get { return isPlaceholder ? string.Empty : textBox.Text; }
             set
             {
-                textBox.Text = value;
-                SetPlaceholder(null, null);
+                if (textBox.Text != value) {
+                    textBox.Text = value;
+                    SetPlaceholder(null, null);
+                }
+                
             }
         }
 

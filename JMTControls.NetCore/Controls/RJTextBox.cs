@@ -452,7 +452,7 @@ namespace JMTControls.NetCore.Controls
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.Controls.Add(this.textBox1);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
+            this.Font = new System.Drawing.Font("Arial", 9.5F);
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "RJTextBox";
