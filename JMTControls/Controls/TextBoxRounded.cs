@@ -575,7 +575,7 @@
         }
 
         [Category("Behavior")]
-        [Browsable(false)]
+        [Browsable(true)]
         [DefaultValue("")]
         public new string Text
         {

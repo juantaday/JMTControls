@@ -342,6 +342,22 @@ namespace JMControls.Controls
                 Invalidate();
             }
         }
+
+        [Browsable(true)]
+        [DefaultValue(true)]    
+        public new bool Enabled
+        {
+            get
+            {
+                return base.Enabled;
+            }
+            set
+            {
+                base.Enabled = value;
+                Invalidate();
+            }
+        }  
+
         public bool Transparency
         {
             get
