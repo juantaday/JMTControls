@@ -36,8 +36,12 @@ namespace JMTControls.NetCore.Controls
 		{
 			// VBConversions Note: Non-static class variable initialization is below.  Class variables cannot be initially assigned non-static values in C#.
 			childView = new DetailControl() { Height = 300 - 22 - 5 * 2, Visible = false };
+            base.RowHeaderMouseClick += MasterControl_RowHeaderMouseClick;
+            base.RowPostPaint += MasterControl_RowPostPaint;
+            base.Scroll += MasterControl_Scroll;
+            base.SelectionChanged += MasterControl_SelectionChanged;
 
-			this.Controls.Add(childView);
+            this.Controls.Add(childView);
 			InitializeComponent();
 			_cDataset = cDataset;
 			childView._cDataset = cDataset;
@@ -45,7 +49,10 @@ namespace JMTControls.NetCore.Controls
 			Dock = DockStyle.Fill;
 
 		}
-		private void InitializeComponent()
+
+   
+
+        private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MasterControl));
@@ -127,19 +134,21 @@ namespace JMTControls.NetCore.Controls
 				collapseRow = false;
 			}
 		}
-		private void MasterControl_RowPostPaint(DataGridView sender, DataGridViewRowPostPaintEventArgs e)
-		{
-			//set childview control
-			var rect = new Rectangle(e.RowBounds.X + ((rowDefaultHeight - 16) / 2), e.RowBounds.Y + ((rowDefaultHeight - 16) / 2), 16, 16);
+        private void MasterControl_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+         {
+	
+			var gridView = (DataGridView)sender;
+
+            var rect = new Rectangle(e.RowBounds.X + ((rowDefaultHeight - 16) / 2), e.RowBounds.Y + ((rowDefaultHeight - 16) / 2), 16, 16);
 			if (collapseRow)
 			{
 				if (rowCurrent.Contains(e.RowIndex))
 				{
-					sender.Rows[e.RowIndex].DividerHeight = sender.Rows[e.RowIndex].Height - rowDefaultHeight;
+                    gridView.Rows[e.RowIndex].DividerHeight = gridView.Rows[e.RowIndex].Height - rowDefaultHeight;
 					e.Graphics.DrawImage(RowHeaderIconList.Images[(int)rowHeaderIcons.collapse], rect);
-					childView.Location = new Point(e.RowBounds.Left + sender.RowHeadersWidth, System.Convert.ToInt32(e.RowBounds.Top + rowDefaultHeight) + 5);
-					childView.Width = e.RowBounds.Right - sender.RowHeadersWidth;
-					childView.Height = sender.Rows[e.RowIndex].DividerHeight - 10;
+					childView.Location = new Point(e.RowBounds.Left + gridView.RowHeadersWidth, System.Convert.ToInt32(e.RowBounds.Top + rowDefaultHeight) + 5);
+					childView.Width = e.RowBounds.Right - gridView.RowHeadersWidth;
+					childView.Height = gridView.Rows[e.RowIndex].DividerHeight - 10;
 					childView.Visible = true;
 				}
 				else
@@ -153,11 +162,11 @@ namespace JMTControls.NetCore.Controls
 			{
 				if (rowCurrent.Contains(e.RowIndex))
 				{
-					sender.Rows[e.RowIndex].DividerHeight = sender.Rows[e.RowIndex].Height - rowDefaultHeight;
+                    gridView.Rows[e.RowIndex].DividerHeight = gridView.Rows[e.RowIndex].Height - rowDefaultHeight;
 					e.Graphics.DrawImage(RowHeaderIconList.Images[(int)rowHeaderIcons.collapse], rect);
-					childView.Location = new Point(e.RowBounds.Left + sender.RowHeadersWidth, System.Convert.ToInt32(e.RowBounds.Top + rowDefaultHeight) + 5);
-					childView.Width = e.RowBounds.Right - sender.RowHeadersWidth;
-					childView.Height = sender.Rows[e.RowIndex].DividerHeight - 10;
+					childView.Location = new Point(e.RowBounds.Left + gridView.RowHeadersWidth, System.Convert.ToInt32(e.RowBounds.Top + rowDefaultHeight) + 5);
+					childView.Width = e.RowBounds.Right - gridView.RowHeadersWidth;
+					childView.Height = gridView.Rows[e.RowIndex].DividerHeight - 10;
 					childView.Visible = true;
 				}
 				else
@@ -168,6 +177,8 @@ namespace JMTControls.NetCore.Controls
 
 			GridTheme.RowPostPaint_HeaderCount(sender, e);
 		}
+
+
 		private void MasterControl_Scroll(object sender, ScrollEventArgs e)
 		{
 			if (!(rowCurrent.Count == 0))

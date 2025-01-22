@@ -315,6 +315,22 @@
             }
         }
 
+
+
+        // Propiedades del control
+        [Browsable(true)]
+        public new string Name
+        {
+            get => textBox.Name;
+            set => textBox.Name = value;
+        }
+
+        public new object Tag
+        {
+            get => textBox.Tag;
+            set => textBox.Tag = value;
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether the button is visible.
         /// </summary>
