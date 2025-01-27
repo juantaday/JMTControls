@@ -38,7 +38,16 @@ namespace JMTControls.NetCore.Controls
 			newGrid.RowPostPaint += GridTheme.RowPostPaint_HeaderCount;
 			childGrid.Add(newGrid);
 		}
-		#endregion
-	}
+
+        public void RemoveChildren()
+        {
+            if (this.TabPages?.Count > 0)
+            {
+                this.TabPages.Clear();
+            }
+        }
+
+        #endregion
+    }
 
 }

@@ -1,30 +1,30 @@
-﻿namespace JMControls.Controls
-{
-    using System;
-    using System.ComponentModel;
-    using System.Drawing;
-    using System.Drawing.Drawing2D;
-    using System.Text.RegularExpressions;
-    using System.Windows.Forms;
-    using JMControls.Enums;
-    using JMControls.Helpers;
-   
+﻿using JMControls.Enums;
+using JMControls.Helpers;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
+using System.Drawing;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System;
 
+namespace JMControls.Controls
+{
 
     [DefaultEvent("TextChanged")]
     public class TextBoxRounded : Control
     {
 
-       
+
         private TextBox textBox;
         private Button searchButton;
         private PictureBox iconPictureBox;
         private ToolTip _toolTip1;
 
         private string placeholderText = "JMTControls TextBoxRounded..";
-        private Color placeholderColor = Color.FromArgb(180,180,180);
+        private Color placeholderColor = Color.FromArgb(180, 180, 180);
         private bool isPlaceholder;
         private bool _visibleButton = true;
+        private bool _useSystemPasswordChar;
         private Image buttonImage = Properties.Resources.searchImage_16;
         private Image iconImage = Properties.Resources.calendarDark;
         private TypeDataEnum _typeData = TypeDataEnum.VarChar;
@@ -36,7 +36,7 @@
 
         public TextBoxRounded()
         {
-          
+
 
             textBox = new TextBox();
             searchButton = new Button();
@@ -56,23 +56,23 @@
             searchButton.FlatStyle = FlatStyle.Flat;
             searchButton.FlatAppearance.BorderSize = 0;
             searchButton.BackColor = this.BackColor;
-            searchButton.Image =  buttonImage;
+            searchButton.Image = buttonImage;
             searchButton.BackColor = Color.Transparent;
             searchButton.Visible = _visibleButton;
 
             iconPictureBox.Size = new Size(20, 20);
             iconPictureBox.Location = new Point(7, 5); // Ajuste inicial
             iconPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            iconPictureBox.Image =  iconImage;
+            iconPictureBox.Image = iconImage;
             iconPictureBox.BackColor = Color.Transparent;
             iconPictureBox.Visible = false;
 
             this.Controls.Add(textBox);
             this.Controls.Add(searchButton);
             this.Controls.Add(iconPictureBox);
-            this.Font  = new Font("Arial", 12);
+            this.Font = new Font("Arial", 12);
 
-           
+
             AdjustHeight();
 
             // Agregar eventos de mouse
@@ -166,18 +166,32 @@
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            this.OnTextChanged(e);
+            if (string.IsNullOrEmpty(this.Text))
+            {
+                textBox.UseSystemPasswordChar = false;
+            }
+            else if (_useSystemPasswordChar && !string.Equals(this.Text, placeholderText, StringComparison.Ordinal))
+            {
+                textBox.UseSystemPasswordChar = true;
+            }
+            else
+            {
+                textBox.UseSystemPasswordChar = false;
+            }
+
+            OnTextChanged(e);
         }
 
         private void SetPlaceholder(object sender, EventArgs e)
         {
             statetText = MouseState.Leave;
             state = MouseState.Leave;
-            if (string.IsNullOrEmpty(textBox.Text) && (this.placeholderText?? "").Length > 0)
+            if (string.IsNullOrEmpty(textBox.Text) && !string.IsNullOrEmpty(placeholderText))
             {
                 isPlaceholder = true;
                 textBox.Text = placeholderText;
                 textBox.ForeColor = placeholderColor;
+                textBox.UseSystemPasswordChar = false;
             }
             else
             {
@@ -201,6 +215,7 @@
             Invalidate();
         }
 
+       
         private void TextBox_FontChanged(object sender, EventArgs e)
         {
             AdjustHeight();
@@ -233,7 +248,7 @@
             if (this.Width == 0) return;
 
             // Establece la altura mínima
-            int minHeight = TextRenderer.MeasureText("Text", this.Font).Height + 14;
+            int minHeight = TextRenderer.MeasureText("Text", this.Font).Height + 18;
 
             // Si Multiline es false, ajusta automáticamente la altura
             if (!textBox.Multiline)
@@ -293,7 +308,7 @@
                     }
                 }
             }
-           
+
         }
 
         private GraphicsPath GetRoundedRectanglePath(int width, int height, int radius)
@@ -317,6 +332,7 @@
         }
 
 
+
         // Propiedades del control
         [Browsable(true)]
         public new string Name
@@ -331,7 +347,6 @@
             set => textBox.Tag = value;
         }
 
-      
         /// <summary>
         /// Gets or sets a value indicating whether the button is visible.
         /// </summary>
@@ -383,7 +398,7 @@
         public Button Button
         {
             get => searchButton;
-            set => searchButton = value;    
+            set => searchButton = value;
         }
 
 
@@ -394,8 +409,8 @@
             get => _characterCasing;
             set
             {
-               textBox.CharacterCasing  =  _characterCasing = value;
-               Invalidate();
+                textBox.CharacterCasing = _characterCasing = value;
+                Invalidate();
             }
         }
 
@@ -486,7 +501,7 @@
 
         [Category("Appearance")]
         [Browsable(true)]
-        public new  Color ForeColor
+        public new Color ForeColor
         {
             get { return base.ForeColor; }
             set
@@ -536,7 +551,7 @@
 
         [Category("Appearance")]
         [Browsable(true)]
-        public bool  IconLeftVisible
+        public bool IconLeftVisible
         {
             get { return iconPictureBox.Visible; }
             set
@@ -546,21 +561,29 @@
                 Invalidate();
             }
         }
-     
 
 
+
+ 
         [Category("Behavior")]
         public bool UseSystemPasswordChar
         {
-            get { return textBox.UseSystemPasswordChar; }
-            set { textBox.UseSystemPasswordChar = value; }
+            get => _useSystemPasswordChar;
+            set
+            {
+                if (_useSystemPasswordChar != value)
+                {
+                    _useSystemPasswordChar = value;
+                    TextBox_TextChanged(textBox, EventArgs.Empty);
+                }
+            }
         }
 
         [Category("Behavior")]
         public char PasswordChar
         {
             get { return textBox.PasswordChar; }
-            set { textBox.PasswordChar = value == '\0' ? '\0' : '*'; }
+            set { textBox.PasswordChar = value == '\0' ? '\0' : '\0'; }
         }
 
         [Category("Behavior")]
@@ -590,18 +613,24 @@
             set { textBox.ReadOnly = value; }
         }
 
+
         [Category("Behavior")]
         [Browsable(true)]
         [DefaultValue("")]
         public new string Text
         {
-            get { return isPlaceholder ? string.Empty : textBox.Text; }
+            get => isPlaceholder ? string.Empty : textBox.Text;
             set
             {
-                textBox.Text = value;
-                SetPlaceholder(null, null);
+                if (textBox.Text != value)
+                {
+                    textBox.Text = value;
+                    SetPlaceholder(null, null);
+                    TextBox_TextChanged(textBox, EventArgs.Empty);
+                }
             }
         }
+
 
         [Category("Behavior")]
         public bool Multiline
@@ -630,7 +659,6 @@
         {
             textBox.Select();
         }
-       
 
         protected override void OnResize(EventArgs e)
         {
@@ -816,7 +844,8 @@
 
         }
 
-        public  string SelectedText
+        [Browsable(false)]
+        public string SelectedText
         {
             get => textBox.SelectedText;
             set => textBox.SelectedText = value;
@@ -824,9 +853,11 @@
 
         public new bool Enabled
         {
-            get=> textBox.Enabled;
-            set {
-                if (base.Enabled != value) { 
+            get => textBox.Enabled;
+            set
+            {
+                if (base.Enabled != value)
+                {
                     base.Enabled = value;
                     textBox.Enabled = value;
                 }

@@ -43,14 +43,19 @@ namespace JMTControls.NetCore.Controls
 
             this.Controls.Add(childView);
 			InitializeComponent();
-			_cDataset = cDataset;
-			childView._cDataset = cDataset;
-			GridTheme.ApplyGridTheme(this);
-			Dock = DockStyle.Fill;
 
-		}
+			SetDatasource(cDataset);
 
-   
+        }
+
+
+		public void SetDatasource(DataSet cDataset) {
+            _cDataset = cDataset;
+            childView._cDataset = cDataset;
+            GridTheme.ApplyGridTheme(this);
+            Dock = DockStyle.Fill;
+
+        }
 
         private void InitializeComponent()
 		{
