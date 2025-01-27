@@ -578,6 +578,10 @@
                     _useSystemPasswordChar = value;
                     TextBox_TextChanged(textBox, EventArgs.Empty);
                 }
+                if (value && PasswordChar == '\0')
+                {
+                    // PasswordChar = '●';
+                }
             }
         }
 
@@ -585,7 +589,7 @@
         public char PasswordChar
         {
             get { return textBox.PasswordChar; }
-            set { textBox.PasswordChar = value == '\0' ? '\0' : '\0'; }
+            set { textBox.PasswordChar = value = '\0'; }
         }
 
         [Category("Behavior")]
@@ -673,6 +677,27 @@
         {
             add { searchButton.Click += value; }
             remove { searchButton.Click -= value; }
+        }
+
+        [Category("Action")]
+        public event MouseEventHandler ButtonMouseDown
+        {
+            add { searchButton.MouseDown += value; }
+            remove { searchButton.MouseDown -= value; }
+        }
+
+        [Category("Action")]
+        public event MouseEventHandler ButtonMouseUp
+        {
+            add { searchButton.MouseUp += value; }
+            remove { searchButton.MouseUp -= value; }
+        }
+
+        [Category("Action")]
+        public event KeyPressEventHandler ButtonKeyPress
+        {
+            add { searchButton.KeyPress += value; }
+            remove { searchButton.KeyPress -= value; }
         }
 
 
