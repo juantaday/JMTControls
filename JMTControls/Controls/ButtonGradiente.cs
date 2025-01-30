@@ -61,8 +61,6 @@ namespace JMControls.Controls
             borderThickness = 1;
 
         }
-        #endregion
-        #region Events
         protected override void OnPaint(PaintEventArgs e)
         {
             #region Transparency
@@ -72,7 +70,7 @@ namespace JMControls.Controls
 
             #region Drawing
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-            roundedRect = new RoundedRectangleF(Width, Height, radius);
+            roundedRect = new RoundedRectangleF(Width - 1, Height - 1, radius);
             e.Graphics.FillRectangle(Brushes.Transparent, this.ClientRectangle);
 
             int R1 = (active1.R + inactive1.R) / 2;
@@ -87,16 +85,16 @@ namespace JMControls.Controls
 
             if (this.Enabled)
             {
-                if (state == MouseState.Leave) {
+                if (state == MouseState.Leave)
+                {
                     using (LinearGradientBrush inactiveGB = new LinearGradientBrush(rect, inactive1, inactive2, 90f))
                         e.Graphics.FillPath(inactiveGB, roundedRect.Path);
 
                     if (BorderStyle != BorderStyle.None && BorderThickness > 0)
                         using (Pen pen = new Pen(BorderColorIdle, BorderThickness))
-                    using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
-                        e.Graphics.DrawPath(pen, path);
+                        using (GraphicsPath path = new RoundedRectangleF(Width - 1, Height - 1, radius).Path)
+                            e.Graphics.DrawPath(pen, path);
                 }
-                  
                 else if (state == MouseState.Enter)
                 {
                     using (LinearGradientBrush activeGB = new LinearGradientBrush(rect, active1, active2, 90f))
@@ -104,22 +102,19 @@ namespace JMControls.Controls
 
                     if (BorderStyle != BorderStyle.None && BorderThickness > 0)
                         using (Pen pen = new Pen(BorderColorHover, BorderThickness))
-                    using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
-                        e.Graphics.DrawPath(pen, path);
+                        using (GraphicsPath path = new RoundedRectangleF(Width - 1, Height - 1, radius).Path)
+                            e.Graphics.DrawPath(pen, path);
                 }
-
-
-                else if (state == MouseState.Down) {
+                else if (state == MouseState.Down)
+                {
                     using (LinearGradientBrush downGB = new LinearGradientBrush(rect, Color.FromArgb(R1, G1, B1), Color.FromArgb(R2, G2, B2), 90f))
                         e.Graphics.FillPath(downGB, roundedRect.Path);
 
-                    if (BorderStyle != BorderStyle.None && BorderThickness>0)
+                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
                         using (Pen pen = new Pen(BorderColorActive, BorderThickness))
-                    using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
-                        e.Graphics.DrawPath(pen, path);
-
+                        using (GraphicsPath path = new RoundedRectangleF(Width - 1, Height - 1, radius).Path)
+                            e.Graphics.DrawPath(pen, path);
                 }
-
             }
             else
             {
@@ -133,11 +128,9 @@ namespace JMControls.Controls
 
                 if (BorderStyle != BorderStyle.None && BorderThickness > 0)
                     using (Pen pen = new Pen(BorderColorDisable, BorderThickness))
-                    using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
+                    using (GraphicsPath path = new RoundedRectangleF(Width - 1, Height - 1, radius).Path)
                         e.Graphics.DrawPath(pen, path);
             }
-
-
             #endregion
 
             #region Text Drawing
