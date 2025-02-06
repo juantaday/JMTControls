@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace JMTControls.NetCore.Controls
 {
-    public class RJDatePicker : DateTimePicker
+    public  class RJDatePicker : DateTimePicker
     {
         //Fields
         //-> Appearance

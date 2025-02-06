@@ -4,9 +4,14 @@ using System.Drawing.Drawing2D;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Data;
 
 namespace JMTControls.NetCore.Controls
 {
+
+
     [DefaultEvent("SelectedIndexChanged")]
 
     public class RJComboBox : UserControl
@@ -151,7 +156,7 @@ namespace JMTControls.NetCore.Controls
         }
 
         [Category("RJ Code - Appearance")]
-        public new  string Text
+        public new string Text
         {
             get
             {
@@ -382,7 +387,7 @@ namespace JMTControls.NetCore.Controls
 
         public ComboBox GetComboBox => cmbList;
 
-        public DrawMode DrawMode { get=>this.cmbList.DrawMode; set => cmbList.DrawMode = value;}
+        public DrawMode DrawMode { get => this.cmbList.DrawMode; set => cmbList.DrawMode = value; }
 
         [Category("Action")]
         public event EventHandler ButtonOptionClick
@@ -423,12 +428,15 @@ namespace JMTControls.NetCore.Controls
             btnIcon.Cursor = Cursors.Hand;
             btnIcon.Click += Icon_Click;
             btnIcon.Paint += Icon_Paint;
+
             btnSRC.Dock = DockStyle.Right;
             btnSRC.FlatStyle = FlatStyle.Flat;
             btnSRC.FlatAppearance.BorderSize = 0;
             btnSRC.BackColor = backColor;
             btnSRC.Size = new Size(30, 30);
             btnSRC.Cursor = Cursors.Hand;
+
+
             lblText.Dock = DockStyle.Fill;
             lblText.AutoSize = false;
             lblText.BackColor = backColor;
@@ -543,4 +551,5 @@ namespace JMTControls.NetCore.Controls
             AdjustComboBoxDimensions();
         }
     }
+
 }
