@@ -29,6 +29,7 @@ namespace JMTControls.NetCore.Controls
         private bool _dropdownMenu;
         private bool _alreadyZizing;
         private int _maxItemsVisible = 12;
+        private int _borderSize = 1;
 
         public event EventHandler SelectedIndexChanged;
         public event EventHandler SelectedValueChanged;
@@ -277,7 +278,7 @@ namespace JMTControls.NetCore.Controls
         }
 
 
-        [Browsable(false)]
+        [Browsable(true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Category("Action")]
         [Description("Occurs when the button  is clicked.")]
@@ -383,6 +384,21 @@ namespace JMTControls.NetCore.Controls
                 {
                     _maxItemsVisible = value;
                     AdjustDropdownSize();
+                }
+            }
+        }
+
+
+        [Category("RJ Code - Appearance")]
+        public int BorderThickness
+        {
+            get => _borderSize; 
+            set
+            {
+                if (_borderSize != value) {
+                    _borderSize = value;
+                    base.Padding = new Padding(_borderSize);
+                    Invalidate();
                 }
             }
         }
@@ -494,11 +510,7 @@ namespace JMTControls.NetCore.Controls
 
             base.OnSizeChanged(e);
         }
-        private void BtnAction_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Botón de acción presionado");
-        }
-
+       
         private void Icon_Click(object sender, EventArgs e)
         {
             if (!DroppedDown)

@@ -49,8 +49,6 @@
             btnAction.BackColor = _backColor;
             btnAction.Size = new Size(30, 30);
             btnAction.Cursor = Cursors.Hand;
-            btnAction.Click += BtnAction_Click;
-
 
             this.Leave += TxtSearch_LostFocus;
             this.Padding = new System.Windows.Forms.Padding(1);
