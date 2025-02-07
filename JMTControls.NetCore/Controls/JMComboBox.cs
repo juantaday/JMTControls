@@ -248,6 +248,7 @@ namespace JMTControls.NetCore.Controls
                     {
                         _dropdownMenu = false;
                         dropdownMenu.Hide();
+                        dropdownMenu.Close();
                     }
                 }
 

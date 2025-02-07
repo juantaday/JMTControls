@@ -24,6 +24,7 @@
 
         private string placeholderText = "JMTControls TextBoxRounded..";
         private Color placeholderColor = Color.FromArgb(180, 180, 180);
+        private Color _foreColor = Color.Black;
         private bool isPlaceholder;
         private bool _visibleButton = true;
         private bool _useSystemPasswordChar;
@@ -52,6 +53,7 @@
             textBox.BorderStyle = BorderStyle.None;
             textBox.Location = new Point(30, 5);
             textBox.Width = this.Width - 60;
+            textBox.Text = "";
 
             searchButton.Size = new Size(20, 20);
             searchButton.Location = new Point(this.Width - 25, 5);
@@ -171,6 +173,7 @@
             if (string.IsNullOrEmpty(this.Text))
             {
                 textBox.UseSystemPasswordChar = false;
+
             }
             else if (_useSystemPasswordChar && !string.Equals(this.Text, placeholderText, StringComparison.Ordinal))
             {
@@ -505,14 +508,17 @@
         [Browsable(true)]
         public new Color ForeColor
         {
-            get { return base.ForeColor; }
+            get { return _foreColor; }
             set
             {
-                base.ForeColor = value;
-                textBox.ForeColor = value;
-                searchButton.ForeColor = value;
-                iconPictureBox.ForeColor = value;
-                Invalidate();
+                if (_foreColor != value) {
+                    _foreColor = value;
+                    base.ForeColor = value;
+                    textBox.ForeColor = value;
+                    searchButton.ForeColor = value;
+                    iconPictureBox.ForeColor = value;
+                    Invalidate();
+                }
             }
         }
 
@@ -625,7 +631,17 @@
         [DefaultValue("")]
         public new string Text
         {
-            get => isPlaceholder ? string.Empty : textBox.Text;
+            get {
+                if (isPlaceholder)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    textBox.ForeColor = _foreColor;
+                    return textBox.Text;
+                }
+            } 
             set
             {
                 if (textBox.Text != value)
