@@ -35,7 +35,8 @@ namespace WinFormsApp1
             textBoxRounded3 = new TextBoxRounded();
             textBox1 = new TextBox();
             advancedShadowPanel2 = new AdvancedShadowPanel();
-            label1 = new Label();
+            textBox2 = new TextBox();
+            groupBoxLiner1 = new GroupBoxLiner();
             advancedShadowPanel2.SuspendLayout();
             SuspendLayout();
             // 
@@ -44,7 +45,7 @@ namespace WinFormsApp1
             altoSlidingLabel1.ButtonImage = null;
             altoSlidingLabel1.ButtonVisible = false;
             altoSlidingLabel1.ButtonWidth = 20;
-            altoSlidingLabel1.Location = new Point(349, 121);
+            altoSlidingLabel1.Location = new Point(36, 90);
             altoSlidingLabel1.Name = "altoSlidingLabel1";
             altoSlidingLabel1.Size = new Size(246, 25);
             altoSlidingLabel1.Slide = false;
@@ -70,7 +71,7 @@ namespace WinFormsApp1
             textBoxRounded3.IconLeft = (Image)resources.GetObject("textBoxRounded3.IconLeft");
             textBoxRounded3.IconLeftBackColor = Color.White;
             textBoxRounded3.IconLeftVisible = false;
-            textBoxRounded3.Location = new Point(417, 248);
+            textBoxRounded3.Location = new Point(16, 19);
             textBoxRounded3.MaxLength = 32767;
             textBoxRounded3.Multiline = false;
             textBoxRounded3.Name = "textBoxRounded3";
@@ -101,22 +102,34 @@ namespace WinFormsApp1
             advancedShadowPanel2.BorderColor = Color.Gray;
             advancedShadowPanel2.BorderRadius = 20;
             advancedShadowPanel2.BorderSize = 1;
-            advancedShadowPanel2.Controls.Add(label1);
-            advancedShadowPanel2.Location = new Point(92, 67);
+            advancedShadowPanel2.Controls.Add(textBoxRounded3);
+            advancedShadowPanel2.Controls.Add(textBox2);
+            advancedShadowPanel2.Controls.Add(altoSlidingLabel1);
+            advancedShadowPanel2.Location = new Point(66, 67);
             advancedShadowPanel2.Name = "advancedShadowPanel2";
             advancedShadowPanel2.ShadowColor = Color.FromArgb(50, 0, 0, 0);
             advancedShadowPanel2.ShadowSize = 5;
-            advancedShadowPanel2.Size = new Size(251, 170);
+            advancedShadowPanel2.Size = new Size(309, 137);
             advancedShadowPanel2.TabIndex = 3;
             // 
-            // label1
+            // textBox2
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(35, 39);
-            label1.Name = "label1";
-            label1.Size = new Size(38, 15);
-            label1.TabIndex = 2;
-            label1.Text = "label1";
+            textBox2.Location = new Point(36, 61);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(103, 23);
+            textBox2.TabIndex = 2;
+            // 
+            // groupBoxLiner1
+            // 
+            groupBoxLiner1.BorderColor = Color.Black;
+            groupBoxLiner1.BorderRadius = 8;
+            groupBoxLiner1.BorderThickness = 1;
+            groupBoxLiner1.Location = new Point(185, 259);
+            groupBoxLiner1.Name = "groupBoxLiner1";
+            groupBoxLiner1.Size = new Size(270, 129);
+            groupBoxLiner1.TabIndex = 4;
+            groupBoxLiner1.TabStop = false;
+            groupBoxLiner1.Text = "groupBoxLiner1";
             // 
             // Form2
             // 
@@ -124,10 +137,9 @@ namespace WinFormsApp1
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(800, 450);
+            Controls.Add(groupBoxLiner1);
             Controls.Add(advancedShadowPanel2);
-            Controls.Add(altoSlidingLabel1);
             Controls.Add(textBox1);
-            Controls.Add(textBoxRounded3);
             Name = "Form2";
             Text = "Form2";
             Load += Form2_Load;
@@ -145,6 +157,7 @@ namespace WinFormsApp1
         private TextBox textBox1;
         private AltoSlidingLabel altoSlidingLabel1;
         private AdvancedShadowPanel advancedShadowPanel2;
-        private Label label1;
+        private TextBox textBox2;
+        private GroupBoxLiner groupBoxLiner1;
     }
 }
