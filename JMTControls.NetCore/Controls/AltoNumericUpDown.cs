@@ -7,11 +7,14 @@ using System.Windows.Forms;
 namespace JMTControls.NetCore.Controls
 {
     #region AltoNMUpDown
+
     public class AltoNumericUpDown : Control
     {
         AltoButton btnUp = new AltoButton();
         AltoButton btnDown = new AltoButton();
         TextBox textbox = new TextBox();
+
+
         private bool isChanging;
         private decimal value;
         private decimal _maximum;
@@ -28,8 +31,11 @@ namespace JMTControls.NetCore.Controls
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
                         ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor |
                         ControlStyles.UserPaint, true);
-            Width = 60;
-            Height = 20;
+            this.Width = 60;
+            this.Height = 20;
+            this.TabStop = false;
+
+
             signColor = Color.White;
             _minimum = 0;
             _maximum = 999999;
@@ -38,18 +44,25 @@ namespace JMTControls.NetCore.Controls
 
             textbox.Text = value.ToString();
             dec = false;
+
             btnDown.Active1 = btnDown.Active2 = btnUp.Active1 = btnUp.Active2 = Color.Gray;
             btnDown.Inactive1 = btnDown.Inactive2 = btnUp.Inactive1 = btnUp.Inactive2 = Color.LightSlateGray;
             btnDown.Radius = btnUp.Radius = 0;
             btnDown.Width = btnUp.Width = 20;
+            btnDown.TabStop = false;
             btnDown.Parent = btnUp.Parent = this;
             btnDown.Paint += btnDown_Paint;
+
+
             btnUp.Stroke = btnDown.Stroke = true;
             btnUp.StrokeColor = btnDown.StrokeColor = Color.DarkGray;
+            btnUp.TabStop = false;
             btnUp.Paint += btnUp_Paint;
             btnUp.Click += btnUp_Click;
             btnUp.MouseDown += btnUp_MouseDown;
             btnUp.MouseUp += btnUp_MouseUp;
+
+
             btnDown.MouseDown += btnDown_MouseDown;
             btnDown.MouseUp += btnDown_MouseUp;
             btnDown.Click += btnDown_Click;

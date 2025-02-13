@@ -44,13 +44,7 @@ namespace WinFormsApp1
         }
         private void Form2_Load(object sender, EventArgs e)
         {
-            jmComboBox1.DisplayMember = "UserName";
-            jmComboBox1.ValueMember = "Id";
-            //jmComboBox1.SelectdValue = 1;
-            jmComboBox1.DataSource = users;
-
-            jmComboBox1.SelectedValue = 6;
-
+       
 
         }
 
@@ -58,14 +52,12 @@ namespace WinFormsApp1
 
         private void jmComboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            var dsfr = jmComboBox1.SelectedIndex;
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var dfg = jmComboBox1.SelectedValue;
-            var asfr = jmComboBox1.SelectedIndex;
-            var objASFDS = jmComboBox1.SelectedItem;
+          
 
         }
     }

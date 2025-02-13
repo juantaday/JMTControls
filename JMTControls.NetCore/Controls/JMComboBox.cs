@@ -389,8 +389,9 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
-
-        [Category("RJ Code - Appearance")]
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Category("Appearance")]
         public int BorderThickness
         {
             get => _borderSize; 
@@ -439,6 +440,17 @@ namespace JMTControls.NetCore.Controls
             {
                 lstItems.Focus();
                 lstItems.SelectedIndex = 0;
+            } 
+        }
+        private void TxtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                DroppedDown = false;    
+            }
+            else if (e.KeyChar == (char)Keys.F4)
+            {
+                btnIcon.PerformClick();  
             }
         }
 
@@ -463,7 +475,8 @@ namespace JMTControls.NetCore.Controls
             if (e.KeyCode == Keys.Enter && lstItems.SelectedIndex >= 0)
             {
                 SetObject();
-            }
+            } 
+            
         }
 
         private void SetObject()
@@ -511,7 +524,19 @@ namespace JMTControls.NetCore.Controls
 
             base.OnSizeChanged(e);
         }
-       
+
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                DroppedDown = false;
+                return true; // Indicar que la tecla fue manejada
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void Icon_Click(object sender, EventArgs e)
         {
             if (!DroppedDown)

@@ -31,7 +31,7 @@
         private Image buttonImage = Properties.Resources.searchImage_16;
         private Image iconImage = Properties.Resources.calendarDark;
         private TypeDataEnum _typeData = TypeDataEnum.VarChar;
-        private int decimalPosition = 2;
+        private int _decimalPosition = 2;
         private int _paddingLefth = 5;
         private MouseState state;
         private MouseState statetText;
@@ -46,7 +46,7 @@
             iconPictureBox = new PictureBox();
 
             _toolTip1 = new System.Windows.Forms.ToolTip();
-
+   
             state = MouseState.Leave;
             statetText = MouseState.Leave;
 
@@ -62,6 +62,7 @@
             searchButton.BackColor = this.BackColor;
             searchButton.Image = buttonImage;
             searchButton.BackColor = Color.Transparent;
+            searchButton.TabStop = false;
             searchButton.Visible = _visibleButton;
 
             iconPictureBox.Size = new Size(20, 20);
@@ -75,6 +76,7 @@
             this.Controls.Add(searchButton);
             this.Controls.Add(iconPictureBox);
             this.Font = new Font("Arial", 12);
+            this.TabStop =false;
 
 
             AdjustHeight();
@@ -750,10 +752,11 @@
                 switch (_typeData)
                 {
                     case TypeDataEnum.Numeric:
-                        this.Text = "";
+                        this.Text = string.IsNullOrEmpty(this.Text) ? "0" : this.Text;
                         break;
                     case TypeDataEnum.Decimal:
-                        this.Text = "";
+                        int decimalPlaces = Math.Max(0, _decimalPosition); // Asegurar que no sea negativo
+                        this.Text = string.IsNullOrEmpty(this.Text) ? 0.ToString($"F{decimalPlaces}") : this.Text;
                         break;
                     case TypeDataEnum.VarChar:
                         this.Text = "";
@@ -771,8 +774,8 @@
 
         public int DecimalPosition
         {
-            get => decimalPosition;
-            set => decimalPosition = value;
+            get => _decimalPosition;
+            set => _decimalPosition = value;
         }
 
         private void TextBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -797,11 +800,11 @@
                             e.Handled = true;
                             return;
                         }
-                        else if (e.KeyChar.ToString().Equals(".") && decimalPosition > 0)
+                        else if (e.KeyChar.ToString().Equals(".") && _decimalPosition > 0)
                         {
                             return;
                         }
-                        else if (e.KeyChar.ToString().Equals(".") && decimalPosition <= 0)
+                        else if (e.KeyChar.ToString().Equals(".") && _decimalPosition <= 0)
                         {
                             e.Handled = true;
                             return;
@@ -814,14 +817,14 @@
                                 e.Handled = true;
                                 return;
                             }
-                            if (decimalPosition > 0 && textBox.Text.Contains("."))
+                            if (_decimalPosition > 0 && textBox.Text.Contains("."))
                             {
                                 var positionEdit = textBox.SelectionStart;
                                 var lengthSelect = textBox.SelectionLength;
                                 var indexOf = textBox.Text.IndexOf(".") + 1;
                                 var dcmLength = textBox.Text.Substring(indexOf, (textBox.Text.Length - indexOf)).Length;
 
-                                if ((positionEdit > indexOf) && ((dcmLength - lengthSelect) >= decimalPosition))
+                                if ((positionEdit > indexOf) && ((dcmLength - lengthSelect) >= _decimalPosition))
                                 {
                                     e.Handled = true;
                                     return;

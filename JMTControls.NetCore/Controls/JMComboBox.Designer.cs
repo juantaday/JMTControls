@@ -66,7 +66,7 @@
             };
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.KeyDown += TxtSearch_KeyDown;
-
+            txtSearch.KeyPress += TxtSearch_KeyPress; ;
 
             // ListBox para desplegar opciones
             lstItems.IntegralHeight = true;
@@ -79,7 +79,6 @@
             lstItems.ForeColor = _foreColor;
             lstItems.Click += LstItems_Click;
             lstItems.KeyDown += LstItems_KeyDown;
-            //lstItems.SelectedIndexChanged += ComboBox_SelectedIndexChanged;
 
             // Menú contextual para simular el desplegable
             dropdownMenu = new ContextMenuStrip
@@ -92,9 +91,9 @@
                 ForeColor = _foreColor,
                 MaximumSize = new Size(600, 400)
             };
+
             dropdownMenu.Items.Add(new ToolStripControlHost(lstItems));
             dropdownMenu.Opening += DropdownMenu_Opening;
-
 
             // Estructura del control
             panel.Controls.Add(txtSearch);
@@ -103,6 +102,7 @@
             Controls.Add(panel);
 
         }
+
 
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.ListBox lstItems;

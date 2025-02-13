@@ -435,34 +435,32 @@ namespace JMTControls.NetCore.Controls
 
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
+            textBox1 = new TextBox();
+            SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(10, 7);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(230, 15);
-            this.textBox1.TabIndex = 0;
+            textBox1.BorderStyle = BorderStyle.None;
+            textBox1.Dock = DockStyle.Fill;
+            textBox1.Location = new Point(10, 7);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(230, 15);
+            textBox1.TabIndex = 0;
             // 
             // RJTextBox
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.Controls.Add(this.textBox1);
-            this.Font = new System.Drawing.Font("Arial", 9.5F);
-            this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "RJTextBox";
-            this.Padding = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.Size = new System.Drawing.Size(250, 30);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleMode = AutoScaleMode.None;
+            BackColor = SystemColors.Window;
+            Controls.Add(textBox1);
+            Font = new Font("Arial", 9.5F);
+            ForeColor = Color.FromArgb(64, 64, 64);
+            Margin = new Padding(4);
+            Name = "RJTextBox";
+            Padding = new Padding(10, 7, 10, 7);
+            Size = new Size(250, 30);
+            ResumeLayout(false);
+            PerformLayout();
         }
-
 
         protected override void OnLoad(EventArgs e)
         {
