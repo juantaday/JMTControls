@@ -1,12 +1,13 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Windows.Forms.Design;
-namespace JMTControls.NetCore.Controls
+﻿namespace JMTControls.NetCore.Controls
 {
-    [Designer(typeof(ParentControlDesigner))]
-    public class AdvancedShadowPanel : ContainerControl
+    using System.ComponentModel;
+    using System.ComponentModel.Design;
+    using System.Drawing;
+    using System.Windows.Forms;
+    using System.Windows.Forms.Design;
+
+    [Designer(typeof(AdvancedShadowPanelDesigner))]
+    public class AdvancedShadowPanel : UserControl
     {
         private RoundedGradientPanel _shadowPanel;
         private RoundedGradientPanel _contentPanel;
@@ -16,6 +17,7 @@ namespace JMTControls.NetCore.Controls
         private Color _borderColor = Color.Gray;
         private int _borderSize = 1;
         private int _borderRadius = 20;
+
         public AdvancedShadowPanel()
         {
             // Crear el panel de sombra
@@ -40,22 +42,33 @@ namespace JMTControls.NetCore.Controls
                 BorderSize = BorderSize,
                 BorderRadius = BorderRadius,
             };
-            this.Controls.Add(_contentPanel);
-            this.Controls.Add(_shadowPanel);
-            SetStyle(ControlStyles.OptimizedDoubleBuffer |
-                     ControlStyles.ResizeRedraw |
-                     ControlStyles.SupportsTransparentBackColor, true);
+            base.Controls.Add(_contentPanel);
+            base.Controls.Add(_shadowPanel);
+
+
+            base.SizeChanged += (s, e) =>
+            {
+                UpdateControlPositions();
+            };
+
 
             UpdateControlPositions();
             this.BackColor = Color.Transparent;
         }
+
         // Propiedades configurables
         public Color ShadowColor
         {
             get => _shadowColor;
-            set { _shadowColor = value; _shadowPanel.BackColor = value; }
+            set
+            {
+                _shadowColor = value;
+                _shadowPanel.BackColor = value;
+                Invalidate();
+            }
         }
-        // backColor
+
+        // Propiedad BackColor
         public new Color BackColor
         {
             get => _backColor;
@@ -65,12 +78,12 @@ namespace JMTControls.NetCore.Controls
                 {
                     _contentPanel.GradientStartColor = value;
                     _contentPanel.GradientEndColor = value;
-                    Invalidate();
+                    base.Invalidate();
                 }
             }
-
         }
-        // borderSize
+
+        // Propiedad BorderSize
         public int BorderSize
         {
             get => _borderSize;
@@ -80,11 +93,12 @@ namespace JMTControls.NetCore.Controls
                 {
                     _borderSize = value;
                     _contentPanel.BorderSize = value;
-                    Invalidate();
+                    base.Invalidate();
                 }
             }
         }
-        // border color 
+
+        // Propiedad BorderColor
         public Color BorderColor
         {
             get => _borderColor;
@@ -94,10 +108,12 @@ namespace JMTControls.NetCore.Controls
                 {
                     _borderColor = value;
                     _contentPanel.BorderColor = _borderColor;
-                    Invalidate();
+                    base.Invalidate();
                 }
             }
         }
+
+        // Propiedad ShadowSize
         public int ShadowSize
         {
             get => _shadowSize;
@@ -111,7 +127,8 @@ namespace JMTControls.NetCore.Controls
                 }
             }
         }
-        // borderRadius
+
+        // Propiedad BorderRadius
         public int BorderRadius
         {
             get => _borderRadius;
@@ -122,32 +139,100 @@ namespace JMTControls.NetCore.Controls
                     _borderRadius = value;
                     _contentPanel.BorderRadius = value;
                     _shadowPanel.BorderRadius = value;
-                    Invalidate();
+                    base.Invalidate();
                 }
             }
         }
+
+        // Actualiza la posición y tamaño de los paneles
         private void UpdateControlPositions()
         {
+            // Usar Control.Width y Control.Height en lugar de this.Width y this.Height
             _contentPanel.Location = new Point(0, 0);
             _shadowPanel.Location = new Point(_shadowSize, _shadowSize);
-            _contentPanel.Height = this.Height - _shadowSize;
-            _contentPanel.Width = this.Width - _shadowSize;
-            _shadowPanel.Height = this.Height - (_shadowSize);
-            _shadowPanel.Width = this.Width - (_shadowSize);
-            Invalidate();
-        }
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            UpdateControlPositions();
-        }
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            Invalidate();
+            _contentPanel.Height = Height - _shadowSize;
+            _contentPanel.Width = Width - _shadowSize;
+            _shadowPanel.Height = Height - _shadowSize;
+            _shadowPanel.Width = Width - _shadowSize;
+
+            // Forzar la actualización visual
+            base.Invalidate();
         }
 
-    
 
+
+        // Manejo de eventos de drag and drop
+        protected override void OnDragEnter(DragEventArgs de)
+        {
+            if (de.Data.GetDataPresent(typeof(Control)))
+            {
+                de.Effect = DragDropEffects.Move;
+            }
+            base.OnDragEnter(de);
+        }
+
+        // Manejo de eventos de drop
+        protected override void OnDragDrop(DragEventArgs de)
+        {
+            IDesignerHost host = (IDesignerHost)GetService(typeof(IDesignerHost));
+            IComponentChangeService changeService = (IComponentChangeService)GetService(typeof(IComponentChangeService));
+
+            if (host != null && de.Data.GetDataPresent(typeof(Control)))
+            {
+                Control draggedControl = (Control)de.Data.GetData(typeof(Control));
+
+                if (draggedControl != null)
+                {
+                    using (DesignerTransaction transaction = host.CreateTransaction("Add Control to AdvancedShadowPanel"))
+                    {
+                        changeService.OnComponentChanging(draggedControl, null); // Notifica cambio
+
+                        draggedControl.Parent = draggedControl;
+                        Point clientPoint = draggedControl.PointToClient(new Point(de.X, de.Y));
+                        draggedControl.Location = clientPoint;
+
+                        changeService.OnComponentChanged(draggedControl, null, null, null); // Notifica cambio
+                        transaction.Commit(); // Guarda el cambio en el diseñador
+                    }
+                }
+            }
+            base.OnDragDrop(de);
+        }
     }
+
+
+    public class AdvancedShadowPanelDesigner : ParentControlDesigner
+    {
+        public override bool CanParent(Control control)
+        {
+            // Permite agregar cualquier control dentro del AdvancedShadowPanel
+            return true;
+        }
+
+        protected override void OnDragEnter(DragEventArgs de)
+        {
+            // Asegura que el diseñador acepte elementos arrastrados
+            de.Effect = DragDropEffects.Move;
+            base.OnDragEnter(de);
+        }
+
+        protected override void OnDragDrop(DragEventArgs de)
+        {
+            IDesignerHost host = (IDesignerHost)GetService(typeof(IDesignerHost));
+            if (host != null && de.Data.GetDataPresent(typeof(Control)))
+            {
+                Control draggedControl = (Control)de.Data.GetData(typeof(Control));
+                if (draggedControl != null)
+                {
+                    // Mueve el control al panel y ajusta su posición
+                    draggedControl.Parent = Control;
+                    Point clientPoint = Control.PointToClient(new Point(de.X, de.Y));
+                    draggedControl.Location = clientPoint;
+                }
+            }
+            base.OnDragDrop(de);
+        }
+    }
+
+
 }
