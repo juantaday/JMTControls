@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace JMControls.ExpandCollapsePanel
+namespace JMTControls.NetCore.ExpandCollapsePanel
 {
-    
-    /// <summary>
- /// Designer for the ExpandCollapsePanel control with support for a smart tag panel.
- /// <remarks>http://msdn.microsoft.com/en-us/library/ms171829.aspx</remarks>
- /// </summary>
     [System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
-    public class ExpandCollapsePanelDesigner : System.Windows.Forms.Design.ScrollableControlDesigner
+    internal class AccordionCotrolDesigner : System.Windows.Forms.Design.ScrollableControlDesigner
     {
         private DesignerActionListCollection actionLists;
 
@@ -21,10 +22,11 @@ namespace JMControls.ExpandCollapsePanel
                 {
                     actionLists = new DesignerActionListCollection();
                     actionLists.Add(
-                        new ExpandCollapsePanelActionList(this.Component));
+                        new AccordionCotrolActionList(this.Component));
                 }
                 return actionLists;
             }
         }
+
     }
 }

@@ -356,6 +356,20 @@ namespace JMTControls.NetCore.Controls
                 }
                 return null;
             }
+            set
+            {
+                if (value != null && boundItems.Contains(value))
+                {
+                    _selectedIndex = boundItems.IndexOf(value);
+                    _notExecuteTextChange = true;
+                    this.Text = value.GetType().GetProperty(displayMember)?.GetValue(value, null)?.ToString();
+                }
+                else
+                {
+                    _selectedIndex = -1;
+                    this.Text = string.Empty;
+                }
+            }
         }
 
 
@@ -531,6 +545,11 @@ namespace JMTControls.NetCore.Controls
             if (keyData == Keys.Escape)
             {
                 DroppedDown = false;
+                return true; // Indicar que la tecla fue manejada
+            }
+            else if (keyData == Keys.F4)
+            {
+                btnIcon.PerformClick();
                 return true; // Indicar que la tecla fue manejada
             }
 

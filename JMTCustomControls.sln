@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsApp1", "WinFormsApp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JMTControls.NetCore", "JMTControls.NetCore\JMTControls.NetCore.csproj", "{F81B2F54-D6B9-4B87-84B7-110710127359}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{B6701A36-F985-42DD-8626-DB9E679CEDC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,14 @@ Global
 		{F81B2F54-D6B9-4B87-84B7-110710127359}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F81B2F54-D6B9-4B87-84B7-110710127359}.Release|x64.ActiveCfg = Release|Any CPU
 		{F81B2F54-D6B9-4B87-84B7-110710127359}.Release|x64.Build.0 = Release|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{B6701A36-F985-42DD-8626-DB9E679CEDC8}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

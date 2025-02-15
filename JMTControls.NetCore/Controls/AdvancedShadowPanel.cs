@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,11 +10,11 @@ namespace JMTControls.NetCore.Controls
     public class AdvancedShadowPanel : UserControl
     {
         private RoundedGradientPanel _shadowPanel;
-        internal  RoundedGradientPanel _contentPanel;
+        internal RoundedGradientPanel _contentPanel;
         private int _shadowSize = 5;
         private Color _shadowColor = Color.FromArgb(50, 0, 0, 0);
-        private Color _backColor = Color.Transparent;
-        private Color _borderColor = Color.Gray;
+        private Color _backColor = Color.FromArgb(240, 240, 240);
+        private Color _borderColor = Color.DimGray;
         private int _borderSize = 1;
         private int _borderRadius = 20;
 
@@ -27,24 +25,26 @@ namespace JMTControls.NetCore.Controls
             {
                 Dock = DockStyle.None,
                 GradientEndColor = _shadowColor,
-                GradientStartColor = Color.Transparent,
+                GradientStartColor = Color.White,
                 Margin = new Padding(0),
                 Location = new Point(_shadowSize, _shadowSize),
                 BorderSize = 0,
                 BorderStyle = BorderStyle.None,
                 BorderRadius = BorderRadius,
-                Name  = "_baseShadowPanel",
+                Name = "_baseShadowPanelJMT",
             };
 
             // Crear el panel de contenido
             _contentPanel = new RoundedGradientPanel
             {
                 Dock = DockStyle.None,
-                GradientEndColor = BackColor,
-                GradientStartColor = BackColor,
-                BorderColor = BorderColor,
-                BorderSize = BorderSize,
-                BorderRadius = BorderRadius,
+                BackColor = _backColor,
+                GradientEndColor = _backColor,
+                GradientStartColor = _backColor,
+                BorderColor = _borderColor,
+                BorderSize = _borderSize,
+                BorderRadius = _borderRadius,
+                Name = "_contentPanelJMT", 
             };
 
             base.Controls.Add(_contentPanel);
@@ -56,7 +56,7 @@ namespace JMTControls.NetCore.Controls
             };
 
             UpdateControlPositions();
-            this.BackColor = Color.Transparent;
+            base.BackColor = Color.Transparent;
         }
 
         // Propiedades configurables
@@ -71,6 +71,9 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [DefaultValue(typeof(Color), "240,240,240")]
         public new Color BackColor
         {
             get => _backColor;
@@ -79,13 +82,20 @@ namespace JMTControls.NetCore.Controls
                 if (_backColor != value)
                 {
                     _backColor = value;
-                    _contentPanel.GradientStartColor = value;
-                    _contentPanel.GradientEndColor = value;
-                    base.Invalidate();
+                    _contentPanel.GradientStartColor = _backColor;
+                    _contentPanel.GradientEndColor = _backColor;
+                    UpdateBackColorForControls();
+                    Invalidate();
                 }
             }
         }
 
+
+
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+
+     
         public int BorderSize
         {
             get => _borderSize;
@@ -153,12 +163,21 @@ namespace JMTControls.NetCore.Controls
             base.Invalidate();
         }
 
+
+        
+
         protected override void OnControlAdded(ControlEventArgs e)
         {
-            base.OnControlAdded(e);
-            if (!e.Control.Name.Equals("_baseShadowPanel")) {
+             base.OnControlAdded(e);
+            // e.Control.BackColor =_backColor;
+
+            if (!e.Control.Name.Equals("_baseShadowPanelJMT"))
+            {
                 e.Control.BringToFront();
+                ApplyBackColorIfAllowed(e.Control);
+                Invalidate();
             }
+
         }
 
         // Manejo de eventos de drag and drop
@@ -175,6 +194,26 @@ namespace JMTControls.NetCore.Controls
         {
             de.Effect = DragDropEffects.Move;
             base.OnDragOver(de);
+        }
+
+
+        private void UpdateBackColorForControls()
+        {
+            foreach (Control control in this.Controls)
+            {
+                // Only change BackColor if the control normally inherits it
+                ApplyBackColorIfAllowed(control);
+            }
+        }
+
+        private void ApplyBackColorIfAllowed(Control control)
+        {
+            // Only change BackColor if the control normally inherits it
+            if (control is Label || control is LinkLabel || control is Panel || control is GroupBox)
+            {
+                if (!control.Name.Equals(_shadowPanel.Name))
+                    control.BackColor = this.BackColor;
+            }
         }
 
         protected override void OnDragDrop(DragEventArgs de)
