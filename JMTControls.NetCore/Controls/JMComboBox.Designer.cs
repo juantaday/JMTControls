@@ -20,7 +20,7 @@
             panel = new Panel();
             btnIcon = new Button();
             btnAction = new Button();
-            lstItems = new ListBox();
+            lstItems = new ListBoxWithTabHandler();
             //panel
 
             panel.Dock = DockStyle.Fill;
@@ -38,6 +38,8 @@
             btnIcon.ForeColor = _foreColor;
             btnIcon.Size = new Size(30, 30);
             btnIcon.Cursor = Cursors.Hand;
+            btnIcon.TabStop = false;
+
             btnIcon.Click += Icon_Click;
             btnIcon.Paint += Icon_Paint;
 
@@ -49,6 +51,7 @@
             btnAction.BackColor = _backColor;
             btnAction.Size = new Size(30, 30);
             btnAction.Cursor = Cursors.Hand;
+            btnAction.TabStop = false;
 
             this.Leave += TxtSearch_LostFocus;
             this.Padding = new System.Windows.Forms.Padding(1);
@@ -79,6 +82,7 @@
             lstItems.ForeColor = _foreColor;
             lstItems.Click += LstItems_Click;
             lstItems.KeyDown += LstItems_KeyDown;
+            lstItems.KeyTabPressed += LstItems_KeyTabPressed;
 
             // Menú contextual para simular el desplegable
             dropdownMenu = new ContextMenuStrip
@@ -103,9 +107,10 @@
 
         }
 
+       
 
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.ListBox lstItems;
+        private ListBoxWithTabHandler lstItems;
         private System.Windows.Forms.Button btnAction;
         private System.Windows.Forms.ContextMenuStrip dropdownMenu;
         private System.Windows.Forms.Panel panel;

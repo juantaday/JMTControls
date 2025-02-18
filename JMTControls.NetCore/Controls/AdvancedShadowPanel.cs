@@ -209,7 +209,8 @@ namespace JMTControls.NetCore.Controls
         private void ApplyBackColorIfAllowed(Control control)
         {
             // Only change BackColor if the control normally inherits it
-            if (control is Label || control is LinkLabel || control is Panel || control is GroupBox)
+            if (control is Label || control is LinkLabel || control is Panel
+             || control is GroupBox || control is AltoSlidingLabel)
             {
                 if (!control.Name.Equals(_shadowPanel.Name))
                     control.BackColor = this.BackColor;

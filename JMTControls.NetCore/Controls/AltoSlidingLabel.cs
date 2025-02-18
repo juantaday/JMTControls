@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Forms.Automation;
 
 namespace JMTControls.NetCore.Controls
 {

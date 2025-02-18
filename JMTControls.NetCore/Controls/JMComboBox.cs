@@ -287,11 +287,11 @@ namespace JMTControls.NetCore.Controls
         {
             add
             {
-                btnAction.Click += value;
+                btnAction.Click += (s, e) => value?.Invoke(this, e);
             }
             remove
             {
-                btnAction.Click -= value;
+                btnAction.Click -= (s, e) => value?.Invoke(this, e);
             }
         }
 
@@ -453,8 +453,8 @@ namespace JMTControls.NetCore.Controls
             if (e.KeyCode == Keys.Down && lstItems.Items.Count > 0)
             {
                 lstItems.Focus();
-                lstItems.SelectedIndex = 0;
-            } 
+            }
+          
         }
         private void TxtSearch_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -486,12 +486,22 @@ namespace JMTControls.NetCore.Controls
 
         private void LstItems_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter && lstItems.SelectedIndex >= 0)
+            if (e.KeyCode == Keys.Enter  && lstItems.SelectedIndex >= 0)
             {
                 SetObject();
-            } 
-            
+            }
+
         }
+
+        private void LstItems_KeyTabPressed(object sender, System.EventArgs e)
+        {
+            if (lstItems.SelectedIndex >= 0)
+            {
+                SetObject();
+            }
+            SendKeys.Send("{TAB}");
+        }
+
 
         private void SetObject()
         {
@@ -545,14 +555,14 @@ namespace JMTControls.NetCore.Controls
             if (keyData == Keys.Escape)
             {
                 DroppedDown = false;
-                return true; // Indicar que la tecla fue manejada
+                return true; 
             }
             else if (keyData == Keys.F4)
             {
                 btnIcon.PerformClick();
-                return true; // Indicar que la tecla fue manejada
+                return true; 
             }
-
+        
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -560,6 +570,7 @@ namespace JMTControls.NetCore.Controls
         {
             if (!DroppedDown)
             {
+                var dff = new  TextBox();
 
                 lstItems.Items.Clear();
                 lstItems.Items.AddRange(boundItems.ToArray());
@@ -569,7 +580,9 @@ namespace JMTControls.NetCore.Controls
                 {
                     lstItems.TopIndex = _selectedIndex;
                 }
+        
                 DroppedDown = true;
+                lstItems.Focus();
             }
 
         }

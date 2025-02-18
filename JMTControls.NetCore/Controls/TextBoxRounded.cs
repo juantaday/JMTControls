@@ -743,6 +743,12 @@
             remove { textBox.TextChanged -= value; }
         }
 
+        public new event PreviewKeyDownEventHandler PreviewKeyDown
+        {
+            add { textBox.PreviewKeyDown += value; }
+            remove { textBox.PreviewKeyDown -= value; }
+        }
+
         public TypeDataEnum TypeData
         {
             get => _typeData;
