@@ -212,12 +212,9 @@
             statetText = MouseState.Down;
             state = MouseState.Down;
 
-            if (isPlaceholder)
-            {
-                isPlaceholder = false;
-                textBox.Text = "";
-                textBox.ForeColor = this.ForeColor;
-            }
+            isPlaceholder = false;
+            textBox.Text = "";
+            textBox.ForeColor = this.ForeColor;
 
             Invalidate();
         }
@@ -682,6 +679,12 @@
         public new void Select()
         {
             textBox.Select();
+        }
+
+        public  void Select(int star, int end)
+        {
+            // seleccionar los 4 primeros caracteres
+            textBox.Select(0, 4);
         }
 
         protected override void OnResize(EventArgs e)

@@ -9,45 +9,30 @@ namespace JMTControls.NetCore.Controls
     public class RJButton : Button
     {
         private int borderSize = 1;
-
         private int borderRadius = 12;
-
         private Color borderColor = Color.Red;
+        private bool running = false;
+        private Timer animationTimer;
+        private float angle = 0f;
 
         [Category("RJ Code Advance")]
         public Color BackgroundColor
         {
-            get
-            {
-                return this.BackColor;
-            }
-            set
-            {
-                this.BackColor = value;
-            }
+            get { return this.BackColor; }
+            set { this.BackColor = value; }
         }
 
         [Category("RJ Code Advance")]
         public Color BorderColor
         {
-            get
-            {
-                return this.borderColor;
-            }
-            set
-            {
-                this.borderColor = value;
-                base.Invalidate();
-            }
+            get { return this.borderColor; }
+            set { this.borderColor = value; base.Invalidate(); }
         }
 
         [Category("RJ Code Advance")]
         public int BorderRadius
         {
-            get
-            {
-                return this.borderRadius;
-            }
+            get { return this.borderRadius; }
             set
             {
                 if (value > base.Height)
@@ -65,66 +50,69 @@ namespace JMTControls.NetCore.Controls
         [Category("RJ Code Advance")]
         public int BorderSize
         {
-            get
-            {
-                return this.borderSize;
-            }
-            set
-            {
-                this.borderSize = value;
-                base.Invalidate();
-            }
+            get { return this.borderSize; }
+            set { this.borderSize = value; base.Invalidate(); }
         }
 
         [Category("RJ Code Advance")]
         public Color TextColor
         {
-            get
-            {
-                return this.ForeColor;
-            }
+            get { return this.ForeColor; }
+            set { this.ForeColor = value; }
+        }
+
+        [Category("RJ Code Advance")]
+        public bool Running
+        {
+            get { return this.running; }
             set
             {
-                this.ForeColor = value;
+                this.running = value;
+                if (this.running)
+                {
+                    this.Enabled = false; // Disable button while running
+                    this.StartAnimation();
+                }
+                else
+                {
+                    this.Enabled = true; // Enable button when not running
+                    this.angle = 0f; // Reset animation angle
+                    this.Invalidate(); // Redraw to remove the circle
+                }
             }
         }
 
-        public new  Padding Margin
+        public new Padding Margin
         {
-            get
-            {
-                return base.Margin;
-            }
-            set
-            {
-                base.Margin = value;    
-                base.Invalidate();
-            }
+            get { return base.Margin; }
+            set { base.Margin = value; base.Invalidate(); }
         }
 
         public RJButton()
         {
-            base.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            base.FlatStyle = FlatStyle.Flat;
             base.FlatAppearance.BorderSize = 0;
-            base.Size = new System.Drawing.Size(150, 40);
+            base.Size = new Size(150, 40);
             this.BackColor = Color.MediumSlateBlue;
             this.ForeColor = Color.White;
-            base.Resize += new EventHandler(this.Button_Resize);
+            this.animationTimer = new Timer();
+            this.animationTimer.Interval = 30; // Adjusted for faster animation speed
+            this.animationTimer.Tick += (s, e) => { this.Invalidate(); this.angle += 20f; if (this.angle >= 360f) this.angle = 0f; };
         }
 
-        private void Button_Resize(object sender, EventArgs e)
+        private void StartAnimation()
         {
-            if (this.borderRadius > base.Height)
+            if (!this.animationTimer.Enabled)
             {
-                this.borderRadius = base.Height;
+                this.animationTimer.Start();
             }
         }
 
-        private void Container_BackColorChanged(object sender, EventArgs e)
+        private void StopAnimation()
         {
-            if (base.DesignMode)
+            if (this.animationTimer.Enabled)
             {
-                base.Invalidate();
+                this.animationTimer.Stop();
             }
         }
 
@@ -133,18 +121,12 @@ namespace JMTControls.NetCore.Controls
             GraphicsPath graphicsPath = new GraphicsPath();
             float single = radius * 2f;
             graphicsPath.StartFigure();
-            graphicsPath.AddArc((float)rect.X, (float)rect.Y, single, single, 180f, 90f);
-            graphicsPath.AddArc((float)rect.Right - single, (float)rect.Y, single, single, 270f, 90f);
-            graphicsPath.AddArc((float)rect.Right - single, (float)rect.Bottom - single, single, single, 0f, 90f);
-            graphicsPath.AddArc((float)rect.X, (float)rect.Bottom - single, single, single, 90f, 90f);
+            graphicsPath.AddArc(rect.X, rect.Y, single, single, 180f, 90f);
+            graphicsPath.AddArc(rect.Right - single, rect.Y, single, single, 270f, 90f);
+            graphicsPath.AddArc(rect.Right - single, rect.Bottom - single, single, single, 0f, 90f);
+            graphicsPath.AddArc(rect.X, rect.Bottom - single, single, single, 90f, 90f);
             graphicsPath.CloseFigure();
             return graphicsPath;
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            base.Parent.BackColorChanged += new EventHandler(this.Container_BackColorChanged);
         }
 
         protected override void OnPaint(PaintEventArgs pevent)
@@ -157,13 +139,14 @@ namespace JMTControls.NetCore.Controls
             {
                 num = this.borderSize;
             }
+
             if (this.borderRadius <= 2)
             {
                 pevent.Graphics.SmoothingMode = SmoothingMode.None;
-                base.Region = new System.Drawing.Region(clientRectangle);
+                base.Region = new Region(clientRectangle);
                 if (this.borderSize >= 1)
                 {
-                    using (Pen pen = new Pen(this.borderColor, (float)this.borderSize))
+                    using (Pen pen = new Pen(this.borderColor, this.borderSize))
                     {
                         pen.Alignment = PenAlignment.Inset;
                         pevent.Graphics.DrawRectangle(pen, 0, 0, base.Width - 1, base.Height - 1);
@@ -172,16 +155,16 @@ namespace JMTControls.NetCore.Controls
             }
             else
             {
-                using (GraphicsPath figurePath = this.GetFigurePath(clientRectangle, (float)this.borderRadius))
+                using (GraphicsPath figurePath = this.GetFigurePath(clientRectangle, this.borderRadius))
                 {
-                    using (GraphicsPath graphicsPath = this.GetFigurePath(rectangle, (float)(this.borderRadius - this.borderSize)))
+                    using (GraphicsPath graphicsPath = this.GetFigurePath(rectangle, this.borderRadius - this.borderSize))
                     {
-                        using (Pen pen1 = new Pen(base.Parent.BackColor, (float)num))
+                        using (Pen pen1 = new Pen(base.Parent.BackColor, num))
                         {
-                            using (Pen pen2 = new Pen(this.borderColor, (float)this.borderSize))
+                            using (Pen pen2 = new Pen(this.borderColor, this.borderSize))
                             {
                                 pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                                base.Region = new System.Drawing.Region(figurePath);
+                                base.Region = new Region(figurePath);
                                 pevent.Graphics.DrawPath(pen1, figurePath);
                                 if (this.borderSize >= 1)
                                 {
@@ -190,6 +173,20 @@ namespace JMTControls.NetCore.Controls
                             }
                         }
                     }
+                }
+            }
+
+            if (this.running)
+            {
+                // Draw the loading circle on the left side of the button
+                float centerX = clientRectangle.Left + 20; // Position on the left
+                float centerY = clientRectangle.Top + (clientRectangle.Height / 2);
+                float radius = 12f;
+                using (Pen pen = new Pen(Color.White, 3))
+                {
+                    pen.StartCap = LineCap.Round;
+                    pen.EndCap = LineCap.Round;
+                    pevent.Graphics.DrawArc(pen, centerX - radius, centerY - radius, radius * 2, radius * 2, angle, 270f);
                 }
             }
         }
