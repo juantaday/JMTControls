@@ -9,9 +9,6 @@
     using JMTControls.NetCore.Enums;
     using JMTControls.NetCore.Helpers;
 
-
-
-
     [DefaultEvent("TextChanged")]
     public class TextBoxRounded : Control
     {
@@ -25,6 +22,7 @@
         private string placeholderText = "JMTControls TextBoxRounded..";
         private Color placeholderColor = Color.FromArgb(180, 180, 180);
         private Color _foreColor = Color.Black;
+        private Color _backColor = Color.LightGray;
         private bool isPlaceholder;
         private bool _visibleButton = true;
         private bool _useSystemPasswordChar;
@@ -213,7 +211,7 @@
             state = MouseState.Down;
 
             isPlaceholder = false;
-            textBox.Text = "";
+            textBox.Text = (placeholderText ?? "").ToUpper().Equals((textBox.Text ?? "").ToUpper()) ? "" : textBox.Text;
             textBox.ForeColor = this.ForeColor;
 
             Invalidate();
@@ -477,16 +475,22 @@
         [Category("Appearance")]
         public override Color BackColor
         {
-            get { return base.BackColor; }
+            get { return _backColor; }
             set
             {
-                base.BackColor = value;
-                textBox.BackColor = value;
-                searchButton.BackColor = value;
-                iconPictureBox.BackColor = value;
-                this.Invalidate(); // Redibuja el control para aplicar el nuevo color de fondo
+                if (_backColor != value) {
+                    _backColor = value;
+                    textBox.BackColor = value;
+                    searchButton.BackColor = value;
+                    iconPictureBox.BackColor = value;
+                    this.Invalidate(); 
+                }
+    
             }
         }
+
+
+    
 
         [Category("Appearance")]
         public override Font Font

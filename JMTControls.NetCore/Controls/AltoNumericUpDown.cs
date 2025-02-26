@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JMTControls.NetCore.Implementation;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -8,8 +9,11 @@ namespace JMTControls.NetCore.Controls
 {
     #region AltoNMUpDown
 
+    [DefaultEvent("ValueChanged")]
     public class AltoNumericUpDown : Control
     {
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
         AltoButton btnUp = new AltoButton();
         AltoButton btnDown = new AltoButton();
         TextBox textbox = new TextBox();
@@ -339,13 +343,21 @@ namespace JMTControls.NetCore.Controls
             {
                 if (this.value != value)
                 {
+                    decimal oldValue = this.value;
                     this.value = value;
                     textbox.Text = value.ToString();
                     Invalidate();
+                    OnValueChanged(oldValue, value);
                 }
 
             }
         }
+
+        protected virtual void OnValueChanged(decimal oldValue, decimal newValue)
+        {
+            ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, newValue));
+        }
+
 
         public int DecimalPlace
         {
