@@ -30,6 +30,7 @@ namespace JMTControls.NetCore.Controls
         private bool _alreadyZizing;
         private int _maxItemsVisible = 12;
         private int _borderSize = 1;
+        private int _dropDownWidth = 100; // Valor por defecto
 
         public event EventHandler SelectedIndexChanged;
         public event EventHandler SelectedValueChanged;
@@ -49,6 +50,24 @@ namespace JMTControls.NetCore.Controls
             {
                 dataSource = value;
                 BindData(); // Actualiza los datos al cambiar la fuente
+            }
+        }
+
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Category("Appearance")]
+        [DefaultValue(100)]
+        public int DropDownWidth
+        {
+            get => _dropDownWidth;
+            set
+            {
+                if (_dropDownWidth != value)
+                {
+                    _dropDownWidth = value;
+                    dropdownMenu.Width = _dropDownWidth;
+                    Invalidate();
+                }
             }
         }
 
@@ -242,6 +261,7 @@ namespace JMTControls.NetCore.Controls
                     if (value)
                     {
                         _dropdownMenu = true;
+                        dropdownMenu.Width = _dropDownWidth; // Asegurar que tenga el ancho correcto
                         dropdownMenu.Show(this, new Point(0, Height));
                     }
                     else
@@ -256,9 +276,10 @@ namespace JMTControls.NetCore.Controls
                 {
                     DropdownMenu_Opening(dropdownMenu, new CancelEventArgs());
                 }
-
             }
         }
+
+
 
         [Browsable(false)]
         public int SelectedIndex
@@ -269,9 +290,13 @@ namespace JMTControls.NetCore.Controls
                 if (_selectedIndex != value)
                 {
                     _selectedIndex = value;
-
+                    SelectedValue = GetValueFromIndex(_selectedIndex);
+                    if (SelectedValue is null ) {
+                        _notExecuteTextChange = true;
+                        this.Text = string.Empty;
+                    }
                     SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
-                    SelectedValueChanged?.Invoke(this, EventArgs.Empty);
+         
                 }
 
             }
@@ -535,6 +560,8 @@ namespace JMTControls.NetCore.Controls
 
         protected override void OnSizeChanged(EventArgs e)
         {
+            base.OnSizeChanged(e);
+
             // veticalmente centra el txtSearch 
             // y horizontalmente que ocupe  todo el ancho del control - el ancho del botón
             // limita el alto minimo de este control sumando el alto de txtSearch + 3 pixeles arriba y abajo
@@ -544,9 +571,8 @@ namespace JMTControls.NetCore.Controls
             txtSearch.Width = this.Width - (btnAction.Width + btnIcon.Width + 10);
             txtSearch.Location = new Point(5, (int)((Height - txtSearch.Height) / 2));
 
-            dropdownMenu.Width = txtSearch.Width;
+            dropdownMenu.Width = _dropDownWidth; // Aplicar el ancho configurado
 
-            base.OnSizeChanged(e);
         }
 
 
@@ -606,6 +632,15 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
+
+        // Método para obtener el valor desde el índice (esto depende de tu implementación)
+        private object GetValueFromIndex(int index)
+        {
+            // Aquí deberías tener la lógica para obtener el valor correspondiente al índice
+            // Por ejemplo, si tienes una lista, puedes hacer algo como:
+         return index >= 0 && index < boundItems.Count ? boundItems[index] : null;
+        }
+
         private void DropdownMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             try
@@ -645,11 +680,11 @@ namespace JMTControls.NetCore.Controls
 
             // Calcular el ancho
             int scrollbarWidth = SystemInformation.VerticalScrollBarWidth; // Ancho del scroll
-            int textPadding = 20; // Espacio extra para evitar cortes
+            int textPadding = 10; // Espacio extra para evitar cortes
             int newWidth = TextRenderer.MeasureText(longestText, lstItems.Font).Width + textPadding;
 
             // Asegurar un ancho mínimo
-            newWidth = Math.Min(newWidth, (txtSearch.Width - scrollbarWidth));
+            newWidth = Math.Max(newWidth, (txtSearch.Width - scrollbarWidth));
 
 
             // Asegurar que el ListBox tenga el tamaño correcto
@@ -665,7 +700,7 @@ namespace JMTControls.NetCore.Controls
             if (dropdownMenu.Items[0] is ToolStripControlHost host)
             {
                 host.AutoSize = false;
-                host.Size = new Size(newWidth + 10, newHeight);
+                host.Size = new Size(newWidth, newHeight);
             }
 
             dropdownMenu.Size = new Size(newWidth + scrollbarWidth + 30, newHeight + 4); // +4 para márgenes

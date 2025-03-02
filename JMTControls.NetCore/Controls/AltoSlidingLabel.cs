@@ -20,9 +20,10 @@ namespace JMTControls.NetCore.Controls
         private Image _buttonImage = null;
         private int _buttonWidth = 20;
         private bool _isHovered = false;
-
-        // Propiedad para el hover de todo el control
+        private bool _backColorSetByUser = false;
+        private bool _enableHoverEffect = false; // Permite activar o desactivar el hover
         private bool _isControlHovered = false;
+        private Color _originalBackColor; // Guardará el color original
 
         public bool Slide
         {
@@ -36,6 +37,29 @@ namespace JMTControls.NetCore.Controls
                     a = 0;
                     Invalidate();
                 }
+            }
+        }
+
+        // Nueva propiedad para habilitar o deshabilitar el hover
+        public bool EnableHoverEffect
+        {
+            get => _enableHoverEffect;
+            set
+            {
+                _enableHoverEffect = value;
+                Invalidate();
+            }
+        }
+
+        public override Color BackColor
+        {
+            get => base.BackColor;
+            set
+            {
+                _backColorSetByUser = true;
+                _originalBackColor = value; // Guardar el color original
+                base.BackColor = value;
+                Invalidate();
             }
         }
 
@@ -114,6 +138,16 @@ namespace JMTControls.NetCore.Controls
             timer.Enabled = true;
             base.OnResize(e);
         }
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+
+            if (!_backColorSetByUser && Parent != null)
+            {
+                _originalBackColor = Parent.BackColor;
+                base.BackColor = Parent.BackColor;
+            }
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -160,19 +194,20 @@ namespace JMTControls.NetCore.Controls
 
         private void AltoSlidingLabel_MouseEnter(object sender, EventArgs e)
         {
-            // Activar el hover de todo el control
+            if (!_enableHoverEffect) return; // No hacer nada si el hover está desactivado
+
             _isControlHovered = true;
+            base.BackColor = AdjustBrightness(_originalBackColor, 0.2f); // Aumentar brillo
             Invalidate();
         }
 
         private void AltoSlidingLabel_MouseLeave(object sender, EventArgs e)
         {
-            // Desactivar el hover del botón cuando el mouse sale del control principal
-            if (_isHovered)
-            {
-                _isHovered = false;
-                Invalidate(); // Redibujar el control para ocultar el hover
-            }
+            if (!_enableHoverEffect) return; // No hacer nada si el hover está desactivado
+
+            _isControlHovered = false;
+            base.BackColor = _originalBackColor; // Restaurar el color original
+            Invalidate();
         }
 
         private void AltoSlidingLabel_MouseMove(object sender, MouseEventArgs e)
@@ -264,12 +299,10 @@ namespace JMTControls.NetCore.Controls
             float g = color.G / 255.0f;
             float b = color.B / 255.0f;
 
-            // Ajustar el brillo
             r = Math.Min(1.0f, r * (1 + factor));
             g = Math.Min(1.0f, g * (1 + factor));
             b = Math.Min(1.0f, b * (1 + factor));
 
-            // Convertir de nuevo a Color
             return Color.FromArgb(color.A, (int)(r * 255), (int)(g * 255), (int)(b * 255));
         }
     }

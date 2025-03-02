@@ -22,7 +22,7 @@
         private string placeholderText = "JMTControls TextBoxRounded..";
         private Color placeholderColor = Color.FromArgb(180, 180, 180);
         private Color _foreColor = Color.Black;
-        private Color _backColor = Color.LightGray;
+        private Color _backColor;
         private bool isPlaceholder;
         private bool _visibleButton = true;
         private bool _useSystemPasswordChar;
@@ -473,7 +473,11 @@
         }
 
         [Category("Appearance")]
-        public override Color BackColor
+        [Description("Color de fondo")]
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DefaultValue(typeof(Color), "Transparent")]
+        public new  Color BackColor
         {
             get { return _backColor; }
             set
