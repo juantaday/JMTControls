@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.expandCollapsePanel1 = new JMControls.ExpandCollapsePanel.ExpandCollapsePanel();
+            this.rjButton1 = new JMControls.Controls.RJButton();
             this.SuspendLayout();
             // 
             // expandCollapsePanel1
@@ -47,18 +48,38 @@
             this.expandCollapsePanel1.IsExpanded = true;
             this.expandCollapsePanel1.Location = new System.Drawing.Point(91, 78);
             this.expandCollapsePanel1.Name = "expandCollapsePanel1";
-            this.expandCollapsePanel1.Size = new System.Drawing.Size(441, 267);
+            this.expandCollapsePanel1.Size = new System.Drawing.Size(164, 52);
             this.expandCollapsePanel1.TabIndex = 0;
             this.expandCollapsePanel1.Text = "expandCollapsePanel1";
             this.expandCollapsePanel1.UseAnimation = true;
             this.expandCollapsePanel1.VisibleDefaultButton = true;
             this.expandCollapsePanel1.VisibleIconButton = true;
             // 
+            // rjButton1
+            // 
+            this.rjButton1.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.rjButton1.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.rjButton1.BorderColor = System.Drawing.Color.Red;
+            this.rjButton1.BorderRadius = 12;
+            this.rjButton1.BorderSize = 1;
+            this.rjButton1.FlatAppearance.BorderSize = 0;
+            this.rjButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rjButton1.ForeColor = System.Drawing.Color.White;
+            this.rjButton1.Location = new System.Drawing.Point(78, 212);
+            this.rjButton1.Name = "rjButton1";
+            this.rjButton1.Size = new System.Drawing.Size(280, 88);
+            this.rjButton1.TabIndex = 1;
+            this.rjButton1.Text = "rjButton1";
+            this.rjButton1.TextColor = System.Drawing.Color.White;
+            this.rjButton1.UseVisualStyleBackColor = false;
+            this.rjButton1.Click += new System.EventHandler(this.rjButton1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.rjButton1);
             this.Controls.Add(this.expandCollapsePanel1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -69,6 +90,7 @@
         #endregion
 
         private JMControls.ExpandCollapsePanel.ExpandCollapsePanel expandCollapsePanel1;
+        private JMControls.Controls.RJButton rjButton1;
     }
 }
 

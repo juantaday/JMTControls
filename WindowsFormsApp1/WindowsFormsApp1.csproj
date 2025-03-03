@@ -85,5 +85,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JMTControls.NetCore\JMTControls.NetCore.csproj">
+      <Project>{f81b2f54-d6b9-4b87-84b7-110710127359}</Project>
+      <Name>JMTControls.NetCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
