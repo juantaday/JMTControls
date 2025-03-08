@@ -56,7 +56,7 @@ namespace JMTControls.NetCore.Controls
             // 
             // successIcon
             // 
-            successIcon.Location = new Point(10, 15);
+            successIcon.Location = new Point(10, 11);
             successIcon.Name = "successIcon";
             successIcon.Size = new Size(30, 30);
             successIcon.SizeMode = PictureBoxSizeMode.Zoom;

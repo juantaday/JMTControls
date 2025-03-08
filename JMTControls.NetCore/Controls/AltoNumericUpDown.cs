@@ -95,7 +95,7 @@ namespace JMTControls.NetCore.Controls
 
             decimal currentValue = Convert.ToDecimal(textbox.Text == "" ? "0" : textbox.Text);
             if (this.Value != currentValue)
-                this.value = currentValue;
+                this.Value = currentValue;
         }
 
         void box_KeyDown(object sender, KeyEventArgs e)
@@ -181,7 +181,7 @@ namespace JMTControls.NetCore.Controls
 
             if (value > _minimum)
             {
-                value--;
+                this.Value++;
                 textbox.Text = value.ToString();
             }
 
@@ -191,7 +191,7 @@ namespace JMTControls.NetCore.Controls
         {
             if (value < _maximum)
             {
-                value++;
+                this.Value++;
                 textbox.Text = value.ToString();
             }
 

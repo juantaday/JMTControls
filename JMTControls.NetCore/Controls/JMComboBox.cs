@@ -5,6 +5,7 @@ namespace JMTControls.NetCore.Controls
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Drawing.Drawing2D;
     using System.Linq;
@@ -291,12 +292,17 @@ namespace JMTControls.NetCore.Controls
                 {
                     _selectedIndex = value;
                     SelectedValue = GetValueFromIndex(_selectedIndex);
-                    if (SelectedValue is null ) {
+                    if (SelectedValue is null)
+                    {
                         _notExecuteTextChange = true;
                         this.Text = string.Empty;
+                      
+                    }
+                    else {
+                        _notExecuteTextChange = true;
+                        this.Text = this.SelectedItem.GetType().GetProperty(displayMember)?.GetValue(this.SelectedItem, null)?.ToString();
                     }
                     SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
-         
                 }
 
             }
