@@ -178,6 +178,7 @@
             else if (_useSystemPasswordChar && !string.Equals(this.Text, placeholderText, StringComparison.Ordinal))
             {
                 textBox.UseSystemPasswordChar = true;
+                textBox.Select(textBox.TextLength,1);
             }
             else
             {
