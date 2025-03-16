@@ -159,9 +159,7 @@
         // Asynchronous progress update
         public async void UpdateProgressAsync(int targetValue, int duration, bool hideVisibilityOnCompleted = false)
         {
-            if (hideVisibilityOnCompleted)
-                this.Visible = true;
-
+            this.Visible = true;
             ProgressValue = 0;
             _hideVisibilityOnCompleted = hideVisibilityOnCompleted;
 
