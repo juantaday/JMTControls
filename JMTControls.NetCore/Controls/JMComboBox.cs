@@ -460,17 +460,20 @@ namespace JMTControls.NetCore.Controls
                 return;
             }
 
-            string searchText = txtSearch.Text.ToLower();
-            var filteredItems = boundItems
-              .Where(item => item.GetType().GetProperty(displayMember)?
-                  .GetValue(item, null)?.ToString()?.ToLower().Contains(searchText) == true)
-              .ToList();
+            string searchText = txtSearch.Text?.ToLower() ?? string.Empty;
 
-            lstItems.Items.Clear();
-            if (filteredItems.Any())
-            {
-                lstItems.Items.AddRange(filteredItems.ToArray());
-                DroppedDown = true;
+            if (!string.IsNullOrEmpty(searchText)) {
+                var filteredItems = boundItems
+                 .Where(item => item.GetType().GetProperty(displayMember)?
+                     .GetValue(item, null)?.ToString()?.ToLower().Contains(searchText) == true)
+                 .ToList();
+
+                lstItems.Items.Clear();
+                if (filteredItems.Any())
+                {
+                    lstItems.Items.AddRange(filteredItems.ToArray());
+                    DroppedDown = true;
+                }
             }
             else
             {
@@ -602,8 +605,7 @@ namespace JMTControls.NetCore.Controls
         {
             if (!DroppedDown)
             {
-                var dff = new  TextBox();
-
+            
                 lstItems.Items.Clear();
                 lstItems.Items.AddRange(boundItems.ToArray());
                 lstItems.SelectedIndex = _selectedIndex;
