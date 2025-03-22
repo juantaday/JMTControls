@@ -183,7 +183,7 @@ namespace JMTControls.NetCore.Controls
                     totalHeight += lineSize.Height;
                 }
 
-                this.Size = new Size((int)(maxWidth + successIcon.Width + 45), (int)(Math.Max(totalHeight, successIcon.Height) + 20));
+                this.Size = new Size((int)(maxWidth + successIcon.Width + 55), (int)(Math.Max(totalHeight, successIcon.Height) + 20));
             }
 
             // Calcular la posición del popup con respecto al formulario
