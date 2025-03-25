@@ -652,6 +652,9 @@
             } 
             set
             {
+                if (textBox ==null) {
+                    return;
+                }
                 if (textBox.Text != value)
                 {
                     textBox.Text = value;
