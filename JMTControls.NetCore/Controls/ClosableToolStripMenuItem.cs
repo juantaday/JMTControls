@@ -8,6 +8,7 @@
     {
         private const int CloseButtonWidth = 16;  // Tamaño del botón
         private const int CloseButtonMargin = 1;  // Margen derecho reducido
+        private const int CloseButtonRightPadding = 4;  // Margen derecho reducido
         private const int CloseButtonPadding = 2; // Espacio interno de la X
         private Rectangle closeButtonRect;
         private bool isCloseButtonHovered = false;
@@ -102,7 +103,7 @@
                 {
                     // Calcular posición del botón de cierre (1px del borde derecho)
                     parentItem.closeButtonRect = new Rectangle(
-                        e.Item.Width - CloseButtonWidth - 1, // 1px del borde derecho
+                        e.Item.Width - CloseButtonWidth - CloseButtonRightPadding, // 1px del borde derecho
                         e.TextRectangle.Y + (e.TextRectangle.Height - CloseButtonWidth) / 2,
                         CloseButtonWidth,
                         CloseButtonWidth);
