@@ -15,11 +15,12 @@ namespace JMTControls.NetCore.Controls
 {
     [Designer(typeof(StepProgressControlDesigner))]
     [DefaultProperty("Steps")]
+    [DefaultEvent("SelectedIndexChanged")]
     [ToolboxItem(true)]
     public class StepProgressControl : UserControl
     {
         #region Campos
-        private int _indexStep = 0;
+        private int _indexStep = -1;
         private Color _activeColor = Color.FromArgb(0, 120, 215);
         private Color _inactiveColor = Color.Gray;
         private Color _completedColor = Color.Green;
@@ -27,10 +28,14 @@ namespace JMTControls.NetCore.Controls
         private int _circleSize = 30;
         private int _lineThickness = 2;
         private Panel _headerPanel;
+        private Panel _navigationPanel;
         private Panel _contentPanel;
         private StepCollection _steps;
-        private StepPage _currentStep;  
-        private ComboBox _stepSelector;
+        private StepPage _currentStep;
+        private ToolTip _navigationToolTip;
+
+        public event EventHandler<StepChangingEventArgs> SelectedIndexChanging;
+        public event EventHandler SelectedIndexChanged; // Evento después del cambio
         #endregion
 
         #region Propiedades
@@ -87,22 +92,39 @@ namespace JMTControls.NetCore.Controls
             get => _indexStep;
             set
             {
-                if (value == _indexStep) return; // No hacer nada si es el mismo valor
+                if (value < 0 || value >= Steps.Count || value == _indexStep)
+                    return;
 
-                if (value >= 0 && value < Steps.Count)
+                // Disparar el evento de "cambiando" que permite cancelar
+                var args = new StepChangingEventArgs(_indexStep, value);
+                SelectedIndexChanging?.Invoke(this, args);
+
+                if (args.Cancel)
+                    return;
+
+                _indexStep = value;
+
+                try
                 {
-                    _indexStep = value;
+                    UpdateContent();
+                }
+                finally
+                {
+                    Invalidate();
+                }
 
-                    // Actualizar solo si es necesario
-                    if (!DesignMode || _stepSelector == null || _stepSelector.SelectedIndex != value)
+                // Disparar el evento de "cambiado"
+                SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
+
+                if (DesignMode && Site != null)
+                {
+                    try
                     {
-                        UpdateContent();
-                        Invalidate();
-
-                        if (DesignMode && _stepSelector != null && _stepSelector.Items.Count > value)
-                        {
-                            _stepSelector.SelectedIndex = value;
-                        }
+                        SelectStepInDesigner(Steps[value]);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Designer selection error: {ex.Message}");
                     }
                 }
             }
@@ -146,12 +168,92 @@ namespace JMTControls.NetCore.Controls
         {
             this.SuspendLayout();
 
+
             _headerPanel = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = _stepHeight + 30,
                 BackColor = Color.White
             };
+
+            _navigationPanel = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 40, // Altura suficiente para los botones
+                BackColor = Color.Transparent
+            };
+
+
+            // Crear el ToolTip
+            _navigationToolTip = new ToolTip
+            {
+                AutomaticDelay = 500,
+                AutoPopDelay = 3000,
+                InitialDelay = 500,
+                ReshowDelay = 100,
+                ShowAlways = true,
+                OwnerDraw = true,
+                IsBalloon = false,
+                ToolTipTitle = "Navegación" // Título opcional
+            };
+
+            _navigationToolTip.Draw += ToolTip_Draw;
+            _navigationToolTip.Popup += ToolTip_Popup;
+
+            // Agregar botones reales
+            var btnPrevious = new Button
+            {
+                Text = "◀",
+                Font = new Font(Font.FontFamily, 12, FontStyle.Bold),
+                Size = new Size(30, 30),
+                Location = new Point(10 ,5),
+                FlatStyle = FlatStyle.Flat,
+                BackColor = SystemColors.Control,
+                Cursor = Cursors.Hand,
+                
+            };
+            btnPrevious.FlatAppearance.BorderSize = 1;
+            btnPrevious.Click += (s, e) => PreviousStep();
+            btnPrevious.MouseEnter += (s, e) => btnPrevious.BackColor = Color.LightGray;
+            btnPrevious.MouseLeave += (s, e) => btnPrevious.BackColor = SystemColors.Control;
+            btnPrevious.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 220, 220);
+            btnPrevious.FlatAppearance.MouseDownBackColor = Color.FromArgb(200, 200, 200);
+            // Agregar ToolTip al botón Anterior
+            _navigationToolTip.SetToolTip(btnPrevious, "Paso anterior");
+
+            var btnNext = new Button
+            {
+                Text = "▶",
+                Font = new Font(Font.FontFamily, 12, FontStyle.Bold),
+                Size = new Size(30, 30),
+                Location = new Point(_navigationPanel.Width - 40, 5),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = SystemColors.Control,
+                Cursor = Cursors.Hand,
+                Name ="nextButton"
+            };
+
+            btnNext.FlatAppearance.BorderSize = 1;
+            btnNext.Click += (s, e) => NextStep();
+            btnNext.MouseEnter += (s, e) => btnNext.BackColor = Color.LightGray;
+            btnNext.MouseLeave += (s, e) => btnNext.BackColor = SystemColors.Control;
+            btnNext.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 220, 220);
+            btnNext.FlatAppearance.MouseDownBackColor = Color.FromArgb(200, 200, 200);
+
+            // Agregar ToolTip al botón Siguiente
+            _navigationToolTip.SetToolTip(btnNext, "Paso siguiente");
+
+            _navigationPanel.Controls.Add(btnPrevious);
+            _navigationPanel.Controls.Add(btnNext);
+
+            // Agregar el panel de navegación al header
+            _headerPanel.Controls.Add(_navigationPanel);
+            _navigationPanel.BringToFront();
+
+            // Ajustar el padding del header para el contenido
+            _headerPanel.Padding = new Padding(0, 0, 0, 40);
+
             _headerPanel.Paint += HeaderPanel_Paint;
 
             _contentPanel = new Panel
@@ -166,38 +268,16 @@ namespace JMTControls.NetCore.Controls
 
             if (DesignMode)
             {
-                InitializeDesignMode();
-                System.Diagnostics.Debug.WriteLine("Design mode: asfdsadfdwfgrgtry");  
+                UpdateDesigner();
+                System.Diagnostics.Debug.WriteLine("Design mode:");  
             }
+
+
 
             this.Size = new Size(600, 400);
             this.ResumeLayout(false);
         }
 
-        private void InitializeDesignMode()
-        {
-            _stepSelector = new ComboBox
-            {
-                Dock = DockStyle.Top,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Name = "StepSelector",
-                Location  = new Point(10, 10)   
-            };
-
-            _stepSelector.SelectedIndexChanged += (s, e) =>
-            {
-                if (_stepSelector.SelectedIndex >= 0)
-                {
-                    IndexStep = _stepSelector.SelectedIndex;
-                    SelectStepInDesigner(Steps[IndexStep]);
-                }
-            };
-
-            _headerPanel.Controls.Add(_stepSelector);
-            _headerPanel.Height += _stepSelector.Height;
-
-            UpdateDesigner();
-        }
 
         private void SelectStepInDesigner(StepPage page)
         {
@@ -254,43 +334,76 @@ namespace JMTControls.NetCore.Controls
         {
             if (!DesignMode) return;
 
-            var stepSelector = _headerPanel.Controls["StepSelector"] as ComboBox;
-            if (stepSelector != null)
-            {
-                stepSelector.BeginUpdate();
-                try
-                {
-                    stepSelector.Items.Clear();
-                    foreach (StepPage page in Steps)
-                        stepSelector.Items.Add(page.Title);
-
-                    if (IndexStep >= 0 && IndexStep < stepSelector.Items.Count)
-                    {
-                        stepSelector.SelectedIndex = IndexStep;
-                        SelectStepInDesigner(Steps[IndexStep]);
-                    }
-                }
-                finally
-                {
-                    stepSelector.EndUpdate();
-                }
-            }
-
-            // Mostrar todos los StepPage en diseño para que puedas arrastrar controles
-            foreach (StepPage page in Steps)
-            {
-                page.Visible = true;
-            }
-
             UpdateContent();
         }
 
+        private void ToolTip_Popup(object sender, PopupEventArgs e)
+        { // Calcular posición correcta para el ToolTip
+            var button = e.AssociatedControl as Button;
+            if (button != null)
+            {
+                // Tamaño dinámico basado en el texto
+                Size textSize = TextRenderer.MeasureText(_navigationToolTip.GetToolTip(button), button.Font);
+                e.ToolTipSize = new Size(textSize.Width , textSize.Height + 10);
+
+                // Verificar posición para no salir de pantalla
+                Point screenPos = button.PointToScreen(Point.Empty);
+                Screen currentScreen = Screen.FromControl(button);
+
+                if (screenPos.X + e.ToolTipSize.Width > currentScreen.WorkingArea.Right)
+                {
+                    // Ajustar posición si el ToolTip se sale por la derecha
+                    e.ToolTipSize = new Size(textSize.Width - 10, textSize.Height + 10);
+                }
+            }
+        }
+
+        private void ToolTip_Draw(object sender, DrawToolTipEventArgs e)
+        {
+            // Fondo personalizado
+            using (var backBrush = new SolidBrush(Color.LightGoldenrodYellow))
+            using (var borderPen = new Pen(Color.Goldenrod))
+            using (var textBrush = new SolidBrush(Color.Black))
+            {
+                e.Graphics.FillRectangle(backBrush, e.Bounds);
+                e.Graphics.DrawRectangle(borderPen, new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1));
+
+                // Texto centrado
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    e.ToolTipText,
+                    e.Font,
+                    new Rectangle(e.Bounds.X , e.Bounds.Y + 2, e.Bounds.Width - 4, e.Bounds.Height - 4),
+                    Color.Black,
+                    (e.ToolTipText.Equals ("Paso siguiente")? TextFormatFlags.Left : TextFormatFlags.HorizontalCenter) | TextFormatFlags.VerticalCenter);
+            }
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _navigationToolTip?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         #endregion
 
         #region Métodos públicos
         #region Navegación en Tiempo de Ejecución
         private bool _isUpdating;
+        public bool NextStep()
+        {
+            return ChangeStep(IndexStep + 1);
+        }
+
+        public bool PreviousStep()
+        {
+            return ChangeStep(IndexStep - 1);
+        }
+
         private bool ChangeStep(int newIndex)
         {
             if (_isUpdating) return false;
@@ -309,16 +422,6 @@ namespace JMTControls.NetCore.Controls
             {
                 _isUpdating = false;
             }
-        }
-
-        public void NextStep()
-        {
-            ChangeStep(IndexStep + 1);
-        }
-
-        public void PreviousStep()
-        {
-            ChangeStep(IndexStep - 1);
         }
 
         #endregion
@@ -373,10 +476,11 @@ namespace JMTControls.NetCore.Controls
 
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
 
+            // Ajustar el área de dibujo para no incluir el espacio de los botones
+            var drawHeight = _headerPanel.Height - _navigationPanel.Height;
             int stepWidth = _headerPanel.Width / Steps.Count;
-            int circleY = _stepHeight / 2;
+            int circleY = drawHeight / 2;
 
             // Pre-cache de recursos
             using (var activeBrush = new SolidBrush(_activeColor))
@@ -385,9 +489,10 @@ namespace JMTControls.NetCore.Controls
             using (var whiteTextBrush = new SolidBrush(Color.White))
             using (var activeTextBrush = new SolidBrush(_activeColor))
             using (var inactiveTextBrush = new SolidBrush(_inactiveColor))
-            using (var boldFont = new Font(Font.FontFamily, 10, FontStyle.Bold))
-            using (var regularFont = new Font(Font.FontFamily, 8))
-            using (var boldSmallFont = new Font(Font.FontFamily, 8, FontStyle.Bold))
+            using (var boldFont = new Font("Segoe UI", 10, FontStyle.Bold))
+            using (var regularFont = new Font("Segoe UI", 8))
+            using (var boldSmallFont = new Font("Segoe UI", 8, FontStyle.Bold))
+            using (var regularNumberFont = new Font("Segoe UI", 10)) // Nueva fuente para números no activos
             {
                 for (int i = 0; i < Steps.Count; i++)
                 {
@@ -399,7 +504,7 @@ namespace JMTControls.NetCore.Controls
                     {
                         using (var pen = new Pen(i <= _indexStep ? _completedColor : _inactiveColor, _lineThickness))
                         {
-                            int lineStartX = (i * stepWidth) - (stepWidth / 2);
+                            int lineStartX = (_circleSize / 2) + (i * stepWidth) - (stepWidth / 2);
                             int lineEndX = (i * stepWidth) - (stepWidth / 2) + stepWidth;
                             g.DrawLine(pen, lineStartX, circleY + (_circleSize / 2), lineEndX, circleY + (_circleSize / 2));
                         }
@@ -411,15 +516,16 @@ namespace JMTControls.NetCore.Controls
                         i < _indexStep ? completedBrush : inactiveBrush,
                         circleX, circleY, _circleSize, _circleSize);
 
-                    // Dibujar número
+                    // Dibujar número - usamos boldFont solo para el paso actual
                     var numberText = (i + 1).ToString();
-                    var numberSize = g.MeasureString(numberText, boldFont);
-                    g.DrawString(numberText, boldFont, whiteTextBrush,
+                    var currentNumberFont = i == _indexStep ? boldFont : regularNumberFont;
+                    var numberSize = g.MeasureString(numberText, currentNumberFont);
+                    g.DrawString(numberText, currentNumberFont, whiteTextBrush,
                         circleX + (_circleSize - numberSize.Width) / 2,
                         circleY + (_circleSize - numberSize.Height) / 2);
 
                     // Dibujar título
-                    var titleFont = i == _indexStep ? boldSmallFont : regularFont;
+                    var titleFont = i == _indexStep ? boldFont :(i <= _indexStep ? boldSmallFont : regularFont);
                     var titleBrush = i <= _indexStep ? activeTextBrush : inactiveTextBrush;
                     var titleSize = g.MeasureString(step.Title, titleFont);
                     g.DrawString(step.Title, titleFont, titleBrush,
@@ -428,11 +534,26 @@ namespace JMTControls.NetCore.Controls
                 }
             }
         }
+
         #endregion
 
-
-
         #region Clases auxiliares
+
+        // Clase para los argumentos del evento que permite cancelar
+        public class StepChangingEventArgs : EventArgs
+        {
+            public int CurrentIndex { get; }
+            public int NewIndex { get; }
+            public bool Cancel { get; set; }
+
+            public StepChangingEventArgs(int currentIndex, int newIndex)
+            {
+                CurrentIndex = currentIndex;
+                NewIndex = newIndex;
+                Cancel = false;
+            }
+        }
+
         [Designer(typeof(StepPageDesigner))]
         [ToolboxItem(false)]
         public class StepPage : ContainerControl
@@ -541,6 +662,10 @@ namespace JMTControls.NetCore.Controls
             {
                 List.Add(page);
                 _owner.Controls.Add(page);
+                if (_owner.Steps.Count > 0 && _owner.IndexStep == -1) {
+                    _owner.IndexStep = 0;   
+                }
+
                 if (!page.Site?.DesignMode ?? true)
                     _owner.UpdateDesigner();
             }
@@ -574,7 +699,6 @@ namespace JMTControls.NetCore.Controls
 
         #endregion
    
-    
     }
 
     #region Designer para el control
