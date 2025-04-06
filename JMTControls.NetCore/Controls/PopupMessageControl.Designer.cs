@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace JMTControls.NetCore.Controls
 {
-    partial class PopupMessageContro
+    partial class PopupMessageControl
     {
         /// <summary> 
         /// Variable del diseñador necesaria.

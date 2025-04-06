@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace JMTControls.NetCore.Controls
 {
-    public partial class PopupMessageContro : UserControl
+    public partial class PopupMessageControl : UserControl
     {
         private int _duration;  
         private string _message;
@@ -14,7 +14,7 @@ namespace JMTControls.NetCore.Controls
         private Image _icon;
         private Font _messageFont;  
 
-        public PopupMessageContro()
+        public PopupMessageControl()
         {
             InitializeComponent();
 
@@ -148,7 +148,7 @@ namespace JMTControls.NetCore.Controls
 
         public void ShowSuccessMessage(Control control, string message,
            Color backgroundColor = default, Color textColor = default,
-           Image icon = null)
+           Image icon = null, int duration =3000)
         {
             // Si el control ya está en el formulario, solo actualizarlo
             var parentForm = control.FindForm();
@@ -159,7 +159,8 @@ namespace JMTControls.NetCore.Controls
                 parentForm.Controls.Add(this); // Solo agregar si no está en el formulario
             }
 
-            // Asignar valores personalizados
+            // Asignar valores personalizados --
+            this.DisplayDuration = duration;
             this.Message = message;
             this.BackColor = backgroundColor == default ? Color.LightGreen : backgroundColor;
             this.TextColor = textColor == default ? Color.Black : textColor;
