@@ -1,12 +1,14 @@
-﻿
-
-namespace JMTControls.NetCore.Controls
+﻿namespace JMTControls.NetCore.Controls
 {
+    using JMTControls.NetCore.Class;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.ComponentModel.Design;
     using System.Diagnostics;
     using System.Drawing;
+    using System.Drawing.Design;
     using System.Drawing.Drawing2D;
     using System.Linq;
     using System.Windows.Forms;
@@ -20,7 +22,7 @@ namespace JMTControls.NetCore.Controls
         private string valueMember;
         private List<object> boundItems = new List<object>();
         private Font _font = new Font("Tahoma", 12);
-        private Color _backColor = Color.White;
+        private Color _backColor = Color.White; 
         private Color _foreColor = Color.DarkViolet;
         private Color _borderColor = Color.DarkViolet;
         private BorderStyle _borderStyle = BorderStyle.FixedSingle;
@@ -41,6 +43,8 @@ namespace JMTControls.NetCore.Controls
             // Inicializa los componentes
             InitializeComponent();
 
+            // Inicializar la colección Items
+            Items = new ObjectCollection(this);
         }
 
 
@@ -99,9 +103,21 @@ namespace JMTControls.NetCore.Controls
             if (dataSource is IEnumerable<object> enumerable)
             {
                 boundItems = enumerable.ToList();
-                lstItems.Items.Clear(); // Limpia los items anteriores antes de agregar los nuevos
+            }
+            else if (dataSource != null)
+            {
+                // Manejar otras fuentes de datos
+                boundItems = new List<object> { dataSource };
+            }
+            else
+            {
+                // Si no hay DataSource, usar Items
+                boundItems = Items.Cast<object>().ToList();
+            }
 
-                // Agrega los elementos filtrados o los elementos completos
+            lstItems.Items.Clear();
+            if (boundItems.Count > 0)
+            {
                 lstItems.Items.AddRange(boundItems.ToArray());
             }
         }
@@ -359,9 +375,9 @@ namespace JMTControls.NetCore.Controls
             set
             {
                 // Buscar el valor en boundItems utilizando ValueMember
-                var selectedItem = boundItems
+               var selectedItem = boundItems
                     .FirstOrDefault(item =>
-                        item.GetType().GetProperty(valueMember)?.GetValue(item, null)?.Equals(value) == true);
+                        item.GetType().GetProperty(valueMember??"")?.GetValue(item, null)?.Equals(value??"") == true);
 
                 if (selectedItem != null)
                 {
@@ -416,6 +432,17 @@ namespace JMTControls.NetCore.Controls
         }
 
 
+        // Reemplaza la propiedad Items existente con esta versión simplificada
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Category("Data")]
+        [Description("Gets or sets the items in the combo box.")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [Editor(typeof(ComboBoxStringCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        public ObjectCollection Items { get; private set; }
+
+    
+
         // _maxItemsVisible 
         [Browsable(true)]
         [EditorBrowsable(EditorBrowsableState.Always)]
@@ -462,11 +489,25 @@ namespace JMTControls.NetCore.Controls
 
             string searchText = txtSearch.Text?.ToLower() ?? string.Empty;
 
-            if (!string.IsNullOrEmpty(searchText)) {
-                var filteredItems = boundItems
-                 .Where(item => item.GetType().GetProperty(displayMember)?
-                     .GetValue(item, null)?.ToString()?.ToLower().Contains(searchText) == true)
-                 .ToList();
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                List<object> filteredItems;
+
+                if (!string.IsNullOrEmpty(displayMember))
+                {
+                    // Usar DisplayMember si está definido
+                    filteredItems = boundItems
+                     .Where(item => item.GetType().GetProperty(displayMember)?
+                         .GetValue(item, null)?.ToString()?.ToLower().Contains(searchText) == true)
+                     .ToList();
+                }
+                else
+                {
+                    // Usar ToString() para strings simples
+                    filteredItems = boundItems
+                        .Where(item => item?.ToString()?.ToLower().Contains(searchText) == true)
+                        .ToList();
+                }
 
                 lstItems.Items.Clear();
                 if (filteredItems.Any())
@@ -542,13 +583,22 @@ namespace JMTControls.NetCore.Controls
             var selectedFilteredItem = lstItems.SelectedItem; // Objeto seleccionado en la lista filtrada
 
             // Obtener el valor real de ValueMember del elemento seleccionado
-            var selectedValue = selectedFilteredItem.GetType().GetProperty(valueMember)?.GetValue(selectedFilteredItem, null);
+            object selectedValue = null;
+            if (!string.IsNullOrEmpty(valueMember))
+            {
+                selectedValue = selectedFilteredItem.GetType().GetProperty(valueMember)?.GetValue(selectedFilteredItem, null);
+                // Buscar el índice real en boundItems usando ValueMember
+                _selectedIndex = boundItems.FindIndex(item =>
+                    item.GetType().GetProperty(valueMember ?? "")?.GetValue(item, null)?.Equals(selectedValue) == true
+                );
 
-            // Buscar el índice real en boundItems usando ValueMember
-            _selectedIndex = boundItems.FindIndex(item =>
-                item.GetType().GetProperty(valueMember)?.GetValue(item, null)?.Equals(selectedValue) == true
-            );
+            }
+            else {
+                selectedValue = selectedFilteredItem;
+                _selectedIndex = lstItems.SelectedIndex;
+            }
 
+             
 
             _notExecuteTextChange = true;
             this.Text = lstItems.Text;
@@ -682,7 +732,7 @@ namespace JMTControls.NetCore.Controls
             // Obtener el texto más largo basado en DisplayMember
             string longestText = lstItems.Items
                 .Cast<object>()
-                .Select(item => item.GetType().GetProperty(displayMember)?.GetValue(item, null)?.ToString() ?? "")
+                .Select(item => item.GetType().GetProperty(displayMember ?? "")?.GetValue(item, null)?.ToString() ?? "")
                 .OrderByDescending(text => text.Length)
                 .FirstOrDefault() ?? "Placeholder";
 
@@ -729,6 +779,32 @@ namespace JMTControls.NetCore.Controls
             _alreadyZizing = false;
         }
 
+        internal void RefreshItems()
+        {
+            // Si hay DataSource, usarlo; si no, usar Items
+            if (dataSource != null)
+            {
+                BindData();
+            }
+            else
+            {
+                // Actualizar boundItems desde Items
+                boundItems = Items.Cast<object>().ToList();
+                
+                // Actualizar el ListBox interno
+                lstItems.Items.Clear();
+                if (boundItems.Count > 0)
+                {
+                    lstItems.Items.AddRange(boundItems.ToArray());
+                }
+                
+                // Si el índice seleccionado ya no es válido, resetearlo
+                if (_selectedIndex >= boundItems.Count)
+                {
+                    SelectedIndex = -1;
+                }
+            }
+        }
 
     }
 

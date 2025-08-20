@@ -69,7 +69,7 @@
             };
             txtSearch.TextChanged += TxtSearch_TextChanged;
             txtSearch.KeyDown += TxtSearch_KeyDown;
-            txtSearch.KeyPress += TxtSearch_KeyPress; ;
+            txtSearch.KeyPress += TxtSearch_KeyPress; 
 
             // ListBox para desplegar opciones
             lstItems.IntegralHeight = true;
