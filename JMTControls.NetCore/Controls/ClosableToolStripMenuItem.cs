@@ -26,6 +26,7 @@
             menuStrip.Renderer = new ClosableMenuItemRenderer();
         }
 
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -75,8 +76,26 @@
             }
         }
 
+
         private class ClosableMenuItemRenderer : ToolStripProfessionalRenderer
         {
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                if (e.Item.Selected) // Selected = cuando hay hover
+                {
+                    // Color de fondo al hacer hover
+                    using (var brush = new SolidBrush(Color.FromArgb(51, 153, 255))) // Azul
+                    {
+                        e.Graphics.FillRectangle(brush, new Rectangle(0, 0, e.Item.Width, e.Item.Height));
+                    }
+                }
+                else
+                {
+                    base.OnRenderMenuItemBackground(e);
+                }
+            }
+
             protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
             {
                 // Configurar el ancho del ítem
@@ -85,10 +104,13 @@
 
                 // Área de texto (deja espacio para el botón)
                 var textRect = new Rectangle(
-                    1, // Margen izquierdo mínimo
+                    1,
                     e.TextRectangle.Y,
-                    e.TextRectangle.Width, // Reducir espacio para el botón
+                    e.TextRectangle.Width,
                     e.TextRectangle.Height);
+
+                // Cambiar color de texto cuando hay hover
+                Color textColor = e.Item.Selected ? Color.White : e.TextColor;
 
                 // Dibujar texto
                 TextRenderer.DrawText(
@@ -96,19 +118,19 @@
                     e.Text,
                     e.TextFont,
                     textRect,
-                    e.TextColor,
+                    textColor,
                     TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
 
                 if (e.Item is ClosableToolStripMenuItem parentItem)
                 {
-                    // Calcular posición del botón de cierre (1px del borde derecho)
+                    // Calcular posición del botón de cierre
                     parentItem.closeButtonRect = new Rectangle(
-                        e.Item.Width - CloseButtonWidth - CloseButtonRightPadding, // 1px del borde derecho
+                        e.Item.Width - CloseButtonWidth - CloseButtonRightPadding,
                         e.TextRectangle.Y + (e.TextRectangle.Height - CloseButtonWidth) / 2,
                         CloseButtonWidth,
                         CloseButtonWidth);
 
-                    // Dibujar la X (ajustar padding interno si es necesario)
+                    // Dibujar la X
                     using (var pen = new Pen(parentItem.isCloseButtonHovered ? Color.Red : Color.Gray, 2))
                     {
                         e.Graphics.DrawLine(pen,
@@ -123,7 +145,7 @@
                             parentItem.closeButtonRect.Top + CloseButtonPadding);
                     }
 
-                    // Dibujar fondo hover
+                    // Dibujar fondo hover del botón X
                     if (parentItem.isCloseButtonHovered)
                     {
                         using (var brush = new SolidBrush(Color.FromArgb(30, Color.Red)))
@@ -133,6 +155,9 @@
                     }
                 }
             }
+
         }
+
     }
+
 }

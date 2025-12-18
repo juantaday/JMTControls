@@ -695,8 +695,7 @@
 
         public  void Select(int star, int end)
         {
-            // seleccionar los 4 primeros caracteres
-            textBox.Select(0, 4);
+            textBox.Select(0, end);
         }
 
         protected override void OnResize(EventArgs e)
@@ -968,6 +967,11 @@
 
                 disposed = true;
             }
+        }
+
+        public void Clear()
+        {
+            this.Text = string.Empty;   
         }
 
     }

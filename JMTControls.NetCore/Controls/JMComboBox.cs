@@ -2,13 +2,9 @@
 {
     using JMTControls.NetCore.Class;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.ComponentModel.Design;
-    using System.Diagnostics;
     using System.Drawing;
-    using System.Drawing.Design;
     using System.Drawing.Drawing2D;
     using System.Linq;
     using System.Windows.Forms;
@@ -22,7 +18,7 @@
         private string valueMember;
         private List<object> boundItems = new List<object>();
         private Font _font = new Font("Tahoma", 12);
-        private Color _backColor = Color.White; 
+        private Color _backColor = Color.White;
         private Color _foreColor = Color.DarkViolet;
         private Color _borderColor = Color.DarkViolet;
         private BorderStyle _borderStyle = BorderStyle.FixedSingle;
@@ -34,9 +30,11 @@
         private int _maxItemsVisible = 12;
         private int _borderSize = 1;
         private int _dropDownWidth = 100; // Valor por defecto
+        private CustomButtonToolTip _buttonToolTip;
 
         public event EventHandler SelectedIndexChanged;
         public event EventHandler SelectedValueChanged;
+        public event EventHandler DropDown;
 
         public JMComboBox()
         {
@@ -45,6 +43,8 @@
 
             // Inicializar la colección Items
             Items = new ObjectCollection(this);
+            _buttonToolTip = new CustomButtonToolTip();
+            _buttonToolTip.SetControl(btnAction);
         }
 
 
@@ -251,6 +251,42 @@
         }
 
 
+        // Propiedades para el ToolTip personalizado
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Category("Behavior")]
+        [Description("Configuración del ToolTip del botón")]
+        public CustomButtonToolTip ButtonToolTip
+        {
+            get => _buttonToolTip;
+            set
+            {
+                _buttonToolTip = value;
+                if (_buttonToolTip != null)
+                {
+                    _buttonToolTip.SetControl(btnAction);
+                }
+            }
+        }
+
+        // Propiedad de conveniencia para texto rápido
+        [Browsable(true)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
+        [Category("Behavior")]
+        [Description("Texto del ToolTip del botón")]
+        public string ButtonToolTipText
+        {
+            get => _buttonToolTip?.Text ?? string.Empty;
+            set
+            {
+                if (_buttonToolTip != null)
+                {
+                    _buttonToolTip.Text = value;
+                }
+            }
+        }
+
+
         [Browsable(true)]
         [EditorBrowsable(EditorBrowsableState.Always)]
         [Category("Appearance")]
@@ -267,7 +303,6 @@
             }
         }
 
-
         public bool DroppedDown
         {
             get => _dropdownMenu;
@@ -278,7 +313,10 @@
                     if (value)
                     {
                         _dropdownMenu = true;
-                        dropdownMenu.Width = _dropDownWidth; // Asegurar que tenga el ancho correcto
+                        dropdownMenu.Width = _dropDownWidth;
+
+                        OnDropDown(EventArgs.Empty);
+
                         dropdownMenu.Show(this, new Point(0, Height));
                     }
                     else
@@ -292,11 +330,18 @@
                 if (dropdownMenu.Visible)
                 {
                     DropdownMenu_Opening(dropdownMenu, new CancelEventArgs());
+                } else {
+                    _dropdownMenu = false;
                 }
+                    
             }
         }
 
-
+        
+        protected virtual void OnDropDown(EventArgs e)
+        {
+            DropDown?.Invoke(this, e);
+        }
 
         [Browsable(false)]
         public int SelectedIndex
@@ -312,9 +357,10 @@
                     {
                         _notExecuteTextChange = true;
                         this.Text = string.Empty;
-                      
+
                     }
-                    else {
+                    else
+                    {
                         _notExecuteTextChange = true;
                         this.Text = this.SelectedItem.GetType().GetProperty(displayMember)?.GetValue(this.SelectedItem, null)?.ToString();
                     }
@@ -366,6 +412,9 @@
             {
                 if (_selectedIndex >= 0 && _selectedIndex < boundItems.Count)
                 {
+                    if (valueMember is null)
+                        return null;
+
                     var selectedItem = boundItems[_selectedIndex];
                     // Obtener el valor de la propiedad especificada en ValueMember
                     return selectedItem?.GetType().GetProperty(valueMember)?.GetValue(selectedItem, null);
@@ -375,9 +424,9 @@
             set
             {
                 // Buscar el valor en boundItems utilizando ValueMember
-               var selectedItem = boundItems
-                    .FirstOrDefault(item =>
-                        item.GetType().GetProperty(valueMember??"")?.GetValue(item, null)?.Equals(value??"") == true);
+                var selectedItem = boundItems
+                     .FirstOrDefault(item =>
+                         item.GetType().GetProperty(valueMember ?? "")?.GetValue(item, null)?.Equals(value ?? "") == true);
 
                 if (selectedItem != null)
                 {
@@ -441,7 +490,7 @@
         [Editor(typeof(ComboBoxStringCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public ObjectCollection Items { get; private set; }
 
-    
+
 
         // _maxItemsVisible 
         [Browsable(true)]
@@ -466,10 +515,11 @@
         [Category("Appearance")]
         public int BorderThickness
         {
-            get => _borderSize; 
+            get => _borderSize;
             set
             {
-                if (_borderSize != value) {
+                if (_borderSize != value)
+                {
                     _borderSize = value;
                     base.Padding = new Padding(_borderSize);
                     Invalidate();
@@ -529,17 +579,17 @@
             {
                 lstItems.Focus();
             }
-          
+
         }
         private void TxtSearch_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Escape)
             {
-                DroppedDown = false;    
+                DroppedDown = false;
             }
             else if (e.KeyChar == (char)Keys.F4)
             {
-                btnIcon.PerformClick();  
+                btnIcon.PerformClick();
             }
         }
 
@@ -561,7 +611,7 @@
 
         private void LstItems_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter  && lstItems.SelectedIndex >= 0)
+            if (e.KeyCode == Keys.Enter && lstItems.SelectedIndex >= 0)
             {
                 SetObject();
             }
@@ -593,12 +643,13 @@
                 );
 
             }
-            else {
+            else
+            {
                 selectedValue = selectedFilteredItem;
                 _selectedIndex = lstItems.SelectedIndex;
             }
 
-             
+
 
             _notExecuteTextChange = true;
             this.Text = lstItems.Text;
@@ -640,14 +691,14 @@
             if (keyData == Keys.Escape)
             {
                 DroppedDown = false;
-                return true; 
+                return true;
             }
             else if (keyData == Keys.F4)
             {
                 btnIcon.PerformClick();
-                return true; 
+                return true;
             }
-        
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -655,7 +706,7 @@
         {
             if (!DroppedDown)
             {
-            
+
                 lstItems.Items.Clear();
                 lstItems.Items.AddRange(boundItems.ToArray());
                 lstItems.SelectedIndex = _selectedIndex;
@@ -664,7 +715,7 @@
                 {
                     lstItems.TopIndex = _selectedIndex;
                 }
-        
+
                 DroppedDown = true;
                 lstItems.Focus();
             }
@@ -696,7 +747,7 @@
         {
             // Aquí deberías tener la lógica para obtener el valor correspondiente al índice
             // Por ejemplo, si tienes una lista, puedes hacer algo como:
-         return index >= 0 && index < boundItems.Count ? boundItems[index] : null;
+            return index >= 0 && index < boundItems.Count ? boundItems[index] : null;
         }
 
         private void DropdownMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -790,14 +841,14 @@
             {
                 // Actualizar boundItems desde Items
                 boundItems = Items.Cast<object>().ToList();
-                
+
                 // Actualizar el ListBox interno
                 lstItems.Items.Clear();
                 if (boundItems.Count > 0)
                 {
                     lstItems.Items.AddRange(boundItems.ToArray());
                 }
-                
+
                 // Si el índice seleccionado ya no es válido, resetearlo
                 if (_selectedIndex >= boundItems.Count)
                 {

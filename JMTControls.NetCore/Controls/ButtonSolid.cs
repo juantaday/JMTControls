@@ -1,13 +1,8 @@
-﻿using JMTControls.NetCore.Enums;
-using JMTControls.NetCore.Helpers;
+﻿using JMTControls.NetCore.Helpers;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace JMTControls.NetCore.Controls
@@ -15,72 +10,93 @@ namespace JMTControls.NetCore.Controls
     public partial class ButtonSolid : Control, IButtonControl
     {
         #region Variables
-        int radius;
-        bool transparency;
-        MouseState state;
-        RoundedRectangleF roundedRect;
-        Color _backColorNormal, _backColorHover, _backColorEnter, _backColorDown;
+        private int radius;
+        private bool transparency;
+        private MouseState state;
+        private RoundedRectangleF roundedRect;
+        private Color backColorNormal, backColorHover, backColorEnter, backColorDown;
         private Color strokeColor;
         private bool stroke;
-        private Color _borderColorHover;
-        private Color _borderColorActive;
-        private Color _borderColorIdle;
+        private Color borderColorHover;
+        private Color borderColorActive;
+        private Color borderColorIdle;
         private Color borderColorDisable;
         private int borderThickness;
-        DialogResult dialogoResult;
-        private BorderStyle _borderStyle;
-        private StringAlignment _txtAlignmentHorizontal;
-        private StringAlignment _txtAlignmentVertical;
-        private ContentAlignment _txtAling;
-        private Image _image;
-        private ImageAlinement _imageAlinement;
-        private Point _imageLocation;
-
+        private DialogResult dialogoResult;
+        private BorderStyle borderStyle;
+        private StringAlignment txtAlignmentHorizontal;
+        private StringAlignment txtAlignmentVertical;
+        private ContentAlignment txtAlignment;
+        private Image image;
+        private ContentAlignment imageAlignment;
+        private Point imageLocation;
+        private Size imageSize;
+        private bool autoSizeImage;
+        private int imagePadding;
         #endregion
-        #region AltoButton
+
+        #region Constructor
         public ButtonSolid()
         {
-
             InitializeComponent();
+
+            // Dimensiones iniciales
             Width = 120;
             Height = 80;
+
+            // Configuración de trazo
             stroke = false;
             strokeColor = Color.Gray;
 
-            _backColorNormal = Color.FromArgb(44, 188, 210);
-            _backColorHover = Color.FromArgb(33, 167, 188);
-            _backColorEnter = Color.FromArgb(64, 168, 183);
-            _backColorDown = Color.FromArgb(36, 164, 183);
+            // Colores de fondo
+            backColorNormal = Color.FromArgb(44, 188, 210);
+            backColorHover = Color.FromArgb(33, 167, 188);
+            backColorEnter = Color.FromArgb(64, 168, 183);
+            backColorDown = Color.FromArgb(36, 164, 183);
 
-            //border color
-            _borderColorIdle = Color.FromArgb(192, 0, 192);
-            _borderColorHover = Color.FromArgb(0, 0, 92);
-            _borderColorActive = Color.Navy;
+            // Colores de borde
+            borderColorIdle = Color.FromArgb(192, 0, 192);
+            borderColorHover = Color.FromArgb(0, 0, 92);
+            borderColorActive = Color.Navy;
+            borderColorDisable = Color.FromArgb(150, 150, 150);
 
+            // Configuración de bordes
             radius = 8;
+            borderThickness = 1;
+            borderStyle = BorderStyle.FixedSingle;
+
             roundedRect = new RoundedRectangleF(Width, Height, radius);
 
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
-                     ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor |
+            // Estilos de control
+            SetStyle(ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer |
+                     ControlStyles.ResizeRedraw |
+                     ControlStyles.SupportsTransparentBackColor |
                      ControlStyles.UserPaint, true);
+
             BackColor = Color.Transparent;
             ForeColor = Color.Black;
-            Font = new System.Drawing.Font("Comic Sans MS", 10, FontStyle.Bold);
-            state = MouseState.Leave;
+            Font = new Font("Segoe UI", 9F, FontStyle.Regular);
 
+            state = MouseState.Leave;
             transparency = false;
             dialogoResult = DialogResult.None;
-            borderThickness = 1;
-            _borderStyle = BorderStyle.FixedSingle;
 
-            this.Image = Properties.Resources.MiniApp;
-            this.TextAling = ContentAlignment.BottomCenter;
-            this.ImageAlinement = ImageAlinement.Center;
-            this.ImageLocation = new System.Drawing.Point(20, 10);
+            // Configuración de imagen
+            image = Properties.Resources.MiniApp;
+            imageAlignment = ContentAlignment.MiddleCenter;
+            imageLocation = new Point(10, 10);
+            imageSize = new Size(32, 32);
+            autoSizeImage = false;
+            imagePadding = 5;
 
-
+            // Configuración de texto
+            txtAlignment = ContentAlignment.MiddleCenter;
+            txtAlignmentHorizontal = StringAlignment.Center;
+            txtAlignmentVertical = StringAlignment.Center;
         }
         #endregion
+
         #region Events
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -89,142 +105,160 @@ namespace JMTControls.NetCore.Controls
                 Transparenter.MakeTransparent(this, e.Graphics);
             #endregion
 
-            #region Drawing
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+            #region Drawing Setup
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
             roundedRect = new RoundedRectangleF(Width, Height, radius);
-            e.Graphics.FillRectangle(Brushes.Transparent, this.ClientRectangle);
-
-            int R1 = (_backColorEnter.R + _backColorNormal.R) / 2;
-            int G1 = (_backColorEnter.G + _backColorNormal.G) / 2;
-            int B1 = (_backColorEnter.B + _backColorNormal.B) / 2;
-
-            int R2 = (_backColorDown.R + _backColorHover.R) / 2;
-            int G2 = (_backColorDown.G + _backColorHover.G) / 2;
-            int B2 = (_backColorDown.B + _backColorHover.B) / 2;
+            e.Graphics.Clear(Parent?.BackColor ?? Color.Transparent);
 
             Rectangle rect = new Rectangle(0, 0, Width, Height);
+            #endregion
 
-            if (this.Enabled)
+            #region Background Drawing
+            if (Enabled)
             {
-                if (state == MouseState.Leave)
-                {
-                    using (LinearGradientBrush inactiveGB = new LinearGradientBrush(rect, _backColorNormal, _backColorNormal, 90f))
-                        e.Graphics.FillPath(inactiveGB, roundedRect.Path);
+                Color fillColor = backColorNormal;
+                Color borderColor = borderColorIdle;
 
-                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                        using (Pen pen = new Pen(BorderColorIdle, BorderThickness))
-                        using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
-                            e.Graphics.DrawPath(pen, path);
+                switch (state)
+                {
+                    case MouseState.Enter:
+                        fillColor = backColorEnter;
+                        borderColor = borderColorHover;
+                        break;
+                    case MouseState.Down:
+                        fillColor = backColorDown;
+                        borderColor = borderColorActive;
+                        break;
                 }
 
-                else if (state == MouseState.Enter)
+                using (SolidBrush brush = new SolidBrush(fillColor))
                 {
-                    using (LinearGradientBrush activeGB = new LinearGradientBrush(rect, _backColorEnter, _backColorEnter, 90f))
-                        e.Graphics.FillPath(activeGB, roundedRect.Path);
-
-                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                        using (Pen pen = new Pen(BorderColorHover, BorderThickness))
-                        using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
-                            e.Graphics.DrawPath(pen, path);
+                    e.Graphics.FillPath(brush, roundedRect.Path);
                 }
 
-
-                else if (state == MouseState.Down)
+                if (borderStyle != BorderStyle.None && borderThickness > 0)
                 {
-                    using (LinearGradientBrush activeGB = new LinearGradientBrush(rect, _backColorDown, _backColorDown, 90f))
-                        e.Graphics.FillPath(activeGB, roundedRect.Path);
-
-                    if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                        using (Pen pen = new Pen(BorderColorActive, BorderThickness))
-                        using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
+                    using (Pen pen = new Pen(borderColor, borderThickness))
+                    {
+                        pen.Alignment = PenAlignment.Inset;
+                        using (GraphicsPath path = new RoundedRectangleF(
+                            Width - 1,
+                            Height - 1,
+                            radius).Path)
+                        {
                             e.Graphics.DrawPath(pen, path);
-
+                        }
+                    }
                 }
-
-
             }
             else
             {
-                Color linear1 = Color.FromArgb(190, 190, 190);
-                Color linear2 = Color.FromArgb(210, 210, 210);
-                using (LinearGradientBrush inactiveGB = new LinearGradientBrush(rect, linear1, linear2, 90f))
+                Color disabledColor = Color.FromArgb(200, 200, 200);
+                using (SolidBrush brush = new SolidBrush(disabledColor))
                 {
-                    e.Graphics.FillPath(inactiveGB, roundedRect.Path);
-                    e.Graphics.DrawPath(new Pen(inactiveGB), roundedRect.Path);
+                    e.Graphics.FillPath(brush, roundedRect.Path);
                 }
 
-                if (BorderStyle != BorderStyle.None && BorderThickness > 0)
-                    using (Pen pen = new Pen(BorderColorDisable, BorderThickness))
-                    using (GraphicsPath path = new RoundedRectangleF(Width - (radius > 0 ? 0 : 1), Height - (radius > 0 ? 0 : 1), radius).Path)
-                        e.Graphics.DrawPath(pen, path);
+                if (borderStyle != BorderStyle.None && borderThickness > 0)
+                {
+                    using (Pen pen = new Pen(borderColorDisable, borderThickness))
+                    {
+                        pen.Alignment = PenAlignment.Inset;
+                        using (GraphicsPath path = new RoundedRectangleF(
+                            Width - 1,
+                            Height - 1,
+                            radius).Path)
+                        {
+                            e.Graphics.DrawPath(pen, path);
+                        }
+                    }
+                }
             }
-
-
             #endregion
 
-            #region Draw image
-            if (_imageAlinement == ImageAlinement.Center)
-                e.Graphics.DrawImage(_image,
-                   (this.Width - _image.Width) / 2,
-                   (this.Height - _image.Height) / 2,
-                   _image.Width,
-                   _image.Height);
-            else
+            #region Draw Image
+            if (image != null)
             {
-                e.Graphics.DrawImage(_image,   
-                    _imageLocation.X,
-                   _imageLocation.Y,
-                  _image.Width,
-                  _image.Height);
+                Rectangle imageRect = CalculateImageRectangle();
 
+                // Aplicar región de recorte para respetar los bordes redondeados
+                using (Region oldClip = e.Graphics.Clip.Clone())
+                {
+                    e.Graphics.SetClip(roundedRect.Path);
+
+                    e.Graphics.DrawImage(
+                        image,
+                        imageRect,
+                        new Rectangle(0, 0, image.Width, image.Height),
+                        GraphicsUnit.Pixel);
+
+                    e.Graphics.Clip = oldClip;
+                }
             }
             #endregion
-
 
             #region Text Drawing
-            using (StringFormat sf = new StringFormat()
+            if (!string.IsNullOrEmpty(Text))
             {
-                LineAlignment = this._txtAlignmentVertical,
-                Alignment = this._txtAlignmentHorizontal,
-            })
+                Rectangle textRect = CalculateTextRectangle();
 
-            using (Brush brush = new SolidBrush(ForeColor))
-                e.Graphics.DrawString(Text, Font, brush, this.ClientRectangle, sf);
+                using (StringFormat sf = new StringFormat
+                {
+                    LineAlignment = txtAlignmentVertical,
+                    Alignment = txtAlignmentHorizontal,
+                    Trimming = StringTrimming.EllipsisCharacter,
+                    FormatFlags = StringFormatFlags.NoWrap
+                })
+                using (Brush brush = new SolidBrush(Enabled ? ForeColor : Color.Gray))
+                {
+                    e.Graphics.DrawString(Text, Font, brush, textRect, sf);
+                }
+            }
             #endregion
+
             base.OnPaint(e);
         }
+
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
             base.OnClick(e);
         }
+
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
         }
+
         protected override void OnEnabledChanged(EventArgs e)
         {
             Invalidate();
             base.OnEnabledChanged(e);
         }
+
         protected override void OnResize(EventArgs e)
         {
-    
             base.OnResize(e);
             Invalidate();
         }
+
         protected override void OnMouseEnter(EventArgs e)
         {
             state = MouseState.Enter;
             base.OnMouseEnter(e);
             Invalidate();
         }
+
         protected override void OnMouseLeave(EventArgs e)
         {
             state = MouseState.Leave;
             base.OnMouseLeave(e);
             Invalidate();
         }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             Capture = false;
@@ -232,6 +266,7 @@ namespace JMTControls.NetCore.Controls
             base.OnMouseDown(e);
             Invalidate();
         }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
             if (state != MouseState.Leave)
@@ -239,90 +274,150 @@ namespace JMTControls.NetCore.Controls
             base.OnMouseUp(e);
             Invalidate();
         }
+        #endregion
 
+        #region Helper Methods
         /// <summary>
-        /// el evento se genera cuando hace click sobre la imagen del button
+        /// Calcula el rectángulo para la imagen basándose en la alineación configurada
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void OnMouseDown(object sender, MouseEventArgs e)
+        private Rectangle CalculateImageRectangle()
         {
-            Capture = false;
-            state = MouseState.Down;
-            base.OnMouseDown(e);
-            Invalidate();
+            if (image == null)
+                return Rectangle.Empty;
 
-        }
-        /// <summary>
-        /// the event is generated when you click and release the mouse on the image
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void OnMouseUp(object sender, MouseEventArgs e)
-        {
-            if (state != MouseState.Leave)
-                state = MouseState.Enter;
-            base.OnMouseUp(e);
-            Invalidate();
+            Size imgSize = autoSizeImage ? imageSize : image.Size;
+            int x = imagePadding;
+            int y = imagePadding;
 
-        }
-
-        /// <summary>
-        /// Handle clicks from PictureBox and Header
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void OnMouseEnter(object sender, EventArgs e)
-        {
-            state = MouseState.Enter;
-            base.OnMouseEnter(e);
-            Invalidate();
-        }
-
-        /// <summary>
-        /// Handle clicks from PictureBox and Header
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void OnMouseLeave(object sender, EventArgs e)
-        {
-            state = MouseState.Leave;
-            base.OnMouseLeave(e);
-            Invalidate();
-        }
-
-
-        private void _pictureBox_Paint(object sender, PaintEventArgs e)
-        {
-            if (_image != null)
+            if (imageAlignment == ContentAlignment.MiddleCenter)
             {
-                var g = e.Graphics;
+                x = (Width - imgSize.Width) / 2;
+                y = (Height - imgSize.Height) / 2;
+            }
+            else
+            {
+                // Cálculo horizontal
+                switch (imageAlignment)
+                {
+                    case ContentAlignment.TopLeft:
+                    case ContentAlignment.MiddleLeft:
+                    case ContentAlignment.BottomLeft:
+                        x = imagePadding;
+                        break;
 
-                // -- Optional -- //
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                // -- Optional -- //
-                g.DrawImage(_image,
-                    (this.Width - _image.Width)/2,
-                    (this.Height - _image.Height)/2,
-                    _image.Width,
-                    _image.Height);
+                    case ContentAlignment.TopCenter:
+                    case ContentAlignment.BottomCenter:
+                        x = (Width - imgSize.Width) / 2;
+                        break;
+
+                    case ContentAlignment.TopRight:
+                    case ContentAlignment.MiddleRight:
+                    case ContentAlignment.BottomRight:
+                        x = Width - imgSize.Width - imagePadding;
+                        break;
+                }
+
+                // Cálculo vertical
+                switch (imageAlignment)
+                {
+                    case ContentAlignment.TopLeft:
+                    case ContentAlignment.TopCenter:
+                    case ContentAlignment.TopRight:
+                        y = imagePadding;
+                        break;
+
+                    case ContentAlignment.MiddleLeft:
+                    case ContentAlignment.MiddleRight:
+                        y = (Height - imgSize.Height) / 2;
+                        break;
+
+                    case ContentAlignment.BottomLeft:
+                    case ContentAlignment.BottomCenter:
+                    case ContentAlignment.BottomRight:
+                        y = Height - imgSize.Height - imagePadding;
+                        break;
+                }
+            }
+
+            return new Rectangle(x, y, imgSize.Width, imgSize.Height);
+        }
+
+        /// <summary>
+        /// Calcula el rectángulo para el texto considerando el espacio de la imagen
+        /// </summary>
+        private Rectangle CalculateTextRectangle()
+        {
+            Rectangle textRect = ClientRectangle;
+
+            // Aplicar padding general
+            textRect.Inflate(-imagePadding, -imagePadding);
+
+            return textRect;
+        }
+
+        /// <summary>
+        /// Convierte ContentAlignment a StringAlignment para alineación horizontal
+        /// </summary>
+        private StringAlignment GetHorizontalAlignment(ContentAlignment alignment)
+        {
+            switch (alignment)
+            {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.BottomLeft:
+                    return StringAlignment.Near;
+
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.BottomCenter:
+                    return StringAlignment.Center;
+
+                case ContentAlignment.TopRight:
+                case ContentAlignment.MiddleRight:
+                case ContentAlignment.BottomRight:
+                    return StringAlignment.Far;
+
+                default:
+                    return StringAlignment.Center;
             }
         }
 
+        /// <summary>
+        /// Convierte ContentAlignment a StringAlignment para alineación vertical
+        /// </summary>
+        private StringAlignment GetVerticalAlignment(ContentAlignment alignment)
+        {
+            switch (alignment)
+            {
+                case ContentAlignment.TopLeft:
+                case ContentAlignment.TopCenter:
+                case ContentAlignment.TopRight:
+                    return StringAlignment.Near;
+
+                case ContentAlignment.MiddleLeft:
+                case ContentAlignment.MiddleCenter:
+                case ContentAlignment.MiddleRight:
+                    return StringAlignment.Center;
+
+                case ContentAlignment.BottomLeft:
+                case ContentAlignment.BottomCenter:
+                case ContentAlignment.BottomRight:
+                    return StringAlignment.Far;
+
+                default:
+                    return StringAlignment.Center;
+            }
+        }
         #endregion
 
         #region Properties
 
-        /// <summary>
-        ///Get or Set stroke
-        /// </summary>
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set stroke")]
+        [Description("Habilita o deshabilita el trazo del botón")]
         [Browsable(true)]
-
         public bool Stroke
         {
-            get { return stroke; }
+            get => stroke;
             set
             {
                 stroke = value;
@@ -330,83 +425,64 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
-        /// <summary>
-        ///Get or Set border color active
-        /// </summary>
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set border color active")]
+        [Description("Color del borde cuando el botón está activo (presionado)")]
         [Browsable(true)]
         public Color BorderColorActive
         {
-            get { return _borderColorActive; }
+            get => borderColorActive;
             set
             {
-                _borderColorActive = value;
+                borderColorActive = value;
                 Invalidate();
             }
-
         }
-        /// <summary>
-        ///Get or Set border color disable
-        /// </summary>
-        [Category("JMTControls.NetCore")]
-        [Description("Get or Set border color disable")]
-        [Browsable(true)]
 
+        [Category("JMTControls.NetCore")]
+        [Description("Color del borde cuando el botón está deshabilitado")]
+        [Browsable(true)]
         public Color BorderColorDisable
         {
-            get { return borderColorDisable; }
+            get => borderColorDisable;
             set
             {
                 borderColorDisable = value;
                 Invalidate();
             }
-
         }
-        /// <summary>
-        ///Get or Set border color Idle
-        /// </summary>
+
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set border color Idle")]
+        [Description("Color del borde en estado normal (inactivo)")]
         [Browsable(true)]
         public Color BorderColorIdle
         {
-            get { return _borderColorIdle; }
+            get => borderColorIdle;
             set
             {
-                _borderColorIdle = value;
+                borderColorIdle = value;
                 Invalidate();
             }
-
         }
 
-        /// <summary>
-        ///Get or Set border color hover
-        /// </summary>
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set border color hover")]
+        [Description("Color del borde cuando el mouse está sobre el botón")]
         [Browsable(true)]
-
         public Color BorderColorHover
         {
-            get { return _borderColorHover; }
+            get => borderColorHover;
             set
             {
-                _borderColorHover = value;
+                borderColorHover = value;
                 Invalidate();
             }
-
         }
-        /// <summary>
-        ///Get or Set stroke color
-        /// </summary>
-        [Category("JMTControls.NetCore")]
-        [Description("Get or Set stroke color")]
-        [Browsable(true)]
 
+        [Category("JMTControls.NetCore")]
+        [Description("Color del trazo del botón")]
+        [Browsable(true)]
         public Color StrokeColor
         {
-            get { return strokeColor; }
+            get => strokeColor;
             set
             {
                 strokeColor = value;
@@ -414,151 +490,206 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
-        /// <summary>
-        ///Get or Set border style
-        /// </summary>
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set border style")]
+        [Description("Estilo del borde del botón")]
         [Browsable(true)]
         public BorderStyle BorderStyle
         {
-            get => _borderStyle; set
+            get => borderStyle;
+            set
             {
-                _borderStyle = value;
+                borderStyle = value;
                 Invalidate();
             }
         }
 
-        /// <summary>
-        ///Get or Set border size
-        /// </summary>
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set border size")]
+        [Description("Grosor del borde en píxeles")]
         [Browsable(true)]
-
         public int BorderThickness
         {
             get => borderThickness;
             set
             {
-                borderThickness = value;
+                borderThickness = Math.Max(0, value);
                 Invalidate();
             }
         }
 
-        /// <summary>
-        ///Get or Set border radios
-        /// </summary>
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set border radios")]
+        [Description("Radio de las esquinas redondeadas")]
         [Browsable(true)]
         public int Radius
         {
-            get
-            {
-                return radius;
-            }
+            get => radius;
             set
             {
-                radius = value;
+                radius = Math.Max(0, value);
                 Invalidate();
             }
         }
-        /// <summary>
-        ///Get or Set background color
-        /// </summary>
+
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set background color")]
+        [Description("Color de fondo en estado normal")]
         [Browsable(true)]
         public Color BackColorNormal
         {
-            get
-            {
-                return _backColorNormal;
-            }
+            get => backColorNormal;
             set
             {
-                _backColorNormal = value;
+                backColorNormal = value;
                 Invalidate();
             }
         }
-        /// <summary>
-        ///Get or Set background color when mous hover
-        /// </summary>
+
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set background color when mous hover")]
+        [Description("Color de fondo cuando el mouse está sobre el botón")]
         [Browsable(true)]
         public Color BackColorHover
         {
-            get
-            {
-                return _backColorHover;
-            }
+            get => backColorHover;
             set
             {
-                _backColorHover = value;
+                backColorHover = value;
                 Invalidate();
             }
         }
-        /// <summary>
-        ///Get or Set background color when enter mous
-        /// </summary>
+
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set background color when enter mous")]
+        [Description("Color de fondo cuando el mouse entra en el área del botón")]
         [Browsable(true)]
         public Color BackColorEnter
         {
-            get
-            {
-                return _backColorEnter;
-            }
+            get => backColorEnter;
             set
             {
-                _backColorEnter = value;
+                backColorEnter = value;
                 Invalidate();
             }
         }
-        /// <summary>
-        ///Get or Set background color when clicked
-        /// </summary>
+
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set background color when clicked")]
+        [Description("Color de fondo cuando el botón es presionado")]
         [Browsable(true)]
         public Color BackColorDown
         {
-            get
-            {
-                return _backColorDown;
-            }
+            get => backColorDown;
             set
             {
-                _backColorDown = value;
+                backColorDown = value;
                 Invalidate();
             }
         }
-        /// <summary>
-        /// Transparency button
-        /// </summary>
+
         [Category("JMTControls.NetCore")]
-        [Description("Get or Set button transparents")]
+        [Description("Habilita transparencia en el botón")]
         [Browsable(true)]
         public bool Transparency
         {
-            get
-            {
-                return transparency;
-            }
+            get => transparency;
             set
             {
                 transparency = value;
+                Invalidate();
             }
         }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Imagen que se muestra en el botón")]
+        [Browsable(true)]
+        public Image Image
+        {
+            get => image;
+            set
+            {
+                image = value;
+                Invalidate();
+            }
+        }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Alineación de la imagen dentro del botón")]
+        [Browsable(true)]
+        public ContentAlignment ImageAlignment
+        {
+            get => imageAlignment;
+            set
+            {
+                imageAlignment = value;
+                Invalidate();
+            }
+        }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Ubicación personalizada de la imagen (solo si no es Center)")]
+        [Browsable(true)]
+        public Point ImageLocation
+        {
+            get => imageLocation;
+            set
+            {
+                imageLocation = value;
+                Invalidate();
+            }
+        }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Tamaño de la imagen cuando AutoSizeImage está habilitado")]
+        [Browsable(true)]
+        public Size ImageSize
+        {
+            get => imageSize;
+            set
+            {
+                imageSize = value;
+                Invalidate();
+            }
+        }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Redimensiona automáticamente la imagen al tamaño especificado")]
+        [Browsable(true)]
+        public bool AutoSizeImage
+        {
+            get => autoSizeImage;
+            set
+            {
+                autoSizeImage = value;
+                Invalidate();
+            }
+        }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Espaciado alrededor de la imagen en píxeles")]
+        [Browsable(true)]
+        public int ImagePadding
+        {
+            get => imagePadding;
+            set
+            {
+                imagePadding = Math.Max(0, value);
+                Invalidate();
+            }
+        }
+
+        [Category("JMTControls.NetCore")]
+        [Description("Alineación del texto dentro del botón")]
+        [Browsable(true)]
+        public ContentAlignment TextAling
+        {
+            get => txtAlignment;
+            set
+            {
+                txtAlignment = value;
+                txtAlignmentHorizontal = GetHorizontalAlignment(value);
+                txtAlignmentVertical = GetVerticalAlignment(value);
+                Invalidate();
+            }
+        }
+
         public override string Text
         {
-            get
-            {
-                return base.Text;
-            }
+            get => base.Text;
             set
             {
                 base.Text = value;
@@ -568,10 +699,7 @@ namespace JMTControls.NetCore.Controls
 
         public override Color ForeColor
         {
-            get
-            {
-                return base.ForeColor;
-            }
+            get => base.ForeColor;
             set
             {
                 base.ForeColor = value;
@@ -579,123 +707,24 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
+        [Browsable(false)]
         public DialogResult DialogResult
         {
-            get
-            {
-                return dialogoResult;
-            }
-            set
-            {
-                dialogoResult = value;
-            }
+            get => dialogoResult;
+            set => dialogoResult = value;
         }
+        #endregion
 
+        #region IButtonControl Implementation
         public void NotifyDefault(bool value)
         {
+            // Implementación requerida por IButtonControl
         }
 
         public void PerformClick()
         {
             OnClick(EventArgs.Empty);
         }
-
-        /// <summary>
-        /// Image location
-        /// </summary>
-        [Category("JMTControls.NetCore")]
-        [Description("Get or Set image location in button")]
-        [Browsable(true)]
-        public Point ImageLocation { get => _imageLocation; 
-            set {
-                _imageLocation = value;
-                Invalidate();
-            }
-        }
-
-
-        /// <summary>
-        /// Image in button
-        /// </summary>
-        [Category("JMTControls.NetCore")]
-        [Description("Get or Set image in button")]
-        [Browsable(true)]
-        public Image Image { get => _image;
-            set
-            {
-                _image = value;
-                Invalidate();
-            }
-        }
-
-        /// <summary>
-        /// Image alinemenet
-        /// </summary>
-        [Category("JMTControls.NetCore")]
-        [Description("Aliniment image in button")]
-        [Browsable(true)]
-        public ImageAlinement ImageAlinement { get => _imageAlinement;
-            set {
-                _imageAlinement = value;
-                Invalidate();
-            }
-           
-        }
-    
-
-
-        public ContentAlignment TextAling { get=> _txtAling; 
-            set {
-                _txtAling = value;
-
-                switch (_txtAling)
-                {
-                    case ContentAlignment.TopLeft:
-                        this._txtAlignmentVertical = StringAlignment.Near;
-                        this._txtAlignmentHorizontal = StringAlignment.Near;
-                        break;
-                    case ContentAlignment.TopCenter:
-                        this._txtAlignmentVertical = StringAlignment.Near;
-                        this._txtAlignmentHorizontal = StringAlignment.Center;
-                        break;
-                    case ContentAlignment.TopRight:
-                        this._txtAlignmentVertical = StringAlignment.Near;
-                        this._txtAlignmentHorizontal = StringAlignment.Far;
-                        break;
-                    case ContentAlignment.MiddleLeft:
-                        this._txtAlignmentVertical = StringAlignment.Center;
-                        this._txtAlignmentHorizontal = StringAlignment.Near;
-                        break;
-                    case ContentAlignment.MiddleCenter:
-                        this._txtAlignmentVertical = StringAlignment.Center;
-                        this._txtAlignmentHorizontal = StringAlignment.Center;
-                        break;
-                    case ContentAlignment.MiddleRight:
-                        this._txtAlignmentVertical = StringAlignment.Center;
-                        this._txtAlignmentHorizontal = StringAlignment.Far;
-                        break;
-                    case ContentAlignment.BottomLeft:
-                        this._txtAlignmentVertical = StringAlignment.Far;
-                        this._txtAlignmentHorizontal = StringAlignment.Near;
-                        break;
-                    case ContentAlignment.BottomCenter:
-                        this._txtAlignmentVertical = StringAlignment.Far;
-                        this._txtAlignmentHorizontal = StringAlignment.Center;
-                        break;
-                    case ContentAlignment.BottomRight:
-                        this._txtAlignmentVertical = StringAlignment.Far;
-                        this._txtAlignmentHorizontal = StringAlignment.Far;
-                        break;
-                    default:
-                        break;
-                }
-
-                Invalidate();
-            }
-        }
-
         #endregion
-
     }
-
 }

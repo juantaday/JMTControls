@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.Automation;
 
 namespace JMTControls.NetCore.Controls
 {
@@ -14,6 +13,7 @@ namespace JMTControls.NetCore.Controls
         private bool slide;
         private int a;
         private bool art = false;
+        private ToolTip _toolTip; // Agregado: ToolTip para el control
 
         // Propiedades para el botón
         private bool _buttonVisible = false;
@@ -21,9 +21,11 @@ namespace JMTControls.NetCore.Controls
         private int _buttonWidth = 20;
         private bool _isHovered = false;
         private bool _backColorSetByUser = false;
-        private bool _enableHoverEffect = false; // Permite activar o desactivar el hover
+        private bool _enableHoverEffect = false;
         private bool _isControlHovered = false;
-        private Color _originalBackColor; // Guardará el color original
+        private Color _originalBackColor;
+        private string _toolTipText = ""; // Agregado: Texto del ToolTip
+        private bool _showToolTip = false; // Agregado: Controla si se muestra el ToolTip
 
         public bool Slide
         {
@@ -51,13 +53,40 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
+        // Agregado: Propiedad para el texto del ToolTip
+        [Description("Texto que se mostrará en el ToolTip")]
+        [Category("Appearance")]
+        public string ToolTipText
+        {
+            get => _toolTipText;
+            set
+            {
+                _toolTipText = value;
+                UpdateToolTip();
+            }
+        }
+
+        // Agregado: Propiedad para habilitar/deshabilitar el ToolTip
+        [Description("Determina si se muestra el ToolTip")]
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        public bool ShowToolTip
+        {
+            get => _showToolTip;
+            set
+            {
+                _showToolTip = value;
+                UpdateToolTip();
+            }
+        }
+
         public override Color BackColor
         {
             get => base.BackColor;
             set
             {
                 _backColorSetByUser = true;
-                _originalBackColor = value; // Guardar el color original
+                _originalBackColor = value;
                 base.BackColor = value;
                 Invalidate();
             }
@@ -108,10 +137,29 @@ namespace JMTControls.NetCore.Controls
             slide = false;
             timer.Enabled = false;
 
+            // Inicializar el ToolTip
+            _toolTip = new ToolTip();
+            _toolTip.AutoPopDelay = 5000;
+            _toolTip.InitialDelay = 500;
+            _toolTip.ReshowDelay = 100;
+
             // Habilitar el manejo de eventos de mouse
             this.MouseMove += AltoSlidingLabel_MouseMove;
             this.MouseLeave += AltoSlidingLabel_MouseLeave;
             this.MouseEnter += AltoSlidingLabel_MouseEnter;
+        }
+
+        // Agregado: Método para actualizar el ToolTip
+        private void UpdateToolTip()
+        {
+            if (_showToolTip && !string.IsNullOrEmpty(_toolTipText))
+            {
+                _toolTip.SetToolTip(this, _toolTipText);
+            }
+            else
+            {
+                _toolTip.SetToolTip(this, "");
+            }
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -159,7 +207,7 @@ namespace JMTControls.NetCore.Controls
                 e.Graphics.FillRectangle(brush, this.ClientRectangle);
 
             // Calcular el área disponible para el texto (excluyendo el botón)
-            int textWidth = Width - (_buttonVisible ? _buttonWidth + 2 : 0); // Añadir margen derecho
+            int textWidth = Width - (_buttonVisible ? _buttonWidth + 2 : 0);
             Size tSize = TextRenderer.MeasureText(Text, Font);
             int y = Height / 2 - tSize.Height / 2;
 
@@ -170,9 +218,9 @@ namespace JMTControls.NetCore.Controls
             // Dibujar el botón si está visible
             if (_buttonVisible && _buttonImage != null)
             {
-                int buttonHeight = _buttonImage.Height + 10; // Tamaño de la imagen más 10px de margen
-                int buttonX = Width - _buttonWidth - 2; // Posición X del botón con margen de 2px
-                int buttonY = (Height - buttonHeight) / 2; // Centrar el botón verticalmente
+                int buttonHeight = _buttonImage.Height + 10;
+                int buttonX = Width - _buttonWidth - 2;
+                int buttonY = (Height - buttonHeight) / 2;
 
                 // Dibujar el fondo del botón con efecto hover
                 if (_isHovered)
@@ -194,19 +242,19 @@ namespace JMTControls.NetCore.Controls
 
         private void AltoSlidingLabel_MouseEnter(object sender, EventArgs e)
         {
-            if (!_enableHoverEffect) return; // No hacer nada si el hover está desactivado
+            if (!_enableHoverEffect) return;
 
             _isControlHovered = true;
-            base.BackColor = AdjustBrightness(_originalBackColor, 0.2f); // Aumentar brillo
+            base.BackColor = AdjustBrightness(_originalBackColor, 0.2f);
             Invalidate();
         }
 
         private void AltoSlidingLabel_MouseLeave(object sender, EventArgs e)
         {
-            if (!_enableHoverEffect) return; // No hacer nada si el hover está desactivado
+            if (!_enableHoverEffect) return;
 
             _isControlHovered = false;
-            base.BackColor = _originalBackColor; // Restaurar el color original
+            base.BackColor = _originalBackColor;
             Invalidate();
         }
 
@@ -218,19 +266,18 @@ namespace JMTControls.NetCore.Controls
                 if (!_isHovered)
                 {
                     _isHovered = true;
-                    Invalidate(); // Redibujar el control para mostrar el hover
+                    Invalidate();
                 }
             }
             else if (_isHovered)
             {
                 _isHovered = false;
-                Invalidate(); // Redibujar el control para ocultar el hover
+                Invalidate();
             }
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-
             // Verificar si el botón está visible y si el clic ocurrió dentro del área del botón
             if (_buttonVisible && IsPointInButton(e.Location))
             {
@@ -243,9 +290,9 @@ namespace JMTControls.NetCore.Controls
         private bool IsPointInButton(Point point)
         {
             // Calcular el área del botón
-            int buttonHeight = _buttonImage.Height + 10; // Tamaño de la imagen más 10px de margen
-            int buttonX = Width - _buttonWidth - 2; // Posición X del botón con margen de 2px
-            int buttonY = (Height - buttonHeight) / 2; // Centrar el botón verticalmente
+            int buttonHeight = _buttonImage.Height + 10;
+            int buttonX = Width - _buttonWidth - 2;
+            int buttonY = (Height - buttonHeight) / 2;
 
             // Crear un rectángulo que representa el área del botón
             Rectangle buttonRect = new Rectangle(buttonX, buttonY, _buttonWidth, buttonHeight);
@@ -288,6 +335,10 @@ namespace JMTControls.NetCore.Controls
 
         protected override void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                _toolTip?.Dispose(); // Agregado: Liberar recursos del ToolTip
+            }
             timer.Stop();
             base.Dispose(disposing);
         }
