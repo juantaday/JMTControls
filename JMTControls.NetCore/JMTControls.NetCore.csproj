@@ -56,9 +56,7 @@
 	  <Compile Update="Controls\DetailControl.cs">
 	    <SubType>Component</SubType>
 	  </Compile>
-	  <Compile Update="Controls\GroupBoxLiner.cs">
-	    <SubType>Component</SubType>
-	  </Compile>
+	  <Compile Update="Controls\GroupBoxLiner.cs" />
 	  <Compile Update="Controls\MasterControl.cs">
 	    <SubType>Component</SubType>
 	  </Compile>
