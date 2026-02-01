@@ -61,7 +61,7 @@
             txtSearch = new TextBox
             {
                 Multiline = false,
-                Dock = DockStyle.None,
+                Dock = DockStyle.Fill,
                 Font = _font,
                 BorderStyle = BorderStyle.None,
                 BackColor = _backColor,
