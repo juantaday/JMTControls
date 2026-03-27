@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JMTControls.NetCore.Implementation
 {
@@ -18,8 +12,11 @@ namespace JMTControls.NetCore.Implementation
     {
         private string propertyName;
         private NotifyCollectionChangedAction action;
+
         private bool initialize = false;
         private bool hasChanged = false;
+        private bool _isHandlingPropertyChange = false;
+
         private object currentModel;
         // this collection also reacts to changes in its components' properties
         T entidad;
@@ -34,14 +31,15 @@ namespace JMTControls.NetCore.Implementation
             get { return hasChanged; }
         }
 
-        public object GetCurrentModel {
+        public object GetCurrentModel
+        {
             get
             {
                 return this.currentModel;
             }
         }
 
-        public string  GetOnEvenPropertyName
+        public string GetOnEvenPropertyName
         {
             get
             {
@@ -63,10 +61,11 @@ namespace JMTControls.NetCore.Implementation
 
         public bool IsInitialized { get => this.initialize; }
 
-        void ObservableCollectionEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void ObservableCollectionEx_CollectionChanged(object sender,
+            System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.action = e.Action;
-            
+
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
                 foreach (T item in e.OldItems)
@@ -100,27 +99,35 @@ namespace JMTControls.NetCore.Implementation
             }
         }
 
+
         public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //This will get called when the property of an object inside the collection changes - note you must make it a 'reset' - dunno why
-            NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 
-            this.currentModel = sender;
-            this.propertyName = e.PropertyName;
-
-            OnCollectionChanged(args);
-            if (initialize)
+            if (_isHandlingPropertyChange) return;
+            try
             {
-                var p = sender.GetType().GetProperties().FirstOrDefault(x => x.Name == "IsCahged");
-                if (p != null)
+                _isHandlingPropertyChange = true;
+
+                this.currentModel = sender;
+                this.propertyName = e.PropertyName;
+
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(
+                    NotifyCollectionChangedAction.Reset));
+
+                if (initialize)
                 {
-                    sender.GetType().GetProperty(p.Name)
-                          .SetValue(sender, true);
+                    // Nota: "IsCahged" tiene typo en el original — verificar si existe en el modelo
+                    var prop = sender.GetType()
+                                     .GetProperties()
+                                     .FirstOrDefault(x => x.Name == "IsCahged");
+                    prop?.SetValue(sender, true);
+                    hasChanged = true;
                 }
-
-                hasChanged = true;
             }
-
+            finally
+            {
+                _isHandlingPropertyChange = false;
+            }
         }
     }
 
@@ -168,69 +175,6 @@ namespace JMTControls.NetCore.Implementation
         {
             if (ListItemChanged != null) { this.ListItemChanged(this, e); }
         }
-
-
-    }
-    public class ListGeneric<T> : System.Collections.Generic.List<T> where T : class, INotifyPropertyChanged, new()
-    {
-        private bool initialize = false;
-        private bool hasChanged = false;
-        private T item;
-        private List<T> list = new List<T>();
-
-        public ListGeneric()
-        {
-
-        }
-        public new void Add(T item)
-        {
-            list.Add(item);
-            OnPropertyChanged("Add");
-        }
-
-        public new void Remove(T item)
-        {
-            list.Remove(item);
-            OnPropertyChanged("Remove");
-        }
-
-        public new void Clear()
-        {
-            list.Clear();
-            OnPropertyChanged("Clear");
-        }
-
-        public void Begin()
-        {
-            initialize = true;
-        }
-        public bool HasChanged
-        {
-            get { return true; }
-        }
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            if (initialize)
-            {
-                hasChanged = true;
-            }
-        }
-        protected void SetValue<R>(ref R backingField, R value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<R>.Default.Equals(backingField, value))
-            {
-                return;
-            }
-
-            backingField = value;
-            OnPropertyChanged(propertyName);
-        }
-        #endregion
 
 
     }
