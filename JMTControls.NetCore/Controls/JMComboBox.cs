@@ -1,6 +1,6 @@
 ﻿namespace JMTControls.NetCore.Controls
 {
-    using JMTControls.NetCore.Class;
+    using global::JMTControls.NetCore.Class;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

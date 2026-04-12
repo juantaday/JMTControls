@@ -1,6 +1,6 @@
 ﻿namespace JMTControls.NetCore.Controls
 {
-    using JMTControls.NetCore.Helpers;
+    using global::JMTControls.NetCore.Helpers;
     using System;
     using System.Drawing;
     using System.Drawing.Drawing2D;

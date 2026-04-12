@@ -6,8 +6,8 @@
     using System.Drawing.Drawing2D;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
-    using JMTControls.NetCore.Enums;
-    using JMTControls.NetCore.Helpers;
+    using global::JMTControls.NetCore.Enums;
+    using global::JMTControls.NetCore.Helpers;
 
     [DefaultEvent("TextChanged")]
     public class TextBoxRounded : Control

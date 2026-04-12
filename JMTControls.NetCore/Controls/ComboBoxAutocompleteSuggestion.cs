@@ -1,6 +1,6 @@
 ﻿namespace JMTControls.NetCore.Controls
 {
-    using JMTControls.NetCore.Tools;
+    using global::JMTControls.NetCore.Tools;
     using Microsoft.VisualBasic;
     using MultiColumnComboSuggestionBox.Funtions;
     using MultiColumnComboSuggestionBox.Models;
@@ -274,13 +274,13 @@
         public DataRow getCurrentItem(int index)
         {
             int i = 0;
-            if (DataSourceSettig==null || DataSourceSettig.Rows.Count ==0)
+            if (DataSourceSettig == null || DataSourceSettig.Rows.Count == 0)
             {
                 return null;
             }
             foreach (DataRow item in this.DataSourceSettig.Rows)
             {
-                if (i== index)
+                if (i == index)
                 {
                     return item;
                 }

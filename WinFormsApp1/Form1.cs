@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JMTControls.NetCore.Events;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,16 +18,9 @@ namespace WinFormsApp1
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void sidebarContainer1_ItemClicked(object sender, SidebarItemClickEventArgs e)
         {
-            stepProgressControl1.NextStep();
-            var odd = stepProgressControl1.IndexStep;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            stepProgressControl1.PreviousStep();
-            var odd = stepProgressControl1.IndexStep;
+            MessageBox.Show($"Hiciste clic en {e.Item.Text} que pertenece al grupo {e.Group.Title}");
         }
     }
 }

@@ -133,8 +133,8 @@
     <Reference Include="System.Reflection.Metadata, Version=10.0.0.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\Proyects\Danasha Intelligence\packages\System.Reflection.Metadata.10.0.2\lib\net462\System.Reflection.Metadata.dll</HintPath>
     </Reference>
-    <Reference Include="System.Resources.Extensions, Version=10.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Proyects\Danasha Intelligence\packages\System.Resources.Extensions.10.0.2\lib\net462\System.Resources.Extensions.dll</HintPath>
+    <Reference Include="System.Resources.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Proyects\Danasha Basic Signature\packages\System.Resources.Extensions.6.0.0\lib\net461\System.Resources.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\..\Proyects\Danasha Intelligence\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -323,6 +323,7 @@
     <Content Include="Resources\delete_12x12.png" />
     <Content Include="Resources\DownArrow.png" />
     <Content Include="Resources\DropDown.bmp" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\user_23.png" />
     <None Include="Resources\find_Black_16.png" />
