@@ -1,17 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 
 namespace JMTControls.NetCore.Controls
 {
+    // ═══════════════════════════════════════════════════════════════════
+    //  SidebarTabCollection
+    // ═══════════════════════════════════════════════════════════════════
     public class SidebarTabCollection : Collection<SidebarTab>
     {
         private readonly SidebarContainer _owner;
 
-        public SidebarTabCollection(SidebarContainer owner)
-        {
-            _owner = owner;
-        }
+        public SidebarTabCollection(SidebarContainer owner) => _owner = owner;
 
         protected override void InsertItem(int index, SidebarTab item)
         {
@@ -27,7 +28,6 @@ namespace JMTControls.NetCore.Controls
 
         protected override void ClearItems()
         {
-            // Al limpiar, reiniciamos los contadores para que vuelvan desde 1
             SidebarTab.ResetNameCounter();
             SidebarGroupModel.ResetNameCounter();
             SidebarItemModel.ResetNameCounter();
@@ -36,29 +36,106 @@ namespace JMTControls.NetCore.Controls
         }
     }
 
-
     // ═══════════════════════════════════════════════════════════════════
-    //  SidebarItemModel — modelo de ítem de menú
+    //  SidebarItemModel — hereda de Component
+    //
+    //  Heredar de Component permite que el diseñador de VS:
+    //   • Muestre la pestaña "Eventos" (rayo) en la ventana de Propiedades.
+    //   • Genere el método handler en el code-behind al hacer doble clic.
+    //   • Serialice el suscriptor en InitializeComponent().
+    //   • Gestione el ciclo de vida del objeto (IContainer).
+    //
+    //  Flujo de uso en diseño:
+    //   1. Clic en un "Nuevo Item" en el sidebar → HitTest lo selecciona.
+    //   2. La ventana de Propiedades muestra sus propiedades Y eventos.
+    //   3. Doble clic en "Click" → VS genera:
+    //        private void sidebarItem1_Click(object sender, EventArgs e) { }
+    //   4. En runtime, SidebarContainer llama a model.RaiseClick() al pulsar el botón.
     // ═══════════════════════════════════════════════════════════════════
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    public class SidebarItemModel
+    [ToolboxItem(false)]
+    [DesignTimeVisible(false)]
+    [DefaultEvent("Click")]
+    public class SidebarItemModel : Component
     {
-        private static int _nameCounter = 0;
+        private static int _nameCounter;
+        private string _name;
+        private string _text = "Nuevo Item";
+        private string _shortcut = "";
+        private Image _icon;
 
+        // Usamos EventHandlerList (heredado de Component) para que el diseñador
+        // de VS pueda leer y serializar los eventos correctamente.
+        private static readonly object _clickKey = new object();
+
+        internal event EventHandler Changed;
+
+        private void NotifyChanged() => Changed?.Invoke(this, EventArgs.Empty);
+
+        // ── Evento Click ─────────────────────────────────────────────────
+        [Category("Acción")]
+        [Description("Se dispara cuando el usuario hace clic en este ítem del menú.")]
+        public event EventHandler Click
+        {
+            add => Events.AddHandler(_clickKey, value);
+            remove => Events.RemoveHandler(_clickKey, value);
+        }
+
+        // ── Diseño ───────────────────────────────────────────────────────
         [Category("Diseño")]
         [Description("Nombre único del componente (usado en código).")]
-        public string Name { get; set; }
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (_name == value) return;
+                _name = value;
+                NotifyChanged();
+            }
+        }
+
+        // ── Datos ────────────────────────────────────────────────────────
+        [Category("Datos")]
+        [Description("Texto visible en el menú.")]
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                if (_text == value) return;
+                _text = value;
+                NotifyChanged();
+            }
+        }
 
         [Category("Datos")]
-        public string Text { get; set; } = "Nuevo Item";
+        [Description("Atajo de teclado mostrado a la derecha.")]
+        public string Shortcut
+        {
+            get => _shortcut;
+            set
+            {
+                if (_shortcut == value) return;
+                _shortcut = value;
+                NotifyChanged();
+            }
+        }
 
         [Category("Datos")]
-        public string Shortcut { get; set; } = "";
+        [Description("Ícono del ítem.")]
+        public Image Icon
+        {
+            get => _icon;
+            set
+            {
+                if (ReferenceEquals(_icon, value)) return;
+                _icon = value;
+                NotifyChanged();
+            }
+        }
 
-        [Category("Apariencia - Datos")]
-        public Image Icon { get; set; }
-
-        [Category("Apariencia - Fuentes")]
+        // ── Apariencia ───────────────────────────────────────────────────
+        [Category("Apariencia")]
         public Font Font { get; set; } = new Font("Segoe UI", 9f);
 
         [Category("Apariencia - Normal")]
@@ -75,36 +152,105 @@ namespace JMTControls.NetCore.Controls
         [Category("Apariencia - Hover")]
         public Color HoverShortcutColor { get; set; } = Color.FromArgb(130, 135, 155);
 
+        // ── Constructores ────────────────────────────────────────────────
         public SidebarItemModel()
         {
             _nameCounter++;
             Name = $"sidebarItem{_nameCounter}";
         }
 
-        public static void ResetNameCounter() => _nameCounter = 0;
+        /// <summary>Constructor con IContainer: el diseñador de VS lo registra
+        /// automáticamente en el contenedor del formulario (components).</summary>
+        public SidebarItemModel(IContainer container) : this()
+        {
+            container?.Add(this, Name);
+        }
 
+        // ── API ──────────────────────────────────────────────────────────
+        public static void ResetNameCounter() => _nameCounter = 0;
         public override string ToString() => Text;
+
+        /// <summary>Dispara el evento Click desde SidebarContainer.</summary>
+        internal void RaiseClick()
+        {
+            var handler = (EventHandler)Events[_clickKey];
+            handler?.Invoke(this, EventArgs.Empty);
+        }
     }
 
-
     // ═══════════════════════════════════════════════════════════════════
-    //  SidebarGroupModel — modelo de grupo (acordeón)
+    //  SidebarGroupModel — también Component para consistencia
     // ═══════════════════════════════════════════════════════════════════
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    public class SidebarGroupModel
+    [ToolboxItem(false)]
+    [DesignTimeVisible(false)]
+    public class SidebarGroupModel : Component
     {
-        private static int _nameCounter = 0;
+        private static int _nameCounter;
+        private string _name;
+        private string _title = "Nuevo Grupo";
+        private Image _groupIcon;
+        private bool _collapsed;
+
+        internal event EventHandler Changed;
+
+        private void NotifyChanged() => Changed?.Invoke(this, EventArgs.Empty);
 
         [Category("Diseño")]
-        [Description("Nombre único del componente (usado en código).")]
-        public string Name { get; set; }
+        [Description("Nombre único del componente.")]
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (_name == value) return;
+                _name = value;
+                NotifyChanged();
+            }
+        }
 
         [Category("Datos")]
-        public string Title { get; set; } = "Nuevo Grupo";
+        [Description("Título del grupo en la cabecera del acordeón.")]
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (_title == value) return;
+                _title = value;
+                NotifyChanged();
+            }
+        }
+
+        [Category("Apariencia")]
+        [Description("Ícono de la cabecera del grupo.")]
+        public Image GroupIcon
+        {
+            get => _groupIcon;
+            set
+            {
+                if (ReferenceEquals(_groupIcon, value)) return;
+                _groupIcon = value;
+                NotifyChanged();
+            }
+        }
 
         [Category("Datos")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public Collection<SidebarItemModel> Items { get; } = new Collection<SidebarItemModel>();
+
+        [Category("Comportamiento")]
+        [Description("Indica si el grupo inicia colapsado.")]
+        [DefaultValue(false)]
+        public bool Collapsed
+        {
+            get => _collapsed;
+            set
+            {
+                if (_collapsed == value) return;
+                _collapsed = value;
+                NotifyChanged();
+            }
+        }
 
         public SidebarGroupModel()
         {
@@ -112,8 +258,12 @@ namespace JMTControls.NetCore.Controls
             Name = $"sidebarGroup{_nameCounter}";
         }
 
-        public static void ResetNameCounter() => _nameCounter = 0;
+        public SidebarGroupModel(IContainer container) : this()
+        {
+            container?.Add(this, Name);
+        }
 
+        public static void ResetNameCounter() => _nameCounter = 0;
         public override string ToString() => Title;
     }
 }

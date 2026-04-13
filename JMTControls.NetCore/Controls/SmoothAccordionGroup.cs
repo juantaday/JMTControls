@@ -3,41 +3,44 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace JMTControls.NetCore.Controls
 {
     // ═══════════════════════════════════════════════════════════════════
-    //  SmoothAccordionGroup  v4  — fix colapso total
-    //
-    //  Se obliga al control a respetar siempre Math.Max(HeaderHeight, h)
-    //  para evitar que implosione y desaparezca cuando no tiene ítems.
+    //  SmoothAccordionGroup  — DevExpress-style accordion panel
     // ═══════════════════════════════════════════════════════════════════
     public class SmoothAccordionGroup : Panel
     {
+        // ── Propiedades públicas ─────────────────────────────────────────
         public string Title { get; set; } = "Grupo";
         public Image GroupIcon { get; set; }
-        public Color HeaderColor { get; set; } = Color.FromArgb(40, 40, 48);
+        public Color HeaderColor { get; set; } = Color.FromArgb(40, 40, 50);
         public Color HeaderText { get; set; } = Color.White;
-        public int HeaderHeight { get; set; } = 40;
+        public int HeaderHeight { get; set; } = 38;
+        public bool IsExpanded => _expanded;
 
-        public IEnumerable<Control> ContentControls =>
-            _content.Controls.Cast<Control>();
+        public IEnumerable<Control> ContentControls => _content.Controls.Cast<Control>();
 
+        // ── Estado de animación ──────────────────────────────────────────
         private bool _expanded = true;
-        private int _collapsedH;
-        private int _expandedH;
         private double _animCurrent;
         private int _animTarget;
+        private int _collapsedH;
+        private int _expandedH;
 
         private readonly Panel _content;
         private readonly System.Windows.Forms.Timer _timer;
 
+        private bool IsInDesignMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime || Site?.DesignMode == true;
+
         private const int INTERVAL = 8;
-        private const double EASE = 0.22;
+        private const double EASE = 0.25;
         private const double SNAP = 1.5;
 
+        // ── Constructor ──────────────────────────────────────────────────
         public SmoothAccordionGroup()
         {
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
@@ -54,74 +57,55 @@ namespace JMTControls.NetCore.Controls
             };
 
             _timer = new System.Windows.Forms.Timer { Interval = INTERVAL };
-            _timer.Tick += OnTick;
+            _timer.Tick += OnAnimTick;
 
             Controls.Add(_content);
             MouseClick += (s, e) => { if (e.Y < HeaderHeight) Toggle(); };
+
             RecalcHeights(resync: true);
         }
 
-        // ── API ──────────────────────────────────────────────────────────
+        // ── API pública ──────────────────────────────────────────────────
 
         public void AddContent(Control ctrl)
         {
             ctrl.Dock = DockStyle.Top;
             _content.Controls.Add(ctrl);
-            // FIX ORDEN: DockStyle.Top apila al revés. SendToBack hace que el
-            // último agregado quede debajo, preservando el orden de inserción.
-            ctrl.SendToBack();
+            ctrl.SendToBack(); // preserva orden de inserción con DockStyle.Top
             RecalcHeights(resync: true);
         }
 
         public void Toggle()
         {
-            if (_expanded) Collapse();
-            else Expand();
+            bool animate = !IsInDesignMode;
+            if (_expanded) Collapse(animate); else Expand(animate);
         }
 
         public void Expand(bool animate = true)
         {
-            if (_expanded && !_timer.Enabled) return;
-
             _expanded = true;
             _animTarget = _expandedH;
 
-            if (animate)
-            {
-                if (!_timer.Enabled) _timer.Start();
-            }
-            else
-            {
-                _animCurrent = _expandedH;
-                ApplyHeight(_expandedH); // Usamos ApplyHeight para proteger la asignación
-            }
+            if (animate) { if (!_timer.Enabled) _timer.Start(); }
+            else { _animCurrent = _expandedH; ApplyHeight(_expandedH); }
 
             Invalidate();
         }
 
         public void Collapse(bool animate = true)
         {
-            if (!_expanded && !_timer.Enabled) return;
-
             _expanded = false;
             _animTarget = _collapsedH;
 
-            if (animate)
-            {
-                if (!_timer.Enabled) _timer.Start();
-            }
-            else
-            {
-                _animCurrent = _collapsedH;
-                ApplyHeight(_collapsedH); // Usamos ApplyHeight para proteger la asignación
-            }
+            if (animate) { if (!_timer.Enabled) _timer.Start(); }
+            else { _animCurrent = _collapsedH; ApplyHeight(_collapsedH); }
 
             Invalidate();
         }
 
-        // ── animación ────────────────────────────────────────────────────
+        // ── Animación ────────────────────────────────────────────────────
 
-        private void OnTick(object s, EventArgs e)
+        private void OnAnimTick(object s, EventArgs e)
         {
             double diff = _animTarget - _animCurrent;
 
@@ -140,32 +124,29 @@ namespace JMTControls.NetCore.Controls
 
         private void ApplyHeight(int h)
         {
-            Parent?.SuspendLayout();
+            int newHeight = Math.Max(HeaderHeight, h);
+            if (Height == newHeight) return;
 
-            // EL FIX PRINCIPAL ESTÁ AQUÍ: 
-            // Jamás permitimos que la altura sea menor a la de la cabecera.
-            Height = Math.Max(HeaderHeight, h);
-
-            Parent?.ResumeLayout(false);
-            Parent?.PerformLayout();
+            Height = newHeight;
+            Invalidate();
         }
 
-        // ── pintura ──────────────────────────────────────────────────────
+        // ── Pintura ──────────────────────────────────────────────────────
 
         protected override void OnPaint(PaintEventArgs e)
         {
             var g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
             DrawHeader(g);
         }
 
         private void DrawHeader(Graphics g)
         {
-            using var path = new System.Drawing.Drawing2D.GraphicsPath();
-            const int R = 5;
-            int bh = HeaderHeight;
+            const int R = 4;
             int w = Math.Max(1, Width);
+            int bh = HeaderHeight;
 
+            using var path = new GraphicsPath();
             path.AddArc(0, 0, R * 2, R * 2, 180, 90);
             path.AddArc(w - R * 2, 0, R * 2, R * 2, 270, 90);
 
@@ -181,11 +162,23 @@ namespace JMTControls.NetCore.Controls
             }
             path.CloseFigure();
 
-            using var bg = new SolidBrush(HeaderColor);
-            g.FillPath(bg, path);
+            // Fondo del header con gradiente sutil
+            using var grad = new LinearGradientBrush(
+                new Rectangle(0, 0, w, bh),
+                Color.FromArgb(52, 52, 64),
+                HeaderColor,
+                LinearGradientMode.Vertical);
+            g.FillPath(grad, path);
 
+            // Borde inferior del header
+            using var sep = new Pen(Color.FromArgb(60, 60, 75), 1f);
+            if (!roundBottom)
+                g.DrawLine(sep, 0, bh - 1, w, bh - 1);
+
+            // Ícono o placeholder
             int iconX = 10;
             int iconY = (bh - 16) / 2;
+
             if (GroupIcon != null)
             {
                 g.DrawImage(GroupIcon, new Rectangle(iconX, iconY, 16, 16));
@@ -193,38 +186,42 @@ namespace JMTControls.NetCore.Controls
             }
             else
             {
-                using var ib = new SolidBrush(Color.FromArgb(80, 255, 255, 255));
+                // Pequeño cuadrado de color como placeholder
+                using var ib = new SolidBrush(Color.FromArgb(70, 100, 140, 255));
+                using var ip = new Pen(Color.FromArgb(100, 140, 255), 1.2f);
                 g.FillRectangle(ib, iconX + 2, iconY + 2, 12, 12);
+                g.DrawRectangle(ip, iconX + 2, iconY + 2, 12, 12);
                 iconX += 22;
             }
 
-            using var font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+            // Título
+            using var font = new Font("Segoe UI", 9f, FontStyle.Regular);
             using var tb = new SolidBrush(HeaderText);
-            var sf = new StringFormat
+            using var sf = new StringFormat
             {
                 Alignment = StringAlignment.Near,
                 LineAlignment = StringAlignment.Center,
                 Trimming = StringTrimming.EllipsisCharacter,
             };
-            g.DrawString(Title, font, tb,
-                new RectangleF(iconX, 0, w - iconX - 24, bh), sf);
+            g.DrawString(Title, font, tb, new RectangleF(iconX, 0, w - iconX - 28, bh), sf);
 
-            DrawChevron(g, _expanded);
+            // Chevron
+            DrawChevron(g);
         }
 
-        private void DrawChevron(Graphics g, bool down)
+        private void DrawChevron(Graphics g)
         {
             int cx = Width - 14;
             int cy = HeaderHeight / 2;
 
-            using var pen = new Pen(Color.FromArgb(180, 255, 255, 255), 1.5f)
+            using var pen = new Pen(Color.FromArgb(160, 255, 255, 255), 1.5f)
             {
-                LineJoin = System.Drawing.Drawing2D.LineJoin.Round,
-                StartCap = System.Drawing.Drawing2D.LineCap.Round,
-                EndCap = System.Drawing.Drawing2D.LineCap.Round,
+                LineJoin = LineJoin.Round,
+                StartCap = LineCap.Round,
+                EndCap = LineCap.Round,
             };
 
-            if (down)
+            if (_expanded)
                 g.DrawLines(pen, new[] {
                     new PointF(cx - 5, cy - 2),
                     new PointF(cx,     cy + 3),
@@ -232,13 +229,13 @@ namespace JMTControls.NetCore.Controls
                 });
             else
                 g.DrawLines(pen, new[] {
-                    new PointF(cx - 3, cy - 5),
+                    new PointF(cx - 3, cy - 4),
                     new PointF(cx + 3, cy),
-                    new PointF(cx - 3, cy + 5),
+                    new PointF(cx - 3, cy + 4),
                 });
         }
 
-        // ── recalcular alturas ────────────────────────────────────────────
+        // ── Recalcular alturas ────────────────────────────────────────────
 
         private void RecalcHeights(bool resync)
         {
@@ -246,28 +243,21 @@ namespace JMTControls.NetCore.Controls
             _content.Top = HeaderHeight;
             _content.Width = Math.Max(1, Width > 0 ? Width : 280);
 
-            _content.PerformLayout();
-
-            int contentH = 0;
+            int contentH = _content.Padding.Top;
             foreach (Control c in _content.Controls)
-            {
-                int bottom = c.Top + c.Height + c.Margin.Bottom;
-                if (bottom > contentH) contentH = bottom;
-            }
+                contentH += c.Height + c.Margin.Top + c.Margin.Bottom;
             contentH += _content.Padding.Bottom + 4;
-
-            const int MIN_CONTENT_H = 60;
-            _content.Height = Math.Max(contentH, MIN_CONTENT_H);
+            _content.Height = Math.Max(contentH, 20);
             _expandedH = _collapsedH + _content.Height;
 
             if (resync && !_timer.Enabled)
             {
                 _animCurrent = _expanded ? _expandedH : _collapsedH;
-                ApplyHeight((int)_animCurrent); // Usamos ApplyHeight en lugar de Height = ...
+                ApplyHeight((int)_animCurrent);
             }
         }
 
-        // ── resize ───────────────────────────────────────────────────────
+        // ── Resize / Layout ──────────────────────────────────────────────
 
         protected override void OnResize(EventArgs e)
         {
@@ -290,10 +280,11 @@ namespace JMTControls.NetCore.Controls
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    //  DoubleBufferedPanel
+    // ═══════════════════════════════════════════════════════════════════
     internal class DoubleBufferedPanel : Panel
     {
-        [Category("Acción")]
-        [Description("Se dispara cuando el usuario hace clic en un ítem específico del menú.")]
         public event EventHandler<SidebarItemClickEventArgs> ItemClicked;
 
         public DoubleBufferedPanel()
@@ -305,16 +296,8 @@ namespace JMTControls.NetCore.Controls
         protected override void OnControlAdded(ControlEventArgs e)
         {
             base.OnControlAdded(e);
-            if (e.Control is DoubleBufferedPanel itemControl)
-            {
-                itemControl.ItemClicked += (s, args) =>
-                {
-                    ItemClicked?.Invoke(this, args);
-                };
-            }
+            if (e.Control is DoubleBufferedPanel inner)
+                inner.ItemClicked += (s, args) => ItemClicked?.Invoke(this, args);
         }
-
     }
-
-    
 }
