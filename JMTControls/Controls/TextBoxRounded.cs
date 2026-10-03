@@ -888,6 +888,8 @@ namespace JMControls.Controls
             }
         }
 
+        
+
         // Bandera para detectar llamadas redundantes
         private bool disposed = false;
 

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace JMTControls.NetCore.Controls
@@ -30,7 +26,7 @@ namespace JMTControls.NetCore.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-           // PosicionarBoton();
+            // PosicionarBoton();
         }
 
         private void PosicionarBoton()
@@ -83,8 +79,14 @@ namespace JMTControls.NetCore.Controls
             }
         }
 
-        public Button Button {
-            get {return _button; }
+        public new bool Focus()
+        {
+            return base.Focus();
+        }   
+
+        public Button Button
+        {
+            get { return _button; }
         }
 
         public virtual System.Windows.Forms.DockStyle DockButton

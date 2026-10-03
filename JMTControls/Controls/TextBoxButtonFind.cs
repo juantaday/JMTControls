@@ -94,7 +94,7 @@ namespace JMControls.Controls
                 return _button;
             }
         }
-        public virtual System.Windows.Forms.DockStyle DockButton
+        public virtual System.Windows.Forms.DockStyle ButtonDock
         {
             get
             {
@@ -108,7 +108,7 @@ namespace JMControls.Controls
         }
 
 
-        public int WidthButton
+        public int ButtonWidth
         {
             get
             {
